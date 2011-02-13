@@ -3,7 +3,10 @@
     It is recommended not to modify this file beyond adding blocks where you 
     want them, all site-wide layout should go into base.html. 
     
-    base.html extends this file and is extended by all other templates. 
+    base.html extends this file and is extended by all other templates.
+    
+    The only changes in this file are loding /css/custom.css and adding
+    the blocks header, main, footer, head, scripts 
     
 #}<!doctype html>  
 <!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ --> 
@@ -32,6 +35,7 @@
 
   <!-- CSS : implied media="all" -->
   <link rel="stylesheet" href="/css/style.css?v=2">
+  <link rel="stylesheet" href="/css/custom.css?v=2">
 
   <!-- Uncomment if you are specifically targeting less enabled mobile browsers
   <link rel="stylesheet" media="handheld" href="css/handheld.css?v=2">  -->

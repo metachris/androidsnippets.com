@@ -11,9 +11,18 @@
 #}
 
 {% block header %}
-    Add common header here in base.html
+    <div id="header">
+        <table width="100%">
+            <tr>
+                <td><img src="/images/logo.png" /></td>
+                <td align="right">
+                    {% if user %}{{ user }}<br /><a href='/logout'>Log out</a>{% else %}<a href='/login'>Sign in</a>{% endif %}
+                </td>
+            </tr>
+        </table>
+    </div>
 {% endblock %}
 
 {% block footer %}
-    Add common footer here in base.html
+
 {% endblock %}

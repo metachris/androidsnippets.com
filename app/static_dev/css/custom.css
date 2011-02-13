@@ -1,0 +1,20 @@
+#main { padding:20px; }
+
+#header {
+    background: #30587C;
+    padding:6px 20px;
+    color:white;
+}
+
+#header a {
+    color:white;
+    text-decoration:none;
+}
+
+#header a {
+    text-decoration:underline;
+}
+
+#header img {
+    margin-right:30px;
+}
