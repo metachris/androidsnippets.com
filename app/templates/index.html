@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div style="">
+    <h1>AppEngine Boilerplate Demo</h1>
+    <br>
+    <ul>
+        <li>OpenID authentication</li>
+        <li>HTML5 boilerplate</li>
+        <li>Jinja2 templating engine</li>
+    </ul>
+    <br>
+    <p>{% if user %}welcome {{ user }}. <a href='/logout'>Log out</a>{% else %}<a href='/login'>Sign in</a>{% endif %}</p>
+    <br>
+    <a href="https://github.com/metachris/appengine-boilerplate">on github</a>
+    
+</div>
+{% endblock %}
