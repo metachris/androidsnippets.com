@@ -14,9 +14,12 @@
     <div id="header">
         <table width="100%">
             <tr>
-                <td><img src="/images/logo.png" /></td>
+                <td><a href="/"><img src="/images/logo.png" border="0" /></a></td>
                 <td align="right">
-                    {% if user %}{{ user }}<br /><a href='/logout'>Log out</a>{% else %}<a href='/login'>Sign in</a>{% endif %}
+                    <p>{% if user %}{{ user }} | <a href='/logout'>Log out</a>{% else %}<a href='/login'>Sign in</a>{% endif %}</p>
+                    <br />
+                    
+                    <p><a href="/snippets/new">Add Snippet</a></p>
                 </td>
             </tr>
         </table>

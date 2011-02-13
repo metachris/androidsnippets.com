@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block main %}
+<h1>Add a new snippet</h1> 
+
+<form action="/snippets/new">
+    <p>Title:<br />
+    <input type="text" name="title" /></p>
+
+    <p>Code snippet:<br />
+    <textarea name="code" cols="60" rows="20"></textarea></p>
+
+    <p>Description:<br />
+    <textarea name="description" cols="60" rows="4"></textarea></p>
+
+    <input type="submit" />
+</form>   
+{% endblock %}

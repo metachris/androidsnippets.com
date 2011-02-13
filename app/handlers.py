@@ -4,6 +4,7 @@ from google.appengine.ext import db
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
+from google.appengine.ext.webapp.util import login_required
 
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
@@ -40,7 +41,10 @@ class LogOut(webapp.RequestHandler):
 class Main(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
-        html = env.get_template('index.html').render({'user': user})
+        prefs = UserPrefs.from_user(user)
+
+        template_vars = {'user': user, 'prefs': prefs}
+        html = env.get_template('index.html').render(template_vars)
         self.response.out.write(html)
 
 
@@ -48,4 +52,12 @@ class Account(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
         html = env.get_template('index.html').render({'user': user})
+        self.response.out.write(html)
+
+
+class SnippetsNew(webapp.RequestHandler):
+    @login_required
+    def get(self):
+        user = users.get_current_user()
+        html = env.get_template('snippets_new.html').render({'user': user})
         self.response.out.write(html)

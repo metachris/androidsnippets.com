@@ -9,14 +9,13 @@ class UserPrefs(db.Model):
     email = db.StringProperty(required=False)
 
     date_joined = db.DateTimeProperty(auto_now_add=True)
-    date_lastlogin = db.DateTimeProperty(auto_now_add=True)
+    date_lastlogin = db.DateTimeProperty(auto_now=True)
 
     # user access levels. 0=default, 1=editor, 2=admin
     level = db.IntegerProperty(default=0)
 
-    karma = db.IntegerProperty(default=0)
-    points = db.IntegerProperty(default=0)
-    achievements = db.StringListProperty(default=[])
+    karma = db.IntegerProperty(default=1)
+    points = db.IntegerProperty(default=1)
 
     @staticmethod
     def from_user(user):
@@ -34,17 +33,31 @@ class UserPrefs(db.Model):
         return prefs
 
 
-class Snippet(db.Model):
-    """Representation of a snippet (without content). All votes point to this
-    snippet, whereas one snippet can have multiple revisions of content
-    (community wiki style)."""
+class Achievement(db.Model):
+    """Achievement of a user"""
+    user = db.UserProperty(required=True)
+    achievement_id = db.IntegerProperty(default=0)
+    achievement_title = db.StringProperty()
+    date_earned = db.DateTimeProperty(auto_now_add=True)
 
+
+class Snippet(db.Model):
+    """
+    One snippet gets the votes, but all it's content stored in SnippetRevisions
+    starting with revision_id=0. All votes point to this snippet, whereas one
+    snippet can have multiple revisions of content (community wiki).
+    """
     # non-changing attributes
     submitter = db.UserProperty(required=True)
-    date_submission = db.DateTimeProperty(auto_now_add=True)
+    date_submitted = db.DateTimeProperty(auto_now_add=True)
 
     # default revision reference. of many content revisions any can be default.
-    revision = db.IntegerProperty(default=0)
+    revision_set = db.IntegerProperty(default=0)
+    revision_count = db.IntegerProperty(default=1)
+
+    def get_current_revision(self):
+        return db.GqlQuery("SELECT * FROM SnippetRevision WHERE \
+            revision_id = :1", self.revision_set).get()
 
 
 class SnippetUpvote(db.Model):
@@ -58,8 +71,8 @@ class SnippetComment(db.Model):
     user = db.UserProperty(required=True)
     snippet = db.ReferenceProperty(Snippet, required=True)
 
-    date_submission = db.DateTimeProperty(auto_now_add=True)
-    date_lastupdate = db.DateTimeProperty(auto_now_add=True)
+    date_submitted = db.DateTimeProperty(auto_now_add=True)
+    date_lastupdate = db.DateTimeProperty(auto_now=True)
     edits_count = db.IntegerProperty(default=0)
 
     comment = db.StringProperty(required=False)
@@ -70,16 +83,21 @@ class SnippetRevision(db.Model):
     held in  moderation until approved."""
     snippet = db.ReferenceProperty(Snippet, required=True)
     contributor = db.UserProperty(required=True)
-    date = db.DateTimeProperty(auto_now_add=True)
-
-    # version of the content
     revision_id = db.IntegerProperty(default=0)
+
     approved = db.BooleanProperty(default=False)
+    approved_by = db.UserProperty()
+
+    date_submitted = db.DateTimeProperty(auto_now_add=True)
+    date_lastupdate = db.DateTimeProperty(auto_now=True)
+    edits_count = db.IntegerProperty(default=0)
 
     # content attributes
     title = db.StringProperty(required=False)
     description = db.StringProperty(required=False)
     code = db.StringProperty(required=False)
+    compatible_android_versions = db.ListProperty(int, default=[])
+
     categories = db.StringListProperty(default=[])
     tags = db.StringListProperty(default=[])
 
@@ -95,7 +113,7 @@ class SnippetRevisionComment(db.Model):
     user = db.UserProperty(required=True)
     snippet = db.ReferenceProperty(SnippetRevision, required=True)
 
-    date_submission = db.DateTimeProperty(auto_now_add=True)
+    date_submitted = db.DateTimeProperty(auto_now_add=True)
     date_lastupdate = db.DateTimeProperty(auto_now_add=True)
     edits_count = db.IntegerProperty(default=0)
 
