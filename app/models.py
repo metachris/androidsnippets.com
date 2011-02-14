@@ -1,12 +1,15 @@
 from google.appengine.ext import db
 from google.appengine.api import users
 
+from hashlib import md5
+
 
 class UserPrefs(db.Model):
     """Extended user preferences"""
     user = db.UserProperty(required=True)
     nickname = db.StringProperty(required=False)
-    email = db.StringProperty(required=False)
+    email = db.StringProperty(required=True)
+    email_md5 = db.StringProperty()  # used for gravatar
 
     date_joined = db.DateTimeProperty(auto_now_add=True)
     date_lastlogin = db.DateTimeProperty(auto_now=True)
@@ -27,8 +30,9 @@ class UserPrefs(db.Model):
         prefs = q.get()
         if not prefs:
             # First time for this user, create userpref object now
+            m = md5(user.email().strip().lower()).hexdigest()
             prefs = UserPrefs(user=user, nickname=user.nickname(), \
-                        email=user.email())
+                        email=user.email(), email_md5=m)
             prefs.put()
         return prefs
 
@@ -50,13 +54,14 @@ class Snippet(db.Model):
     # non-changing attributes
     submitter = db.UserProperty(required=True)
     date_submitted = db.DateTimeProperty(auto_now_add=True)
+    date_lastupdate = db.DateTimeProperty(auto_now=True)
 
     # infos for building the urls to this snippet
     slug1 = db.StringProperty()  # new snippets get referenced by slug and id
     slug2 = db.StringProperty()  # old snippets set slug2 to old id
 
     # default revision reference. of many content revisions any can be default.
-    revision_set = db.IntegerProperty(default=0)
+    revision_set = db.IntegerProperty(default=1)
     revision_count = db.IntegerProperty(default=1)
 
     views = db.IntegerProperty(default=0)
@@ -80,7 +85,8 @@ class SnippetRevision(db.Model):
     held in  moderation until approved."""
     snippet = db.ReferenceProperty(Snippet, required=True)
     contributor = db.UserProperty(required=True)
-    revision_id = db.IntegerProperty(default=0)  # 0 is always initial revision
+    revision_id = db.IntegerProperty(default=1)  # 1 is always initial revision
+    revision_title = db.StringProperty()  # title for changeset by author
 
     approved = db.BooleanProperty(default=False)
     approved_by = db.UserProperty()

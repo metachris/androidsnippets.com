@@ -125,6 +125,7 @@ class SnippetsNew(webapp.RequestHandler):
 class SnippetView(webapp.RequestHandler):
     def get(self, snippet_slug):
         user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
 
         q = Snippet.all()
         q.filter("slug1 =", snippet_slug)
@@ -143,6 +144,6 @@ class SnippetView(webapp.RequestHandler):
             self.response.out.write(html)
             return
 
-        values = {'user': user, "snippet": snippet}
+        values = {'user': user, "prefs": prefs, "snippet": snippet}
         self.response.out.write(template.render(tdir + \
             "snippets_view.html", values))

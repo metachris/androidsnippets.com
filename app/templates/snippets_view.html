@@ -7,6 +7,7 @@
 {% block scripts %}
     <script src="/js/libs/shCore.js"></script>
     <script src="/js/libs/shBrushJava.js"></script>
+    
     <script>
     $(document).ready(function() {
     	dp.SyntaxHighlighter.ClipboardSwf = '/flash/clipboard.swf';
@@ -18,22 +19,43 @@
 {% block main %}
 <h1>{{ snippet.title }}</h1> 
 
-<br />
-
+            <p>{{ snippet.description }}</p>
 <table width="100%">
     <tr>
-        <td>
-            <p>{{ snippet.description }}</p>
-            <p><div id="snippet_code"><pre name="code" class="java">{{ snippet.code }}</pre></div></p>
+        <td valign="top">
+            <pre name="code" class="java">{{ snippet.code }}</pre>
+            <div style="margin-left:44px; color:#888;">
+                Authors: <a href="/authors/{{ user.nickname }}"><img src="http://www.gravatar.com/avatar/{{ prefs.email_md5 }}?s=16" /></a> <br>
+                Last edited {{ snippet.date_lastupdate|timesince }} ago
+            </div> 
         </td>
-        <td width="240px">
-        <div style="padding-left:20px;  margin-left:20px; border-left:1px solid lightgray; height:200px;">
-            <p>Author: {{ snippet.submitter.nickname }}</p>
-            <p>Added: {{ snippet.date_submitted|date }}</p>
+        <td width="220px">
+        <div style="padding-left:20px;  margin-left:20px; border-left:1px solid lightgray; margin-top:30px;">
+<div id="snippet_points">
+    <div class="votes"><em>2</em>points</div>
+    <div class="vote">
+        
+            <a class="teaser" href="" title="Give this snippet one point">vote</a>
+        
+    </div>
+</div>            
+<hr>            
+            <p>Android 1.5+</p>
+            <p>Tags: Internet, System</p>
+<hr>            
+            <p>Revision: {{ snippet.revision_set }}</p>
+            <p>Suggestions: 0</p>
+            <a href="#">Suggest an improvement</a>
+            <hr>
+            <p>Related snippets:</p>
         </div>
         </td>
     </tr>
 </table>
-<h2>{{ snippet.snippetcomment_set.count }} Comments</h2>
 
+<div id="comments">
+    <h2>{{ snippet.snippetcomment_set.count }} Comments</h2>
+
+    <div id="comment_thread"></div>
+</div>
 {% endblock %}
