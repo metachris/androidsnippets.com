@@ -87,10 +87,24 @@ class SnippetsNew(webapp.RequestHandler):
         code = decode(code)
         description = decode(description)
 
+        # Find a free slug
+        slug = slugify(title)
+        _slug = slugify(title)
+        cnt = 0
+        while True:
+            q = Snippet.all()
+            q.filter("slug1 =", _slug)
+            if q.count() > 0:
+                cnt += 1
+                _slug = u"%s%s" % (slug, cnt + 1)
+            else:
+                slug = _slug
+                break
+
         # Create snippet
         s = Snippet(submitter=user)
         s.title = title
-        s.slug = slugify(title)
+        s.slug1 = slug
         s.description = description
         s.code = code
         s.save()
@@ -109,7 +123,7 @@ class SnippetsNew(webapp.RequestHandler):
         r.save()
 
         # Redirect to snippet view
-        self.redirect("/snippets/%s" % s.slug)
+        self.redirect("/snippets/%s" % s.slug1)
 
 
 class SnippetView(webapp.RequestHandler):
@@ -117,8 +131,21 @@ class SnippetView(webapp.RequestHandler):
         user = users.get_current_user()
 
         q = Snippet.all()
-        q.filter("slug =", snippet_slug)
+        q.filter("slug1 =", snippet_slug)
         snippet = q.get()
+
+        if not snippet:
+            # Support legacy system with old id's
+            q = Snippet.all()
+            q.filter("slug2 =", snippet_slug)
+            snippet = q.get()
+
+        if not snippet:
+            # Show snippet-not-found.html
+            values = {'user': user, "q": snippet_slug}
+            html = env.get_template('snippets_notfound.html').render(values)
+            self.response.out.write(html)
+            return
 
         values = {'user': user, "snippet": snippet}
         html = env.get_template('snippets_view.html').render(values)

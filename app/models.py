@@ -52,7 +52,7 @@ class Snippet(db.Model):
     date_submitted = db.DateTimeProperty(auto_now_add=True)
 
     # infos for building the urls to this snippet
-    slug = db.StringProperty()   # new snippets get referenced by slug and id
+    slug1 = db.StringProperty()  # new snippets get referenced by slug and id
     slug2 = db.StringProperty()  # old snippets set slug2 to old id
 
     # default revision reference. of many content revisions any can be default.
