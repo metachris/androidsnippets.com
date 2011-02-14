@@ -1,18 +1,50 @@
 {% extends "base.html" %}
 
+{% block head %}
+    <link rel="stylesheet" href="/css/jquery-ui.css?v=2">
+{% endblock %}
+
+{% block scripts %}
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+    
+    <script>
+    $(document).ready(function() {
+        //$("button").button();
+		$( ".button" ).button();
+
+		$("input#autocomplete").autocomplete({
+            source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
+        });
+    });
+    </script>
+{% endblock %}
+
 {% block main %}
+<div id="snippet_new">
 <h1>Add a new snippet</h1> 
 
 <form action="/snippets/new" method="post">
     <p>Title:<br />
-    <input type="text" name="title" /></p>
+    <input type="text" name="title" id="title" /></p>
+    <script>document.getElementById('title').focus();</script>
+    
+    <p>Description:<br />
+    <textarea name="description" cols="60" rows="4"></textarea></p>
 
     <p>Code snippet:<br />
     <textarea name="code" cols="60" rows="20"></textarea></p>
 
-    <p>Description:<br />
-    <textarea name="description" cols="60" rows="4"></textarea></p>
+    <p>Tags:<br />
+    <div id="tags"></div>
+    <div id="addtag">
+        <input type="text" name="tag" id="autocomplete" /> 
+        <a href="#" id="btn_addtag" class="button">Add</a>
+    </div>
+    </p>
 
-    <input type="submit" />
+    <hr>
+    
+    <input type="submit" value="Submit snippet" />
 </form>   
+</div>
 {% endblock %}

@@ -37,6 +37,35 @@ p {
     margin-top:20px;
 }
 
+#snippet_new {
+    
+}
+
+#snippet_new #title {
+    width:500px;
+}
+
+#snippet_new #addtag .ui-button .ui-button-text {
+    line-height:8px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* snippet vote button */
 #snippet_points {
     width:50px;
     font-size:10px;

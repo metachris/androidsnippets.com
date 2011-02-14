@@ -139,3 +139,20 @@ class SnippetRevisionComment(db.Model):
     edits_count = db.IntegerProperty(default=0)
 
     comment = db.TextProperty()
+
+
+class Tag(db.Model):
+    """
+    For each tag there is one tag object in order to be able to get a list
+    of unique tags, and to get usage count with ``Tag.snippettag_set.count()``
+    """
+    name = db.StringProperty(required=True)
+    date_added = db.DateTimeProperty(auto_now_add=True)
+
+
+class SnippetTag(db.Model):
+    """Associates a tag with a snippet"""
+    snippet = db.ReferenceProperty(Snippet, required=True)
+    tag = db.ReferenceProperty(Tag, required=True)
+
+    date_added = db.DateTimeProperty(auto_now_add=True)

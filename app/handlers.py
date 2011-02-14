@@ -73,7 +73,7 @@ class SnippetsNew(webapp.RequestHandler):
         description = self.request.get('description')
 
         if not title or not code or not description:
-            values = {'user': user, 'prefs': prefs, 'errors': True}
+            values = {'user': user, 'errors': True}
             html = env.get_template('snippets_new.html').render(values)
             self.response.out.write(html)
             return
