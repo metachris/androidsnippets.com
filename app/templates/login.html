@@ -5,7 +5,13 @@
 {% endblock %}
 
 {% block scripts %}
-	<script type="text/javascript" src="/js/libs/openid-en.js"></script> 
+	<script type="text/javascript" src="/js/libs/openid-en.js"></script>
+	<script> 
+        $(document).ready(function() {
+        	openid.init('openid_identifier');
+        	//openid.setDemoMode(true); //Stops form submission for client javascript-only test purposes
+        });
+	</script>
 {% endblock %}
 
 {% block main %}

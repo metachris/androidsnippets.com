@@ -28,8 +28,7 @@ class LogIn(webapp.RequestHandler):
             url = users.create_login_url(target_url, federated_identity=f)
             self.redirect(url)
         else:
-            html = env.get_template('login.html').render()
-            self.response.out.write(html)
+            self.response.out.write(template.render(tdir + "login.html", {}))
 
 
 class LogOut(webapp.RequestHandler):
@@ -61,8 +60,8 @@ class Account(webapp.RequestHandler):
 class SnippetsNew(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
-        html = env.get_template('snippets_new.html').render({'user': user})
-        self.response.out.write(html)
+        self.response.out.write(template.render(tdir + \
+            "snippets_new.html", {'user': user}))
 
     def post(self):
         """Check and add new snippet to db"""

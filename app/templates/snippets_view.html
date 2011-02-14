@@ -1,20 +1,39 @@
 {% extends "base.html" %}
 
+{% block head %}
+    <link rel="stylesheet" href="/css/highlight.css?v=2">
+{% endblock %}
+
+{% block scripts %}
+    <script src="/js/libs/shCore.js"></script>
+    <script src="/js/libs/shBrushJava.js"></script>
+    <script>
+    $(document).ready(function() {
+    	dp.SyntaxHighlighter.ClipboardSwf = '/flash/clipboard.swf';
+        dp.SyntaxHighlighter.HighlightAll('code');
+    });
+    </script>
+{% endblock %}
+
 {% block main %}
-<div id="snippets_view">
 <h1>{{ snippet.title }}</h1> 
 
 <br />
 
-<div style="float:right; width:200px; padding-left:20px; margin-left:20px; border-left:1px solid lightgray; height:200px;">
-    <p>Author: {{ snippet.submitter.nickname }}</p>
-    <p>Added: {{ snippet.date_submitted|date }}</p>
-                
-</div>
-<div>
+<table width="100%">
+    <tr>
+        <td>
             <p>{{ snippet.description }}</p>
-            <p><pre>{{ snippet.code }}</pre></p>
-</div>
+            <p><div id="snippet_code"><pre name="code" class="java">{{ snippet.code }}</pre></div></p>
+        </td>
+        <td width="240px">
+        <div style="padding-left:20px;  margin-left:20px; border-left:1px solid lightgray; height:200px;">
+            <p>Author: {{ snippet.submitter.nickname }}</p>
+            <p>Added: {{ snippet.date_submitted|date }}</p>
+        </div>
+        </td>
+    </tr>
+</table>
+<h2>{{ snippet.snippetcomment_set.count }} Comments</h2>
 
-</div>
 {% endblock %}
