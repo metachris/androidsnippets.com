@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
 {% block main %}
-hi    
+    <ul>
+        {% for snippet in snippets %}
+            <li><a href="/snippets/{{ snippet.slug }}">{{ snippet.title }}</a></li>
+        {% endfor %}
+    </ul>
 {% endblock %}

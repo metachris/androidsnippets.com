@@ -8,6 +8,7 @@ from google.appengine.ext.webapp.util import login_required
 
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 
+from tools import slugify, decode
 from models import *
 
 # Setup jinja templating
@@ -43,7 +44,11 @@ class Main(webapp.RequestHandler):
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
-        values = {'user': user, 'prefs': prefs}
+        q = Snippet.all()
+        q.order("-date_submitted")
+        snippets = q.fetch(20)
+
+        values = {'user': user, 'prefs': prefs, 'snippets': snippets}
         html = env.get_template('index.html').render(values)
         self.response.out.write(html)
 
@@ -77,8 +82,17 @@ class SnippetsNew(webapp.RequestHandler):
             self.response.out.write(html)
             return
 
+        # Decode with utf-8 if necessary
+        title = decode(title.strip())
+        code = decode(code)
+        description = decode(description)
+
         # Create snippet
         s = Snippet(submitter=user)
+        s.title = title
+        s.slug = slugify(title)
+        s.description = description
+        s.code = code
         s.save()
 
         # Create the first upvote
@@ -93,15 +107,19 @@ class SnippetsNew(webapp.RequestHandler):
         r.description = description
         r.code = code
         r.save()
-        print r
 
         # Redirect to snippet view
+        self.redirect("/snippets/%s" % s.slug)
 
 
 class SnippetView(webapp.RequestHandler):
-    def get(self, snippet_id):
-        print "view snippet %s" % snippet_id
-        return
+    def get(self, snippet_slug):
         user = users.get_current_user()
-        html = env.get_template('snippet_view.html').render({'user': user})
+
+        q = Snippet.all()
+        q.filter("slug =", snippet_slug)
+        snippet = q.get()
+
+        values = {'user': user, "snippet": snippet}
+        html = env.get_template('snippets_view.html').render(values)
         self.response.out.write(html)
