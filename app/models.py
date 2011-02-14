@@ -59,6 +59,8 @@ class Snippet(db.Model):
     revision_set = db.IntegerProperty(default=0)
     revision_count = db.IntegerProperty(default=1)
 
+    views = db.IntegerProperty(default=0)
+
     def get_current_revision(self):
         return db.GqlQuery("SELECT * FROM SnippetRevision WHERE \
             revision_id = :1", self.revision_set).get()

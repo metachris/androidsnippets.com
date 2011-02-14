@@ -1,10 +1,20 @@
 {% extends "base.html" %}
 
 {% block main %}
+<div id="snippets_view">
 <h1>{{ snippet.title }}</h1> 
 
-<p>{{ snippet.description }}</p>
+<br />
 
+<div style="float:right; width:200px; padding-left:20px; margin-left:20px; border-left:1px solid lightgray; height:200px;">
+    <p>Author: {{ snippet.submitter.nickname }}</p>
+    <p>Added: {{ snippet.date_submitted|date }}</p>
+                
+</div>
+<div>
+            <p>{{ snippet.description }}</p>
+            <p><pre>{{ snippet.code }}</pre></p>
+</div>
 
-<p><pre>{{ snippet.code }}</pre></p>
+</div>
 {% endblock %}

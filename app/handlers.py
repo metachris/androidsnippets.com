@@ -6,15 +6,15 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import login_required
 
-from jinja2 import Environment, FileSystemLoader, TemplateNotFound
+#from jinja2 import Environment, FileSystemLoader, TemplateNotFound
+from google.appengine.ext.webapp import template
 
 from tools import slugify, decode
 from models import *
 
 # Setup jinja templating
-template_dirs = []
-template_dirs.append(os.path.join(os.path.dirname(__file__), 'templates'))
-env = Environment(loader=FileSystemLoader(template_dirs))
+tdir = os.path.join(os.path.dirname(__file__), 'templates/')
+#env = Environment(loader=FileSystemLoader(template_dirs))
 
 
 # OpenID Login
@@ -49,15 +49,12 @@ class Main(webapp.RequestHandler):
         snippets = q.fetch(20)
 
         values = {'user': user, 'prefs': prefs, 'snippets': snippets}
-        html = env.get_template('index.html').render(values)
-        self.response.out.write(html)
+        self.response.out.write(template.render(tdir + "index.html", values))
 
 
 class Account(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
-        html = env.get_template('index.html').render({'user': user})
-        self.response.out.write(html)
 
 
 # @login_required only works on get, now handled via app.yaml
@@ -148,5 +145,5 @@ class SnippetView(webapp.RequestHandler):
             return
 
         values = {'user': user, "snippet": snippet}
-        html = env.get_template('snippets_view.html').render(values)
-        self.response.out.write(html)
+        self.response.out.write(template.render(tdir + \
+            "snippets_view.html", values))
