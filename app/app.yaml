@@ -16,7 +16,7 @@ handlers:
   login: admin
 
 # If non-authenticated user, appengine will ask for login and redirect afterwards: 
-- url: /account
+- url: /snippets/new
   script: app.py
   login: required
 
