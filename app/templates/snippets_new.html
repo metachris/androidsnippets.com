@@ -20,30 +20,40 @@
         $(".tip").tipTip({defaultPosition:"right"});
 
 		$( "select" ).combobox();
+		//$("#title").focus();
     });
     </script>
 {% endblock %}
 
 {% block main %}
 <h2>Add a new snippet</h2> 
-
+			
 <div id="snippet_new">
 <form action="/snippets/new" method="post">
 <table><tr>
 <td class="c1">
+{% if errors %}
+				<div class="ui-state-error ui-corner-all" style="padding: 8px 0px 0px .7em; margin-bottom:10px;" id="error1">
+    				<div class="ui-alert-dismiss"><a href="javascript:$('#error1').slideUp();" title="Dismiss this alert">x</a></div>
+    				 
+					<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+					Please add {% for error in errors %}{% if forloop.last %}{% if not forloop.first %} and {% endif %}{% else %}{% if not forloop.first %}, {% endif %}{% endif %}{{ error }}{% endfor %}
+					</p>
+				</div>
+{% endif %}
     <p><b class="inputinfo">Title</b><br>
-    <input type="text" name="title" id="title" class="tip" title="A precise title makes it easy for others to find this snippet." /></p>
+    <input type="text" name="title" id="title" class="tip input" value="{{ title }}" title="A precise title makes it easy for others to find this snippet." /></p>
     <script>document.getElementById('title').focus();</script>
     
     <p><b class="inputinfo">Description</b><br />
-    <textarea name="description" cols="60" rows="4" class="tip" title="A few words describing this snippet, and enough space for references. Markdown is supported."></textarea></p>
+    <textarea name="description" cols="60" rows="4" class="tip input" title="A few words describing this snippet, and enough space for references. Markdown is supported.">{{ description }}</textarea></p>
 
     <p><b class="inputinfo">Snippet</b><br />
-    <textarea id="code" name="code" cols="70" rows="20" class="tip" title="Paste the code in here. Everything in this box will be syntax-highlighted."></textarea></p>
+    <textarea id="code" name="code" cols="70" rows="20" class="tip input" title="Paste the code in here. Everything in this box will be syntax-highlighted.">{{ code }}</textarea></p>
 
 </td><td class="c2">
 
-    <p><input type="submit" class="btn" value="Preview Snippet" /></p>
+    <center><p><input type="submit" class="btn" value="Submit Snippet" /></p></center>
     <hr>
     <b class="inputinfo">Works with</b><br>
         <div style="margin-top:4px;">

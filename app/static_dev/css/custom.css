@@ -25,6 +25,8 @@ p {
 .btn_small .ui-button-text { padding:0.3em 0.8em; }
 .ui-combobox-button { font-size:10px; }
 .ui-autocomplete-input { line-height:20px; padding:2px 4px; }
+.ui-alert-dismiss { float:right; margin-right:10px; font-weight:bold; }
+.ui-alert-dismiss a { text-decoration:none; }
 
 #main { padding-top:20px; width:800px; margin:auto; }
 
@@ -55,6 +57,10 @@ p {
 /* Adding New Snippets */
 #snippet_new {
    margin-top:20px;
+}
+
+#snippet_new .border {
+    border:1px solid lightgray;
 }
 
 #snippet_new #title {
@@ -92,6 +98,10 @@ p {
 #snippet_new .c2 {
     padding-left:30px;
     padding-top:12px;
+}
+#snippet_new .c1 .input {
+    border:1px solid lightgray;
+    width:500px;
 }
 
 

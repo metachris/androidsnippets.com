@@ -71,11 +71,22 @@ class SnippetsNew(webapp.RequestHandler):
         title = self.request.get('title')
         code = self.request.get('code')
         description = self.request.get('description')
+        tags = self.request.get('tags')
 
-        if not title or not code or not description:
-            values = {'user': user, 'errors': True}
-            html = env.get_template('snippets_new.html').render(values)
-            self.response.out.write(html)
+        errors = []
+        if not title:
+            errors.append("title")
+        if not code:
+            errors.append("snippet")
+        if not description:
+            errors.append("description")
+        if not tags:
+            errors.append("tags")
+        if len(errors) > 0:
+            values = {'user': user, 'errors': errors, 'title': title, \
+                'code': code, 'description': description}
+            self.response.out.write(template.render(tdir + \
+                "snippets_new.html", values))
             return
 
         # Decode with utf-8 if necessary
