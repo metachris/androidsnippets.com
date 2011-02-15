@@ -20,6 +20,9 @@ class UserPrefs(db.Model):
     karma = db.IntegerProperty(default=1)
     points = db.IntegerProperty(default=1)
 
+    # How to submit guidelines
+    has_accepted_terms0 = db.BooleanProperty(default=False)
+
     @staticmethod
     def from_user(user):
         if not user:
@@ -61,10 +64,14 @@ class Snippet(db.Model):
     slug2 = db.StringProperty()  # old snippets set slug2 to old id
 
     # default revision reference. of many content revisions any can be default.
-    revision_set = db.IntegerProperty(default=1)
-    revision_count = db.IntegerProperty(default=1)
+    # for a lack of referencing a model defined below, we simply store the key
+    revision_set = db.StringProperty()
 
-    views = db.IntegerProperty(default=0)
+    # Number of pageviews
+    views = db.IntegerProperty(default=1)
+
+    # Rating - To be defined (for now count of upvotes).
+    rating = db.IntegerProperty(default=1)
 
     def get_current_revision(self):
         return db.GqlQuery("SELECT * FROM SnippetRevision WHERE \
@@ -74,22 +81,28 @@ class Snippet(db.Model):
     title = db.StringProperty()
     description = db.TextProperty()
     code = db.TextProperty()
-    compatible_android_versions = db.ListProperty(int, default=[])
+    android_minsdk = db.IntegerProperty(default=0)
 
     categories = db.StringListProperty(default=[])
     tags = db.StringListProperty(default=[])
 
 
 class SnippetRevision(db.Model):
-    """Content revision of a snippet. If new suggestion by another dev, it is
-    held in  moderation until approved."""
+    """A revision is a new version with edits by another user (suggestions
+    how this snippet could be better). held in  moderation until approved."""
     snippet = db.ReferenceProperty(Snippet, required=True)
     contributor = db.UserProperty(required=True)
-    revision_id = db.IntegerProperty(default=1)  # 1 is always initial revision
-    revision_title = db.StringProperty()  # title for changeset by author
+
+    # author's comment about this changeset
+    revision_description = db.TextProperty()
 
     approved = db.BooleanProperty(default=False)
     approved_by = db.UserProperty()
+    approved_date = db.DateTimeProperty()
+
+    rejected = db.BooleanProperty(default=False)
+    rejected_by = db.UserProperty()
+    rejected_date = db.DateTimeProperty()
 
     date_submitted = db.DateTimeProperty(auto_now_add=True)
     date_lastupdate = db.DateTimeProperty(auto_now=True)
@@ -99,7 +112,7 @@ class SnippetRevision(db.Model):
     title = db.StringProperty()
     description = db.TextProperty()
     code = db.TextProperty()
-    compatible_android_versions = db.ListProperty(int, default=[])
+    android_minsdk = db.IntegerProperty(default=0)
 
     categories = db.StringListProperty(default=[])
     tags = db.StringListProperty(default=[])
@@ -121,6 +134,7 @@ class SnippetComment(db.Model):
     """Comment on a snippet"""
     user = db.UserProperty(required=True)
     snippet = db.ReferenceProperty(Snippet, required=True)
+    parent_comment = db.SelfReferenceProperty()
 
     date_submitted = db.DateTimeProperty(auto_now_add=True)
     date_lastupdate = db.DateTimeProperty(auto_now=True)
@@ -133,6 +147,7 @@ class SnippetRevisionComment(db.Model):
     """Comment on a snippet revision which may be held in moderation"""
     user = db.UserProperty(required=True)
     snippet = db.ReferenceProperty(SnippetRevision, required=True)
+    parent_comment = db.SelfReferenceProperty()
 
     date_submitted = db.DateTimeProperty(auto_now_add=True)
     date_lastupdate = db.DateTimeProperty(auto_now_add=True)

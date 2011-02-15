@@ -151,8 +151,8 @@ class SnippetView(webapp.RequestHandler):
         if not snippet:
             # Show snippet-not-found.html
             values = {'user': user, "q": snippet_slug}
-            html = env.get_template('snippets_notfound.html').render(values)
-            self.response.out.write(html)
+            self.response.out.write(template.render(tdir + \
+                "snippets_notfound.html", values))
             return
 
         values = {'user': user, "prefs": prefs, "snippet": snippet}
