@@ -1,4 +1,30 @@
-#main { padding:20px; }
+* {
+    font-family: 'Helvetica Neue', Helvetica, Arial, default;
+    font-size:13px;    
+}
+
+a { color: #0073EA; }
+
+b { font-weight:bold; }
+
+h1 {
+    font-size:26px;
+    margin-bottom:14px;   
+}
+
+h2 {
+    font-size:22px;
+    margin-bottom:10px;   
+}
+
+p {
+    margin-bottom:8px;
+}
+
+.btn_small { font-size:11px; }
+.btn_small .ui-button-text { padding:0.3em 0.8em; }
+
+#main { padding-top:20px; width:800px; margin:auto; }
 
 #header {
     background: #30587C;
@@ -19,22 +45,14 @@
     margin-right:30px;
 }
 
-h1 {
-    font-size:26px;
-    margin-bottom:10px;   
-}
-
-h2 {
-    font-size:22px;
-    margin-bottom:6px;   
-}
-
-p {
-    margin-bottom:6px;
-}
 
 #comments {
     margin-top:20px;
+}
+
+/* Adding New Snippets */
+#addsnippet {
+   margin-top:20px;
 }
 
 #snippet_new {
@@ -43,19 +61,30 @@ p {
 
 #snippet_new #title {
     width:500px;
+    border:1px solid gray;
+    height:20px;
+    padding:0px 2px;
+    font-size:14px;
 }
 
-#snippet_new #addtag .ui-button .ui-button-text {
-    line-height:8px;
+#autocomplete {     
+    border:1px solid gray; 
 }
 
+/* Input descriptions for forms */
+.inputinfo {
+    font-size:14px;
+}
 
+#addtag #autocomplete {
+    width:160px; 
+    height:18px;
+    padding:0px 2px;
+}
 
-
-
-
-
-
+#taglist {
+    min-height:20px;   
+}
 
 
 

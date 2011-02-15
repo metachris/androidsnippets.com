@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="/css/jquery-ui.css?v=2">
+    <link rel="stylesheet" href="/css/jquery-ui-flick.css?v=2">
+    <link rel="stylesheet" href="/css/tipTip.css?v=2">
 {% endblock %}
 
 {% block scripts %}
@@ -9,38 +10,38 @@
     
     <script>
     $(document).ready(function() {
-        //$("button").button();
-		$( ".button" ).button();
+		$( ".btn_small" ).button();
 
 		$("input#autocomplete").autocomplete({
             source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
         });
+        
+        $(".tip").tipTip({keepAlive:true, defaultPosition:"right"});
     });
     </script>
 {% endblock %}
 
 {% block main %}
 <div id="snippet_new">
-<h1>Add a new snippet</h1> 
+<h2>Post a new snippet</h2> 
 
-<form action="/snippets/new" method="post">
-    <p>Title:<br />
-    <input type="text" name="title" id="title" /></p>
+<form action="/snippets/new" method="post" id="addsnippet">
+    <p><b class="inputinfo">Title</b><br>
+    <input type="text" name="title" id="title" class="tip" title="A precise title makes it easy for others to find this snippet." /></p>
     <script>document.getElementById('title').focus();</script>
     
-    <p>Description:<br />
-    <textarea name="description" cols="60" rows="4"></textarea></p>
+    <p><b class="inputinfo">Description</b><br />
+    <textarea name="description" cols="60" rows="4" class="tip" title="A few sentences describing this snippet. Markdown is supported."></textarea></p>
 
-    <p>Code snippet:<br />
-    <textarea name="code" cols="60" rows="20"></textarea></p>
+    <p><b class="inputinfo">Snippet</b><br />
+    <textarea name="code" cols="60" rows="20" class="tip" title="Paste the code in here. Everything in this box will be syntax-highlighted."></textarea></p>
 
-    <p>Tags:<br />
-    <div id="tags"></div>
     <div id="addtag">
+        <b class="inputinfo">Tags</b><br>
         <input type="text" name="tag" id="autocomplete" /> 
-        <a href="#" id="btn_addtag" class="button">Add</a>
+        <a href="#" class="btn_small" class="button">Add</a>
     </div>
-    </p>
+    <div id="taglist"></div>
 
     <hr>
     
