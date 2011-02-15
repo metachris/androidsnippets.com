@@ -36,9 +36,9 @@
 	border-radius: 3px;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
-	box-shadow: 0 0 3px #555;
-	-webkit-box-shadow: 0 0 3px #555;
-	-moz-box-shadow: 0 0 3px #555;
+	box-shadow: 0 0 1px #555;
+	-webkit-box-shadow: 0 0 1px #555;
+	-moz-box-shadow: 0 0 1px #555;
 }
 
 #tiptip_arrow, #tiptip_arrow_inner {

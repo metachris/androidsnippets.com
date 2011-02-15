@@ -6,7 +6,7 @@
 a { color: #0073EA; }
 
 b { font-weight:bold; }
-
+hr { border-color: #DFDFDF; margin:20px 00px; }
 h1 {
     font-size:26px;
     margin-bottom:14px;   
@@ -23,6 +23,8 @@ p {
 
 .btn_small { font-size:11px; }
 .btn_small .ui-button-text { padding:0.3em 0.8em; }
+.ui-combobox-button { font-size:10px; }
+.ui-autocomplete-input { line-height:20px; padding:2px 4px; }
 
 #main { padding-top:20px; width:800px; margin:auto; }
 
@@ -51,12 +53,8 @@ p {
 }
 
 /* Adding New Snippets */
-#addsnippet {
-   margin-top:20px;
-}
-
 #snippet_new {
-    
+   margin-top:20px;
 }
 
 #snippet_new #title {
@@ -67,7 +65,7 @@ p {
     font-size:14px;
 }
 
-#autocomplete {     
+#snippet_new #autocomplete {     
     border:1px solid gray; 
 }
 
@@ -76,17 +74,25 @@ p {
     font-size:14px;
 }
 
-#addtag #autocomplete {
+#snippet_new #code { font-family: 'Bitstream Vera Sans Mono', 'Andale Mono', 'Courier New', monospace; }
+
+#snippet_new #addtag #autocomplete {
     width:160px; 
     height:18px;
-    padding:0px 2px;
 }
 
-#taglist {
+#snippet_new #taglist {
     min-height:20px;   
 }
 
-
+#snippet_new .c1 {
+    padding-right:30px;
+    border-right:1px solid lightgray;
+}
+#snippet_new .c2 {
+    padding-left:30px;
+    padding-top:12px;
+}
 
 
 

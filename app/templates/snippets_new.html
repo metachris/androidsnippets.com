@@ -10,42 +10,59 @@
     
     <script>
     $(document).ready(function() {
+		$( ".btn" ).button();
 		$( ".btn_small" ).button();
 
 		$("input#autocomplete").autocomplete({
             source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
         });
         
-        $(".tip").tipTip({keepAlive:true, defaultPosition:"right"});
+        $(".tip").tipTip({defaultPosition:"right"});
+
+		$( "select" ).combobox();
     });
     </script>
 {% endblock %}
 
 {% block main %}
-<div id="snippet_new">
-<h2>Post a new snippet</h2> 
+<h2>Add a new snippet</h2> 
 
-<form action="/snippets/new" method="post" id="addsnippet">
+<div id="snippet_new">
+<form action="/snippets/new" method="post">
+<table><tr>
+<td class="c1">
     <p><b class="inputinfo">Title</b><br>
     <input type="text" name="title" id="title" class="tip" title="A precise title makes it easy for others to find this snippet." /></p>
     <script>document.getElementById('title').focus();</script>
     
     <p><b class="inputinfo">Description</b><br />
-    <textarea name="description" cols="60" rows="4" class="tip" title="A few sentences describing this snippet. Markdown is supported."></textarea></p>
+    <textarea name="description" cols="60" rows="4" class="tip" title="A few words describing this snippet, and enough space for references. Markdown is supported."></textarea></p>
 
     <p><b class="inputinfo">Snippet</b><br />
-    <textarea name="code" cols="60" rows="20" class="tip" title="Paste the code in here. Everything in this box will be syntax-highlighted."></textarea></p>
+    <textarea id="code" name="code" cols="70" rows="20" class="tip" title="Paste the code in here. Everything in this box will be syntax-highlighted."></textarea></p>
 
+</td><td class="c2">
+
+    <p><input type="submit" class="btn" value="Preview Snippet" /></p>
+    <hr>
+    <b class="inputinfo">Works with</b><br>
+        <div style="margin-top:4px;">
+        <select name="version" size="0">
+            <option value="3">Android 1.5+ (API 3)</option>
+            <option value="4">Android 1.6+ (API 4)</option>
+            <option value="7">Android 2.1+ (API 7)</option>
+            <option value="8">Android 2.2+ (API 8)</option>
+        </select>
+        </div>
+
+    <br>
     <div id="addtag">
         <b class="inputinfo">Tags</b><br>
         <input type="text" name="tag" id="autocomplete" /> 
         <a href="#" class="btn_small" class="button">Add</a>
     </div>
     <div id="taglist"></div>
-
-    <hr>
-    
-    <input type="submit" value="Submit snippet" />
+</tr></table>    
 </form>   
 </div>
 {% endblock %}
