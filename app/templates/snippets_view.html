@@ -1,31 +1,46 @@
 {% extends "base.html" %}
 
 {% block head %}
+    <!--<link href="/css/prettify.css" type="text/css" rel="stylesheet" />-->
     <link rel="stylesheet" href="/css/highlight.css?v=2">
+    <!--<link href="/css/sh_style.css" type="text/css" rel="stylesheet" />-->
+    
 {% endblock %}
 
 {% block scripts %}
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+
+<!--    <script type="text/javascript" src="/js/libs/prettify.js"></script>
+-->
+
     <script src="/js/libs/shCore.js"></script>
     <script src="/js/libs/shBrushJava.js"></script>
 
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
-    
+<!--
+    <script src="/js/libs/sh_main.js"></script>
+    <script src="/js/libs/sh_java.min.js"></script>
+-->
+
     <script>
     $(document).ready(function() {
-    	// dp.SyntaxHighlighter.ClipboardSwf = '/flash/clipboard.swf';
+        //prettyPrint(); 
         dp.SyntaxHighlighter.HighlightAll('code');
+        
+        // http://shjs.sourceforge.net/
+        // sh_highlightDocument();
+
     });
     </script>
 {% endblock %}
 
 {% block main %}
-<h1>{{ snippet.title }}</h1> 
 
-            <p>{{ snippet.description }}</p>
 <table width="100%">
     <tr>
         <td valign="top">
-            <pre name="code" class="java">{{ snippet.code }}</pre>
+<h1>{{ snippet.title }}</h1> 
+            <p>{{ snippet.description }}</p>
+            <pre name="code" class="java">{{ snippet.code|escape }}</pre>
             <div style="margin-left:44px; color:#888;">
                 Authors: <a href="/authors/{{ user.nickname }}"><img src="http://www.gravatar.com/avatar/{{ prefs.email_md5 }}?s=16" /></a> <br>
                 Last edited {{ snippet.date_lastupdate|timesince }} ago
@@ -60,4 +75,5 @@
 
     <div id="comment_thread"></div>
 </div>
+
 {% endblock %}
