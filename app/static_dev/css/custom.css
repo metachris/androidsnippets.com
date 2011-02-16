@@ -5,7 +5,7 @@ body, select, input, textarea {
 
 pre {
   /* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */
-  white-space: pre;
+white-space: pre; 
   padding: 10px 0px 10px 10px;
   border:1px solid lightgray;  
 }
@@ -37,7 +37,7 @@ p {
 .ui-alert-dismiss { float:right; margin-right:10px; font-weight:bold; }
 .ui-alert-dismiss a { text-decoration:none; }
 
-#main { padding-top:20px; width:800px; margin:auto; }
+#main { padding-top:20px; padding-left:20px; /* width:800px; margin:auto; */ }
 
 #header {
     background: #30587C;
@@ -113,7 +113,13 @@ p {
 }
 
 
-/* View snippet */
+
+
+/* 
+   View snippet 
+   ============
+*/
+
 #snippet_view #comments { 
     margin-top:50px;
 }

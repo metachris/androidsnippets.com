@@ -3,7 +3,7 @@
 	font-family: "Bitstream Vera Sans Mono","Andale Mono","Courier New",monospace;
 	font-size: 12px;
 	background-color: white;
-	width: 99%;
+/*	width: 99%; */
 	overflow: auto;
 	margin: 18px 0 18px 0 !important;
 	padding-top: 1px; /* adds a little border on top when controls are hidden */
@@ -129,7 +129,7 @@
 	display: list-item !important;
 }
 
-
+    
 .dp-highlighter.nogutter .tools
 {
 	border-left: 0;

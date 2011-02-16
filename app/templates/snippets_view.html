@@ -44,23 +44,7 @@
 {% block main %}
 <div id="snippet_view">
 
-<table width="100%">
-    <tr>
-        <td valign="top">
-<h1><a href="/snippets/{{ snippet.slug1 }}">{{ snippet.title }}</a></h1> 
-            <p><div class="envelope">{{ snippet.description }}</div></p>
-
-            <div id="code">
-                <pre name="code" class="java">{{ snippet.code|escape }}</pre>
-            </div>
-            
-            <div style="margin-left:0px; color:#888;">
-                Authors: <a href="/authors/{{ user.nickname }}"><img src="http://www.gravatar.com/avatar/{{ prefs.email_md5 }}?s=16" /></a> <br>
-                Last edited {{ snippet.date_lastupdate|timesince }} ago
-            </div> 
-        </td>
-        <td>
-            <div style="padding-left:20px; width:220px; margin-left:20px; border-left:1px solid lightgray;">
+            <div style="float:right; padding-left:20px; width:180px; margin-left:20px; border-left:1px solid lightgray;">
         
                 <div id="snippet_points">
                     <div class="votes"><em>2</em>points</div>
@@ -83,9 +67,20 @@
                 <hr>
                 <p>Related snippets:</p>
             </div>
-        </td>
-    </tr>
-</table>
+
+<div>
+<h1><a href="/snippets/{{ snippet.slug1 }}">{{ snippet.title }}</a></h1> 
+            <p><div class="envelope">{{ snippet.description }}</div></p>
+
+            <div id="code">
+                <pre name="code" class="java">{{ snippet.code|escape }}</pre>
+            </div>
+            
+            <div style="margin-left:0px; color:#888;">
+                Authors: <a href="/authors/{{ user.nickname }}"><img src="http://www.gravatar.com/avatar/{{ prefs.email_md5 }}?s=16" /></a> <br>
+                Last edited {{ snippet.date_lastupdate|timesince }} ago
+            </div> 
+</div>
 
 <div id="comments">
     <h2>{% if snippet.snippetcomment_set.count %}{{ snippet.snippetcomment_set.count }} Comments{% else %}Be the first to comment{% endif %}</h2>
