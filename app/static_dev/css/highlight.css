@@ -138,6 +138,8 @@
 	color: silver;
 	padding-bottom: 10px;
 	border-left: 0px solid #6CE26C;
+	
+	float:right;
 }
 
 .dp-highlighter.nogutter .tools

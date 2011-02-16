@@ -1,14 +1,29 @@
+body, select, input, textarea {
+  /* #444 looks better than black: twitter.com/H_FJ/statuses/11800719859 */
+  color: #333;
+}
+
+pre {
+  /* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */
+  white-space: pre;
+  padding: 10px 0px 10px 10px;
+  border:1px solid lightgray;  
+}
+
 a { color: #0073EA; }
 
 b { font-weight:bold; }
 hr { border-color: #DFDFDF; margin:20px 00px; }
 h1 {
-    font-size:26px;
-    margin-bottom:14px;   
+    font-size:20px;
+    margin-bottom:8px;   
 }
+h1 a { color:#333; text-decoration:none; }
+h1 a:hover { color:#111; }
 
 h2 {
-    font-size:22px;
+    color:#444;
+    font-size:18px;
     margin-bottom:10px;   
 }
 
@@ -16,8 +31,7 @@ p {
     margin-bottom:8px;
 }
 
-.btn_small { font-size:11px; }
-.btn_small .ui-button-text { padding:0.3em 0.8em; }
+.btn_small .ui-button-text { padding:0.2em 0.8em; }
 .ui-combobox-button { font-size:10px; }
 .ui-autocomplete-input { line-height:20px; padding:2px 4px; }
 .ui-alert-dismiss { float:right; margin-right:10px; font-weight:bold; }
@@ -60,14 +74,9 @@ p {
 
 #snippet_new #title {
     width:500px;
-    border:1px solid gray;
     height:20px;
     padding:0px 2px;
     font-size:14px;
-}
-
-#snippet_new #autocomplete {     
-    border:1px solid gray; 
 }
 
 /* Input descriptions for forms */
@@ -75,7 +84,9 @@ p {
     font-size:14px;
 }
 
-#snippet_new #code { font-family: Consolas, 'Bitstream Vera Sans Mono', 'Courier New', Courier, monospace; }
+#snippet_new #code {
+    margin-left:-20px; 
+}
 
 #snippet_new #addtag #autocomplete {
     width:160px; 
@@ -98,10 +109,15 @@ p {
     border:1px solid lightgray;
     width:500px;
 }
+#snippet_new .c2 .input {
+    border:1px solid lightgray;
+}
 
 
 /* View snippet */
-
+#snippets_view #comments { 
+    margin-top:30px;
+}
 
 
 
@@ -120,8 +136,10 @@ p {
  
 #snippet_points .votes {
     border:1px solid #CCCCCC;
-    -moz-border-radius-topleft:10px;
-    -moz-border-radius-topright:10px;
+    -moz-border-radius-topleft:4px;
+    -moz-border-radius-topright:4px;
+    border-top-left-radius:4px;
+    border-top-right-radius:4px;
     border-width:1px 1px 0;
     color:#666666;
     font-size:100%;
@@ -145,8 +163,10 @@ p {
 }
 
 #snippet_points .vote a.teaser {
-    -moz-border-radius-bottomleft:0.5em;
-    -moz-border-radius-bottomright:0.5em;
+    -moz-border-radius-bottomleft:2pxem;
+    -moz-border-radius-bottomright:2pxem;
+    border-bottom-left-radius:2px;
+    border-bottom-right-radius:2px;
     background-color:#DDDDDD;
     display:block;
     font-size:120%;
@@ -156,6 +176,7 @@ p {
     padding:4px 0;
     text-align:center;
     text-transform:lowercase;
+    text-decoration:none;
 }
 
 #snippet_points .vote a:hover {

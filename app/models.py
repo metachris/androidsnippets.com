@@ -58,6 +58,7 @@ class Snippet(db.Model):
     submitter = db.UserProperty(required=True)
     date_submitted = db.DateTimeProperty(auto_now_add=True)
     date_lastupdate = db.DateTimeProperty(auto_now=True)
+    update_count = db.IntegerProperty(default=0)
 
     # infos for building the urls to this snippet
     slug1 = db.StringProperty()  # new snippets get referenced by slug and id
