@@ -42,20 +42,25 @@
 {% endblock %}
 
 {% block main %}
+<div id="snippet_view">
 
 <table width="100%">
     <tr>
         <td valign="top">
 <h1><a href="/snippets/{{ snippet.slug1 }}">{{ snippet.title }}</a></h1> 
-            <p>{{ snippet.description }}</p>
-            <pre name="code" class="java" id="code">{{ snippet.code|escape }}</pre>
-            <div style="margin-left:44px; color:#888;">
+            <p><div class="envelope">{{ snippet.description }}</div></p>
+
+            <div id="code">
+                <pre name="code" class="java">{{ snippet.code|escape }}</pre>
+            </div>
+            
+            <div style="margin-left:0px; color:#888;">
                 Authors: <a href="/authors/{{ user.nickname }}"><img src="http://www.gravatar.com/avatar/{{ prefs.email_md5 }}?s=16" /></a> <br>
                 Last edited {{ snippet.date_lastupdate|timesince }} ago
             </div> 
         </td>
-        <td width="220px">
-            <div style="padding-left:20px;  margin-left:20px; border-left:1px solid lightgray;">
+        <td>
+            <div style="padding-left:20px; width:220px; margin-left:20px; border-left:1px solid lightgray;">
         
                 <div id="snippet_points">
                     <div class="votes"><em>2</em>points</div>
@@ -65,8 +70,8 @@
                     
                 </div>
                 <div style="padding-left:14px; float:left;">
+                <p><a href="#" id="btn_share" class="btn_small" title="cxx">Edit</a></p>
                 <p><a href="#" id="btn_follow" class="btn_small" title="<p>Receive emails on updates and/or comments</p>">Follow</a></p>
-                <a href="#" id="btn_share" class="btn_small" title="Receive emails on updates and/or comments">Share</a>
                 </div>            
                 <div style="clear:both;"></div>
                 <hr>            

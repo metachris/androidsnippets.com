@@ -129,18 +129,6 @@
 	display: list-item !important;
 }
 
-/* Styles for the tools */
-
-.dp-highlighter .tools
-{
-	padding: 3px 8px 3px 10px;
-	font: 9px Verdana, Geneva, Arial, Helvetica, sans-serif;
-	color: silver;
-	padding-bottom: 10px;
-	border-left: 0px solid #6CE26C;
-	
-	float:right;
-}
 
 .dp-highlighter.nogutter .tools
 {

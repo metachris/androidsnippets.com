@@ -85,7 +85,6 @@ p {
 }
 
 #snippet_new #code {
-    margin-left:-20px; 
 }
 
 #snippet_new #addtag #autocomplete {
@@ -115,13 +114,59 @@ p {
 
 
 /* View snippet */
-#snippets_view #comments { 
-    margin-top:30px;
+#snippet_view #comments { 
+    margin-top:50px;
+}
+
+#snippet_view #code { 
+    margin-left:-10px; /* fix for syntax highlighter spacing */
 }
 
 
+.envelope {
+border-bottom: 1px solid #BEDCE7;
+border-left: 1px solid #BEDCE7;
+border-right: 1px solid #BEDCE7;
+border-top: 1px solid #BEDCE7;
+padding: .7em .7em .7em .7em;
+background: #EAF2F5 url(/images/bg_gradient.gif) 0 100% repeat-x;
+background-repeat-x: repeat;
+background-repeat-y: no-repeat;
+background-attachment: initial;
+background-position-x: 0px;
+background-position-y: 100%;
+background-origin: initial;
+background-clip: initial;
+background-color: #EAF2F5;
+overflow: hidden;
+}
 
+/* Styles for the tools */
 
+.dp-highlighter .tools
+{
+    float:right;
+	border-left: 0px solid #6CE26C;
+    border-bottom: 1px solid #CFCFCF;
+    padding-bottom:4px;	
+    padding-left:10px;
+
+	font: 9px Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color: silver;
+	/*position:absolute;*/
+}
+
+.code_toolbox {
+padding: 0 5px;
+height: 33px;
+line-height: 33px;
+font-size: 12px;
+color: #333;
+background: url(/images/file_head.gif) 0 0 repeat-x #EEE;
+text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
+border-bottom: 1px solid #CCC;
+overflow: hidden;
+}
 
 
 

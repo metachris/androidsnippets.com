@@ -298,10 +298,10 @@ openid = {
     					   window.tip_is_active = true;
     					   timeout_fadein = setTimeout(active_tiptip, opts.delay);
                         }
-						console.log("activate1");
+						//console.log("activate1");
 					}, function(){
 						if(!opts.keepAlive){
-    						console.log("deactivate1");
+    						//console.log("deactivate1");
         					if (timeout_fadein){ 
         					   clearTimeout(timeout_fadein); 
     					   }
@@ -423,7 +423,7 @@ openid = {
 				}
 				
 				function deactive_tiptip(){
-				        						console.log("deactivate++++");
+					//console.log("deactivate++++");
 					opts.exit.call(this);
 					if (timeout_fadein){ clearTimeout(timeout_fadein); }
 					if (timeout_fadeout){ clearTimeout(timeout_fadeout); }
