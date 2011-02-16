@@ -256,10 +256,6 @@ openid = {
 	  	};
 	 	var opts = $.extend(defaults, options);
 	 	
-	 	var i = 1;
-	 	getI = function(){ return i; };
-	 	setI = function(){ i++; };
-	 	
 	 	// Setup tip tip elements and render them to the DOM
 	 	if($("#tiptip_holder").length <= 0){
 	 		var tiptip_holder = $('<div id="tiptip_holder" style="max-width:'+ opts.maxWidth +';"></div>');
@@ -272,10 +268,7 @@ openid = {
 			var tiptip_arrow = $("#tiptip_arrow");
 		}
 		
-		return this.each(function(){
-		    console.log(getI());
-		    setI();
-		    
+		return this.each(function(){	    
 			var org_elem = $(this);
 			if(opts.content){
 				var org_title = opts.content;
@@ -286,34 +279,45 @@ openid = {
 				if(!opts.content){
 					org_elem.removeAttr(opts.attribute); //remove original Attribute
 				}
-				var timeout = false;
-				var timeout2 = false; /* hover hack */
+				var timeout_fadein = false;
+				var timeout_fadeout = false; /* hover hack */
 				var is_out = false; // has already hovered out, to prevent to always show tip  
-				var is_active = false;
+				window.tip_is_active = false;
 				
 				if(opts.activation == "hover"){
 					org_elem.hover(function(){
 					    is_out = false;
         				// cancel a possible cancel-timeout
-    					if (timeout2){ clearTimeout(timeout2); }
-    					if (!is_active) 
-                            timeout = setTimeout(active_tiptip, opts.delay);
-            				is_active = true;
-    						console.log("activate1");
+    					if (timeout_fadeout){ 
+    					   clearTimeout(timeout_fadeout); 
+					   }					   
+    					if (window.tip_is_active) {
+    					    // tip already active somewhere else, move
+    					    activate_tiptip();
+					    } else { 
+    					   window.tip_is_active = true;
+    					   timeout_fadein = setTimeout(active_tiptip, opts.delay);
+                        }
+						console.log("activate1");
 					}, function(){
 						if(!opts.keepAlive){
     						console.log("deactivate1");
-							timeout2 = setTimeout(function() { is_active = false; deactive_tiptip(); }, 2000);
-        					if (timeout){ clearTimeout(timeout); }
+        					if (timeout_fadein){ 
+        					   clearTimeout(timeout_fadein); 
+    					   }
+    					   window.tip_is_active = false;
+    					   timeout_fadeout = setTimeout(function() { if (!window.tip_is_active) deactive_tiptip(); }, 1000);
 						}
 					});
-					if(1){
-						tiptip_holder.hover(function(){ clearTimeout(timeout2); /* hover in */ }, function(){  
-						    /* hover out */ 
-    						///console.log("deactivate2");
-							deactive_tiptip();
-						});
-					}
+
+                    /* Tooltip itself */
+					tiptip_holder.hover(function(){ 
+					  /* hover in */
+					  clearTimeout(timeout_fadeout);  
+					 }, function(){  
+					    /* hover out */ 
+						deactive_tiptip();
+ 					 });
 				} else if(opts.activation == "focus"){
 					org_elem.focus(function(){
 						active_tiptip();
@@ -421,8 +425,8 @@ openid = {
 				function deactive_tiptip(){
 				        						console.log("deactivate++++");
 					opts.exit.call(this);
-					if (timeout){ clearTimeout(timeout); }
-					if (timeout2){ clearTimeout(timeout2); }
+					if (timeout_fadein){ clearTimeout(timeout_fadein); }
+					if (timeout_fadeout){ clearTimeout(timeout_fadeout); }
 					tiptip_holder.fadeOut(opts.fadeOut);
 				}
 			}				
