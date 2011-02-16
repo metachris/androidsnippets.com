@@ -17,7 +17,7 @@ var dp={sh:{Toolbar:{},Utils:{},RegexLib:{},Brushes:{},Strings:{AboutDialog:'<ht
         alert('The code is in your clipboard now');}},
     Download:{label:'<font title="Download as .java file">download</font>',func:function(sender, highlighter){document.location.href="./download/";}},
     //PrintSource:{label:'print',func:function(sender,highlighter){var iframe=document.createElement('IFRAME');var doc=null;iframe.style.cssText='position:absolute;width:0px;height:0px;left:-500px;top:-500px;';document.body.appendChild(iframe);doc=iframe.contentWindow.document;dp.sh.Utils.CopyStyles(doc,window.document);doc.write('<div class="'+highlighter.div.className.replace('collapsed','')+' printing">'+highlighter.div.innerHTML+'</div>');doc.close();iframe.contentWindow.focus();iframe.contentWindow.print();alert('Printing...');document.body.removeChild(iframe);}},
-    //About:{label:'?',func:function(highlighter){var wnd=window.open('','_blank','dialog,width=300,height=150,scrollbars=0');var doc=wnd.document;dp.sh.Utils.CopyStyles(doc,window.document);doc.write(dp.sh.Strings.AboutDialog.replace('{V}',dp.sh.Version));doc.close();wnd.focus();}}
+    About:{label:'edit',func:function(highlighter){var wnd=window.open('','_blank','dialog,width=300,height=150,scrollbars=0');var doc=wnd.document;dp.sh.Utils.CopyStyles(doc,window.document);doc.write(dp.sh.Strings.AboutDialog.replace('{V}',dp.sh.Version));doc.close();wnd.focus();}}
 };
 dp.sh.Toolbar.Create=function(highlighter)
 {var div=document.createElement('DIV');div.className='tools';for(var name in dp.sh.Toolbar.Commands)

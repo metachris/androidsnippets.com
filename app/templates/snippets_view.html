@@ -2,7 +2,9 @@
 
 {% block head %}
     <!--<link href="/css/prettify.css" type="text/css" rel="stylesheet" />-->
+    <link rel="stylesheet" href="/css/jquery-ui-flick.css?v=2">    
     <link rel="stylesheet" href="/css/highlight.css?v=2">
+    <link rel="stylesheet" href="/css/tipTip.css?v=2">    
     <!--<link href="/css/sh_style.css" type="text/css" rel="stylesheet" />-->
     
 {% endblock %}
@@ -30,12 +32,17 @@
         // http://shjs.sourceforge.net/
         // sh_highlightDocument();
 
+		$(".btn").button();
+		$(".btn_small").button();
+		
+        $("#btn_follow").tipTip({defaultPosition:"bottom", maxWidth:"140px"});
+        $("#btn_share").tipTip({defaultPosition:"bottom", maxWidth:"140px"});
     });
     </script>
 {% endblock %}
 
 {% block main %}
-<div id="snippets_view">
+
 <table width="100%">
     <tr>
         <td valign="top">
@@ -48,24 +55,29 @@
             </div> 
         </td>
         <td width="220px">
-        <div style="padding-left:20px;  margin-left:20px; border-left:1px solid lightgray;">
-<div id="snippet_points">
-    <div class="votes"><em>2</em>points</div>
-    <div class="vote">
+            <div style="padding-left:20px;  margin-left:20px; border-left:1px solid lightgray;">
         
-            <a class="teaser" href="" title="Give this snippet one point">like</a>
-        
-    </div>
-</div>            
-<hr>            
-            <p>Android 1.5+</p>
-            <p>Tags: Internet, System</p>
-<hr>            
-            <p>Suggestions: 0</p>
-            <a href="#">Suggest an improvement</a>
-            <hr>
-            <p>Related snippets:</p>
-        </div>
+                <div id="snippet_points">
+                    <div class="votes"><em>2</em>points</div>
+                    <div class="vote">        
+                        <a class="teaser" href="" title="Give this snippet one point">like</a>
+                    </div>
+                    
+                </div>
+                <div style="padding-left:14px; float:left;">
+                <p><a href="#" id="btn_follow" class="btn_small" title="<p>Receive emails on updates and/or comments</p>">Follow</a></p>
+                <a href="#" id="btn_share" class="btn_small" title="Receive emails on updates and/or comments">Share</a>
+                </div>            
+                <div style="clear:both;"></div>
+                <hr>            
+                <p>Android 1.5+</p>
+                <p>Tags: Internet, System</p>
+                <hr>            
+                <p>Suggestions: 0</p>
+                <a href="#">Suggest an improvement</a>
+                <hr>
+                <p>Related snippets:</p>
+            </div>
         </td>
     </tr>
 </table>

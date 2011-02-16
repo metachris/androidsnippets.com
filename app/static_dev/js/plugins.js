@@ -256,6 +256,10 @@ openid = {
 	  	};
 	 	var opts = $.extend(defaults, options);
 	 	
+	 	var i = 1;
+	 	getI = function(){ return i; };
+	 	setI = function(){ i++; };
+	 	
 	 	// Setup tip tip elements and render them to the DOM
 	 	if($("#tiptip_holder").length <= 0){
 	 		var tiptip_holder = $('<div id="tiptip_holder" style="max-width:'+ opts.maxWidth +';"></div>');
@@ -269,6 +273,9 @@ openid = {
 		}
 		
 		return this.each(function(){
+		    console.log(getI());
+		    setI();
+		    
 			var org_elem = $(this);
 			if(opts.content){
 				var org_title = opts.content;
@@ -280,17 +287,30 @@ openid = {
 					org_elem.removeAttr(opts.attribute); //remove original Attribute
 				}
 				var timeout = false;
+				var timeout2 = false; /* hover hack */
+				var is_out = false; // has already hovered out, to prevent to always show tip  
+				var is_active = false;
 				
 				if(opts.activation == "hover"){
 					org_elem.hover(function(){
-						active_tiptip();
+					    is_out = false;
+        				// cancel a possible cancel-timeout
+    					if (timeout2){ clearTimeout(timeout2); }
+    					if (!is_active) 
+                            timeout = setTimeout(active_tiptip, opts.delay);
+            				is_active = true;
+    						console.log("activate1");
 					}, function(){
 						if(!opts.keepAlive){
-							deactive_tiptip();
+    						console.log("deactivate1");
+							timeout2 = setTimeout(function() { is_active = false; deactive_tiptip(); }, 2000);
+        					if (timeout){ clearTimeout(timeout); }
 						}
 					});
-					if(opts.keepAlive){
-						tiptip_holder.hover(function(){}, function(){
+					if(1){
+						tiptip_holder.hover(function(){ clearTimeout(timeout2); /* hover in */ }, function(){  
+						    /* hover out */ 
+    						///console.log("deactivate2");
 							deactive_tiptip();
 						});
 					}
@@ -395,13 +415,14 @@ openid = {
 					tiptip_arrow.css({"margin-left": arrow_left+"px", "margin-top": arrow_top+"px"});
 					tiptip_holder.css({"margin-left": marg_left+"px", "margin-top": marg_top+"px"}).attr("class","tip"+t_class);
 					
-					if (timeout){ clearTimeout(timeout); }
-					timeout = setTimeout(function(){ tiptip_holder.stop(true,true).fadeIn(opts.fadeIn); }, opts.delay);	
+					tiptip_holder.stop(true,true).fadeIn(opts.fadeIn);	
 				}
 				
 				function deactive_tiptip(){
+				        						console.log("deactivate++++");
 					opts.exit.call(this);
 					if (timeout){ clearTimeout(timeout); }
+					if (timeout2){ clearTimeout(timeout2); }
 					tiptip_holder.fadeOut(opts.fadeOut);
 				}
 			}				
