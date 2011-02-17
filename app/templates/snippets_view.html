@@ -109,7 +109,10 @@
             
             <div class="envelope">
                 <p id="view_description">{{ snippet.description }}</p>            
-                <div style=" display:none;" id="edit_description"><textarea style="width:98%;" rows="12">{{ snippet.description }}</textarea></div>            
+                <div style=" display:none;" id="edit_description">
+                    <div><textarea style="width:98%;" rows="12">{{ snippet.description }}</textarea></div>
+                    <div style="padding-left:4px; margin-bottom:4px; color:gray;"><small>markdown suppored</small></div>
+                </div>            
                 
                 <div id="subtitle"><div style="float:right; padding-right:6px;">Last edit Feb. 14, 2011</div> 
                 <a href="#">3 edits open for review</a></div>
@@ -118,7 +121,13 @@
             <div id="code">
                 <pre name="code" class="java">{{ snippet.code|escape }}</pre>
             </div>
-            <div style="overflow:hidden; display:none;" id="edit_code"><textarea style="width:98%; padding:4px;" rows="28">{{ snippet.code }}</textarea></div>                
+            <div style="overflow:hidden; display:none;" id="edit_code">
+                <div><textarea style="width:98%; padding:4px;" rows="28">{{ snippet.code }}</textarea></div>
+                <div style="margin-top:20px;">
+                    <a href="#" class="btn_small">Preview</a>
+                    <a href="#" class="btn_small">Publish</a>
+                </div>                
+            </div>                
  
 </div>
 

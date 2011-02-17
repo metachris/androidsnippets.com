@@ -147,6 +147,9 @@ p {
 }
 
 
+#snippet_view .sidebar a.ui-button {
+   width:80px;
+}
 #snippet_view .sidebar a.ui-widget {
    color:#666;
 }
