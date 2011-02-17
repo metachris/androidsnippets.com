@@ -13,10 +13,10 @@ white-space: pre;
 a { color: #0073EA; }
 
 b { font-weight:bold; }
-hr { border-color: #DFDFDF; margin:20px 00px; }
+hr { border-color: #DFDFDF; margin:12px 00px; }
 h1 {
     font-size:20px;
-    margin-bottom:8px;   
+    margin-bottom:12px;   
 }
 h1 a { color:#333; text-decoration:none; }
 h1 a:hover { color:#111; }
@@ -128,13 +128,68 @@ p {
     margin-left:-10px; /* fix for syntax highlighter spacing */
 }
 
+#snippet_view h1 {
+   margin-bottom:2px;
+}
+
+#snippet_view #subtitle {
+   margin-bottom:10px;
+   color:gray;
+   font-size:11px;
+}
+
+#snippet_view #subtitle a {
+   color:gray;
+   text-decoration:none;
+}
+
+#snippet_view #subtitle a:hover {
+   color:gray;
+   text-decoration:underline;
+}
+
+
+#snippet_view .sidebar a.ui-widget {
+   color:#666;
+}
+#snippet_view .sidebar a.ui-state-hover {
+   color:white;
+}
+
+#snippet_view .sidebar {
+    float:right; 
+    width:180px; 
+    margin-left:30px; 
+    margin-right:20px; 
+/*
+    border-left:1px solid #DFDFDF;
+    border-top:1px solid #DFDFDF;
+    border-bottom:1px solid #DFDFDF;
+    padding-top:12px;
+    padding-bottom:4px;
+*/    
+    border-top-left-radius:4px;     
+    border-bottom-left-radius:4px;
+    -moz-border-radius-topleft:4px;
+    -moz-border-radius-bottomleft:4px;         
+}
+
+#snippet_view .sidebar p {
+}
+
+#snippet_view #editbox {
+    background:#30587C;
+    color:white;
+    float:right;
+    position:absolute;
+}
 
 .envelope {
 border-bottom: 1px solid #BEDCE7;
 border-left: 1px solid #BEDCE7;
 border-right: 1px solid #BEDCE7;
 border-top: 1px solid #BEDCE7;
-padding: .7em .7em .7em .7em;
+padding: .7em .7em .2em .7em;
 background: #EAF2F5 url(/images/bg_gradient.gif) 0 100% repeat-x;
 background-repeat-x: repeat;
 background-repeat-y: no-repeat;
@@ -148,7 +203,6 @@ overflow: hidden;
 }
 
 /* Styles for the tools */
-
 .dp-highlighter .tools
 {
     float:right;
@@ -162,18 +216,6 @@ overflow: hidden;
 	/*position:absolute;*/
 }
 
-.code_toolbox {
-padding: 0 5px;
-height: 33px;
-line-height: 33px;
-font-size: 12px;
-color: #333;
-background: url(/images/file_head.gif) 0 0 repeat-x #EEE;
-text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.5);
-border-bottom: 1px solid #CCC;
-overflow: hidden;
-}
-
 
 
 /* snippet vote button */
@@ -181,8 +223,7 @@ overflow: hidden;
     width:50px;
     font-size:10px;
     padding-right:14px;
-    float:left;
-    border-right:1px solid #EFEFEF;    
+    margin-left:20px;    
 }
  
 #snippet_points .votes {

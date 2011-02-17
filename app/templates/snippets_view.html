@@ -35,51 +35,73 @@
 		$(".btn").button();
 		$(".btn_small").button();
 		
-        $("#btn_follow").tipTip({defaultPosition:"bottom", maxWidth:"140px"});
-        $("#btn_share").tipTip({defaultPosition:"bottom", maxWidth:"140px"});
+        $(".tip").tipTip({defaultPosition:"bottom", maxWidth:"140px"});
+        
+        $("#btn_edit").click(function(){
+            $("#editbox").show("blind", { direction: "horizontal" }, 1000);
+        });
     });
     </script>
 {% endblock %}
 
 {% block main %}
 <div id="snippet_view">
+            <div id="editbox" class="sidebar" style="display:none;">
+                Edit tools
+                
+                
+            </div>
 
-            <div style="float:right; padding-left:20px; width:180px; margin-left:20px; border-left:1px solid lightgray;">
-        
-                <div id="snippet_points">
-                    <div class="votes"><em>2</em>points</div>
-                    <div class="vote">        
-                        <a class="teaser" href="" title="Give this snippet one point">like</a>
-                    </div>
-                    
-                </div>
-                <div style="padding-left:14px; float:left;">
-                <p><a href="#" id="btn_share" class="btn_small" title="cxx">Edit</a></p>
-                <p><a href="#" id="btn_follow" class="btn_small" title="<p>Receive emails on updates and/or comments</p>">Follow</a></p>
+            <div class="sidebar">
+                <div style="text-align:center; float:right; padding-top:2px; margin-right:10px;">
+                    <p><a href="#" class="btn_small tip" title="<p>Receive emails on updates and/or comments</p>">Follow</a></p>
+                    <p><a href="#" id="btn_edit" class="btn_small tip" title="cxx">Edit</a></p>
                 </div>            
+
+                <div id="snippet_points">
+                    <div class="votes"><em>2</em>likes</div>
+                    <div class="vote">        
+                        <a class="teaser" href="" title="Give this snippet one star">like</a>
+                    </div>
+                </div>
+
                 <div style="clear:both;"></div>
                 <hr>            
-                <p>Android 1.5+</p>
+
+                <p title="Compatible Android versions" ><img src="/images/android_icon.png" style="float:right;"/> SDK: Android 1.5+</p>
                 <p>Tags: Internet, System</p>
-                <hr>            
-                <p>Suggestions: 0</p>
-                <a href="#">Suggest an improvement</a>
+
+                </p> 
                 <hr>
-                <p>Related snippets:</p>
+                <p><b>Editors</b></p>
+                <p>
+                    <a href="/authors/{{ user.nickname }}" title="author: {{ user.nickname }}"><img src="http://www.gravatar.com/avatar/{{ prefs.email_md5 }}?s=20" /></a>
+                </p>
+
+                <hr>            
+
+                <p><b>Snippets Stats</b></p>
+                    <p>This snippet has been viewed <b>1,427</b> times, it was edited <b>3</b> times
+                    and has <b>17</b> followers.
+
+                <hr>
+                <p><b>Related Snippets</b></p>
+
+                </p>
             </div>
 
 <div>
-<h1><a href="/snippets/{{ snippet.slug1 }}">{{ snippet.title }}</a></h1> 
-            <p><div class="envelope">{{ snippet.description }}</div></p>
+<h1><a href="/snippets/{{ snippet.slug1 }}">{{ snippet.title }}</a></h1>
+    <div id="subtitle"><div style="float:right; padding-right:6px;">Last edit Feb. 14, 2011</div> 
+    <a href="#">3 edits open for review</a></div>
+            <p><div class="envelope">
+                <p>{{ snippet.description }}</p>            
+            </div></p>
 
             <div id="code">
                 <pre name="code" class="java">{{ snippet.code|escape }}</pre>
             </div>
-            
-            <div style="margin-left:0px; color:#888;">
-                Authors: <a href="/authors/{{ user.nickname }}"><img src="http://www.gravatar.com/avatar/{{ prefs.email_md5 }}?s=16" /></a> <br>
-                Last edited {{ snippet.date_lastupdate|timesince }} ago
-            </div> 
+ 
 </div>
 
 <div id="comments">
