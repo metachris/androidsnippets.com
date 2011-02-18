@@ -28,7 +28,8 @@ class LogIn(webapp.RequestHandler):
             url = users.create_login_url(target_url, federated_identity=f)
             self.redirect(url)
         else:
-            self.response.out.write(template.render(tdir + "login.html", {}))
+            self.response.out.write(template.render(tdir + "login.html", \
+                    {"continue_to": target_url}))
 
 
 class LogOut(webapp.RequestHandler):
