@@ -49,9 +49,10 @@
 
 {% block main %}
 <div id="snippet_view">
+<form action="/{{ snippet.slug1 }}/edit" method="post">
             <h1>
                 <div style="overflow:hidden; display:none;" id="edit_title"> <input  name="edit_title" type="text" style="width:97%;" value="{{ snippet.title }}" /></div>
-                <a id="view_title" href="/snippets/{{ snippet.slug1 }}">{{ snippet.title }}</a>
+                <a id="view_title" href="/{{ snippet.slug1 }}">{{ snippet.title }}</a>
             </h1>
 
 
@@ -73,8 +74,8 @@
             <div id="editbox" style="display:none;">
             
                 <div style="text-align:right; padding-top:2px; margin-right:10px;">
-                    <p><a href="#" class="btn_small tip" title="<p>Receive emails on updates and/or comments</p>">Preview</a></p>
-                    <p><a href="#" id="btn_publish" class="btn_small tip" title="cxx">Publish</a></p>
+                    <p><a href="#" class="btn_small" title="<p>Receive emails on updates and/or comments</p>">Preview</a></p>
+                    <p><input type="submit" id="btn_publish" class="btn_small" value="Submit" /></p>
                 </div>            
                 <div style="clear:both; margin-bottom:20px;"></div>
                 
@@ -144,5 +145,6 @@
     <div id="comment_thread"></div>
 </div>
 
+</form>
 </div>
 {% endblock %}

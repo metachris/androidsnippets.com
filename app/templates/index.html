@@ -4,7 +4,7 @@
     <h2>Recent Snippets</h2>
     <ul>
         {% for snippet in snippets %}
-            <li><a href="/snippets/{{ snippet.slug1 }}">{{ snippet.title }}</a></li>
+            <li><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}

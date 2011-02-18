@@ -1,4 +1,5 @@
 import os
+import logging
 
 from google.appengine.ext import db
 from google.appengine.api import users
@@ -115,6 +116,7 @@ class SnippetsNew(webapp.RequestHandler):
         s = Snippet()
         s.title = title
         s.slug1 = slug
+        s.slug2 = "3"
         s.description = description
         s.code = code
         s.code = code
@@ -129,7 +131,24 @@ class SnippetsNew(webapp.RequestHandler):
         upvote.put()
 
         # Redirect to snippet view
-        self.redirect("/snippets/%s" % s.slug1)
+        self.redirect("/%s" % s.slug1)
+
+
+class LegacySnippetView(webapp.RequestHandler):
+    def get(self, legacy_slug):
+        q = Snippet.all()
+        q.filter("slug2 =", legacy_slug)
+        snippet = q.get()
+
+        if not snippet:
+            # Show snippet-not-found.html
+            user = users.get_current_user()
+            values = {'user': user}
+            self.response.out.write(template.render(tdir + \
+                "snippets_notfound.html", values))
+            return
+
+        self.redirect("/%s" % snippet.slug1, permanent=True)
 
 
 class SnippetView(webapp.RequestHandler):
