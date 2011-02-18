@@ -20,4 +20,12 @@ def slugify(value):
 
 
 def decode(var):
+    """Decode form input"""
+    return unicode(var, 'utf-8') if isinstance(var, str) else unicode(var)
+
+
+def decode_iftrue(var):
+    """If var is False or None, return it again, else decode form input"""
+    if not var:
+        return var
     return unicode(var, 'utf-8') if isinstance(var, str) else unicode(var)

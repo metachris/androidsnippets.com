@@ -113,12 +113,10 @@ class SnippetsNew(webapp.RequestHandler):
                 break
 
         # Create snippet (submitter is saved only in first revision)
-        s = Snippet()
+        s = Snippet(user=user)
         s.title = title
         s.slug1 = slug
-        s.slug2 = "3"
         s.description = description
-        s.code = code
         s.code = code
         s.put()
 
@@ -209,3 +207,40 @@ class SnippetVote(webapp.RequestHandler):
                 snippet.upvote()
                 snippet.save()
                 self.response.out.write("1")
+
+
+class SnippetEdit(webapp.RequestHandler):
+    """TODO: Check if all form input is here, if user is allowed, etc"""
+    def post(self, snippet_slug):
+        user = users.get_current_user()
+
+        title = decode(self.request.get('title'))
+        code = decode(self.request.get('code'))
+        description = decode(self.request.get('description'))
+        tags = decode(self.request.get('tags'))
+
+        if not title or not code or not description:
+            self.response.out.write("-1")
+            return
+
+        q = Snippet.all()
+        q.filter("slug1 =", snippet_slug)
+        snippet = q.get()
+
+        # Create a new revision
+        r = SnippetRevision(user=user, snippet=snippet)
+        r.title = title
+        r.description = description
+        r.code = code
+        r.put()
+
+        if user == snippet.user:
+            # Auto-merge new revision if edit by author
+            r.merge(merged_by=user)
+            self.response.out.write("0")
+        else:
+            # Add proposal info if from another editor
+            snippet.proposal_count += 1
+            snippet.date_lastproposal = datetime.datetime.now()
+            snippet.date_lastactivity = datetime.datetime.now()
+            self.response.out.write("1")

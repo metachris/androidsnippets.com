@@ -51,7 +51,7 @@
 <div id="snippet_view">
 <form action="/{{ snippet.slug1 }}/edit" method="post">
             <h1>
-                <div style="overflow:hidden; display:none;" id="edit_title"> <input  name="edit_title" type="text" style="width:97%;" value="{{ snippet.title }}" /></div>
+                <div style="overflow:hidden; display:none;" id="edit_title"> <input  name="title" type="text" style="width:97%;" value="{{ snippet.title }}" /></div>
                 <a id="view_title" href="/{{ snippet.slug1 }}">{{ snippet.title }}</a>
             </h1>
 
@@ -118,7 +118,7 @@
             <div class="envelope">
                 <p id="view_description">{{ snippet.description }}</p>            
                 <div style=" display:none;" id="edit_description">
-                    <div><textarea style="width:98%;" rows="12">{{ snippet.description }}</textarea></div>
+                    <div><textarea style="width:98%;" rows="12" name="description">{{ snippet.description }}</textarea></div>
                     <div style="padding-left:4px; margin-bottom:4px; color:gray;"><small>markdown suppored</small></div>
                 </div>            
                 
@@ -130,7 +130,7 @@
                 <pre name="code" class="java">{{ snippet.code|escape }}</pre>
             </div>
             <div style="overflow:hidden; display:none;" id="edit_code">
-                <div><textarea style="width:98%; padding:4px;" rows="28">{{ snippet.code }}</textarea></div>
+                <div><textarea style="width:98%; padding:4px;" rows="28" name="code">{{ snippet.code }}</textarea></div>
                 <div style="margin-top:20px;">
                     <a href="#" class="btn_small">Preview</a>
                     <a href="#" class="btn_small">Publish</a>

@@ -58,9 +58,8 @@ class Snippet(db.Model):
 
     This is always the current "master" revision. Others can be merged into
     that one.
-
-    Submitter is the user with the oldest Revision.
     """
+    user = db.UserProperty(required=True)
     date_submitted = db.DateTimeProperty(auto_now_add=True)
 
     # infos for building the urls to this snippet
@@ -73,23 +72,13 @@ class Snippet(db.Model):
     # LastActivity includes edits, comments and votes
     date_lastactivity = db.DateTimeProperty(auto_now_add=True)
 
-    # update_count: how many times this snippet was updated
+    # update_count: how many merges from new revisions
     update_count = db.IntegerProperty(default=0)
     date_lastupdate = db.DateTimeProperty(auto_now_add=True)
-
-    def was_updated(self):
-        self.update_count += 1
-        self.date_lastupdate = datetime.datetime.now()
-        self.date_lastactivity = datetime.datetime.now()
 
     # proposal_count: how many proposals are currently unreviewed
     proposal_count = db.IntegerProperty(default=0)
     date_lastproposal = db.DateTimeProperty(auto_now_add=True)
-
-    def was_edited(self):
-        self.proposal_count += 1
-        self.date_lastproposal = datetime.datetime.now()
-        self.date_lastactivity = datetime.datetime.now()
 
     # Vote information
     upvote_count = db.IntegerProperty(default=1)
@@ -125,15 +114,15 @@ class SnippetRevision(db.Model):
     """A revision is a new version with edits by another user (suggestions
     how this snippet could be better). held in  moderation until approved."""
     snippet = db.ReferenceProperty(Snippet, required=True)
-    editor = db.UserProperty(required=True)
+    user = db.UserProperty(required=True)
 
     # author's comment about this changeset
     revision_description = db.TextProperty()
     date_submitted = db.DateTimeProperty(auto_now_add=True)
 
-    approved = db.BooleanProperty(default=False)
-    approved_by = db.UserProperty()
-    approved_date = db.DateTimeProperty()
+    merged = db.BooleanProperty(default=False)
+    merged_by = db.UserProperty()
+    merged_date = db.DateTimeProperty()
 
     rejected = db.BooleanProperty(default=False)
     rejected_by = db.UserProperty()
@@ -147,21 +136,46 @@ class SnippetRevision(db.Model):
     categories = db.StringListProperty(default=[])
     tags = db.StringListProperty(default=[])
 
+    def merge(self, merged_by, update_snippet=True):
+        """Merges this revision into the snippet (updates snippet and
+        saves snippet to database if update_snippet set to true)."""
+        self.snippet.title = self.title
+        self.snippet.description = self.description
+        self.snippet.code = self.code
+        self.snippet.android_minsdk = self.android_minsdk
+        self.snippet.categories = self.categories
+        self.snippet.tags = self.tags
+
+        self.snippet.update_count += 1
+        self.snippet.date_lastupdate = datetime.datetime.now()
+        self.snippet.date_lastactivity = datetime.datetime.now()
+
+        self.snippet.put()
+
+        self.merged = True
+        self.merged_by = merged_by
+        self.merged_date = datetime.datetime.now()
+        self.put()
+
     @staticmethod
     def create_first_revision(user, snippet):
         """When a snippet is created, this creates the first revision"""
-        r = SnippetRevision(editor=user, snippet=snippet)
+        r = SnippetRevision(user=user, snippet=snippet)
         r.revision_description = "initial commit"
         r.date_submitted = datetime.datetime.now()
-        r.approved = True
-        r.approved_by = user
-        r.approved_date = datetime.datetime.now()
         r.title = snippet.title
         r.description = snippet.description
         r.code = snippet.code
         r.android_minsdk = snippet.android_minsdk
         r.categories = snippet.categories
         r.tags = snippet.tags
+
+        # Auto-approve the initial revision.
+        # snippet was already updated at creation
+        r.merged = True
+        r.merged_by = user
+        r.merged_date = datetime.datetime.now()
+
         return r
 
 
