@@ -82,17 +82,26 @@ class Snippet(db.Model):
 
     # Vote information
     upvote_count = db.IntegerProperty(default=1)
+    downvote_count = db.IntegerProperty(default=1)
     date_lastvote = db.DateTimeProperty(auto_now_add=True)  # up or downvote
-    date_lastupvote = db.DateTimeProperty(auto_now_add=True)
+    date_lastdownvote = db.DateTimeProperty(auto_now_add=True)
+
+    # Rating - To be defined (for now count of upvotes).
+    rating = db.IntegerProperty(default=1)
 
     def upvote(self):
+        self.rating += 10
         self.upvote_count += 1
         self.date_lastvote = datetime.datetime.now()
         self.date_lastupvote = datetime.datetime.now()
         self.date_lastactivity = datetime.datetime.now()
 
-    # Rating - To be defined (for now count of upvotes).
-    rating = db.IntegerProperty(default=1)
+    def downvote(self):
+        self.rating -= 10
+        self.downvote_count += 1
+        self.date_lastvote = datetime.datetime.now()
+        self.date_lastdownvote = datetime.datetime.now()
+        self.date_lastactivity = datetime.datetime.now()
 
     # content attributes, copied over from the revision
     title = db.StringProperty()

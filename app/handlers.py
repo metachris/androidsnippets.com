@@ -227,6 +227,10 @@ class SnippetEdit(webapp.RequestHandler):
         q.filter("slug1 =", snippet_slug)
         snippet = q.get()
 
+        if not snippet:
+            self.error(404)
+            return
+
         # Create a new revision
         r = SnippetRevision(user=user, snippet=snippet)
         r.title = title

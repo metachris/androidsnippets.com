@@ -20,6 +20,10 @@ handlers:
   script: app.py
   login: required
 
+- url: /*/edit
+  script: app.py
+  login: required
+
 # Override appengine url to provide custom OpenID login page 
 - url: /_ah/login_required
   script: app.py
