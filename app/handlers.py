@@ -9,6 +9,7 @@ from google.appengine.ext.webapp.util import login_required
 #from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 from google.appengine.ext.webapp import template
 
+from time import sleep
 from tools import slugify, decode
 from models import *
 
@@ -94,6 +95,7 @@ class SnippetsNew(webapp.RequestHandler):
         title = decode(title.strip())
         code = decode(code)
         description = decode(description)
+        tags = decode(tags)
 
         # Find a free slug
         slug = slugify(title)
@@ -109,26 +111,22 @@ class SnippetsNew(webapp.RequestHandler):
                 slug = _slug
                 break
 
-        # Create snippet
-        s = Snippet(submitter=user)
+        # Create snippet (submitter is saved only in first revision)
+        s = Snippet()
         s.title = title
         s.slug1 = slug
         s.description = description
         s.code = code
-        s.save()
+        s.code = code
+        s.put()
+
+        # Create the first revision
+        r = SnippetRevision.create_first_revision(user=user, snippet=s)
+        r.put()
 
         # Create the first upvote
-        u = SnippetUpvote(user=user, snippet=s)
-        u.save()
-
-        # Create initial revision
-        r = SnippetRevision(snippet=s, contributor=user)
-        r.approved = True
-        r.approved_by = user
-        r.title = title
-        r.description = description
-        r.code = code
-        r.save()
+        upvote = SnippetUpvote(user=user, snippet=s)
+        upvote.put()
 
         # Redirect to snippet view
         self.redirect("/snippets/%s" % s.slug1)
@@ -159,3 +157,36 @@ class SnippetView(webapp.RequestHandler):
         values = {'user': user, "prefs": prefs, "snippet": snippet}
         self.response.out.write(template.render(tdir + \
             "snippets_view.html", values))
+
+
+class SnippetVote(webapp.RequestHandler):
+    def get(self, snippet_slug):
+        user = users.get_current_user()
+        if not user:
+            self.response.out.write("-1")
+            return
+
+        q = Snippet.all()
+        q.filter("slug1 =", snippet_slug)
+        snippet = q.get()
+
+        if not snippet:
+            self.error(404)
+
+        else:
+            # Check if user has already voted
+            q = SnippetUpvote.all()
+            q.filter("user = ", user)
+            q.filter("snippet =", snippet)
+            vote = q.get()
+
+            if vote:
+                # Has already voted
+                self.response.out.write("0")
+            else:
+                # Create the upvote
+                u = SnippetUpvote(user=user, snippet=snippet)
+                u.save()
+                snippet.upvote()
+                snippet.save()
+                self.response.out.write("1")

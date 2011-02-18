@@ -1,6 +1,8 @@
 from google.appengine.ext import db
 from google.appengine.api import users
 
+import logging
+import datetime
 from hashlib import md5
 
 
@@ -53,49 +55,81 @@ class Snippet(db.Model):
     One snippet gets the votes, but all it's content stored in SnippetRevisions
     starting with revision_id=0. All votes point to this snippet, whereas one
     snippet can have multiple revisions of content (community wiki).
+
+    This is always the current "master" revision. Others can be merged into
+    that one.
+
+    Submitter is the user with the oldest Revision.
     """
-    # non-changing attributes
-    submitter = db.UserProperty(required=True)
     date_submitted = db.DateTimeProperty(auto_now_add=True)
-    date_lastupdate = db.DateTimeProperty(auto_now=True)
-    update_count = db.IntegerProperty(default=0)
 
     # infos for building the urls to this snippet
     slug1 = db.StringProperty()  # new snippets get referenced by slug and id
     slug2 = db.StringProperty()  # old snippets set slug2 to old id
 
-    # default revision reference. of many content revisions any can be default.
-    # for a lack of referencing a model defined below, we simply store the key
-    revision_set = db.StringProperty()
-
     # Number of pageviews
     views = db.IntegerProperty(default=1)
+
+    # LastActivity includes edits, comments and votes
+    date_lastactivity = db.DateTimeProperty(auto_now_add=True)
+
+    # update_count: how many times this snippet was updated
+    update_count = db.IntegerProperty(default=0)
+    date_lastupdate = db.DateTimeProperty(auto_now_add=True)
+
+    def was_updated(self):
+        self.update_count += 1
+        self.date_lastupdate = datetime.datetime.now()
+        self.date_lastactivity = datetime.datetime.now()
+
+    # proposal_count: how many proposals are currently unreviewed
+    proposal_count = db.IntegerProperty(default=0)
+    date_lastproposal = db.DateTimeProperty(auto_now_add=True)
+
+    def was_edited(self):
+        self.proposal_count += 1
+        self.date_lastproposal = datetime.datetime.now()
+        self.date_lastactivity = datetime.datetime.now()
+
+    # Vote information
+    upvote_count = db.IntegerProperty(default=1)
+    date_lastvote = db.DateTimeProperty(auto_now_add=True)  # up or downvote
+    date_lastupvote = db.DateTimeProperty(auto_now_add=True)
+
+    def upvote(self):
+        self.upvote_count += 1
+        self.date_lastvote = datetime.datetime.now()
+        self.date_lastupvote = datetime.datetime.now()
+        self.date_lastactivity = datetime.datetime.now()
 
     # Rating - To be defined (for now count of upvotes).
     rating = db.IntegerProperty(default=1)
 
-    def get_current_revision(self):
-        return db.GqlQuery("SELECT * FROM SnippetRevision WHERE \
-            revision_id = :1", self.revision_set).get()
-
-    # content attributes, copied over from revision for easy access
+    # content attributes, copied over from the revision
     title = db.StringProperty()
     description = db.TextProperty()
     code = db.TextProperty()
     android_minsdk = db.IntegerProperty(default=0)
-
     categories = db.StringListProperty(default=[])
     tags = db.StringListProperty(default=[])
+
+
+class SnippetUpvote(db.Model):
+    """Vote on a snippet"""
+    user = db.UserProperty(required=True)
+    snippet = db.ReferenceProperty(Snippet, required=True)
+    date = db.DateTimeProperty(auto_now_add=True)
 
 
 class SnippetRevision(db.Model):
     """A revision is a new version with edits by another user (suggestions
     how this snippet could be better). held in  moderation until approved."""
     snippet = db.ReferenceProperty(Snippet, required=True)
-    contributor = db.UserProperty(required=True)
+    editor = db.UserProperty(required=True)
 
     # author's comment about this changeset
     revision_description = db.TextProperty()
+    date_submitted = db.DateTimeProperty(auto_now_add=True)
 
     approved = db.BooleanProperty(default=False)
     approved_by = db.UserProperty()
@@ -105,24 +139,30 @@ class SnippetRevision(db.Model):
     rejected_by = db.UserProperty()
     rejected_date = db.DateTimeProperty()
 
-    date_submitted = db.DateTimeProperty(auto_now_add=True)
-    date_lastupdate = db.DateTimeProperty(auto_now=True)
-    edits_count = db.IntegerProperty(default=0)
-
-    # content attributes
+    # content attributes - copied over into Snippet class on merge
     title = db.StringProperty()
     description = db.TextProperty()
     code = db.TextProperty()
     android_minsdk = db.IntegerProperty(default=0)
-
     categories = db.StringListProperty(default=[])
     tags = db.StringListProperty(default=[])
 
-
-class SnippetUpvote(db.Model):
-    """Vote on a snippet"""
-    user = db.UserProperty(required=True)
-    snippet = db.ReferenceProperty(Snippet, required=True)
+    @staticmethod
+    def create_first_revision(user, snippet):
+        """When a snippet is created, this creates the first revision"""
+        r = SnippetRevision(editor=user, snippet=snippet)
+        r.revision_description = "initial commit"
+        r.date_submitted = datetime.datetime.now()
+        r.approved = True
+        r.approved_by = user
+        r.approved_date = datetime.datetime.now()
+        r.title = snippet.title
+        r.description = snippet.description
+        r.code = snippet.code
+        r.android_minsdk = snippet.android_minsdk
+        r.categories = snippet.categories
+        r.tags = snippet.tags
+        return r
 
 
 class SnippetRevisionUpvote(db.Model):
