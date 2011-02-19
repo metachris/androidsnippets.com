@@ -22,7 +22,7 @@ tdir = os.path.join(os.path.dirname(__file__), 'templates/')
 # OpenID Login
 class LogIn(webapp.RequestHandler):
     def get(self):
-        user = users.get_current_user()
+        #user = users.get_current_user()
         action = self.request.get('action')
         target_url = self.request.get('continue')
         if action and action == "verify":
@@ -57,6 +57,7 @@ class Main(webapp.RequestHandler):
 class Account(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
 
 
 # @login_required only works on get, now handled via app.yaml
@@ -135,6 +136,8 @@ class SnippetsNew(webapp.RequestHandler):
 
 
 class LegacySnippetView(webapp.RequestHandler):
+    """Redirects for snippets of legacy androidsnippets.org, which have
+    links such as http://androidsnippets.org/snippets/198"""
     def get(self, legacy_slug):
         q = Snippet.all()
         q.filter("slug2 =", legacy_slug)
@@ -163,19 +166,13 @@ class SnippetView(webapp.RequestHandler):
         snippet = q.get()
 
         if not snippet:
-            # Support legacy system with old id's
-            q = Snippet.all()
-            q.filter("slug2 =", snippet_slug)
-            snippet = q.get()
-
-        if not snippet:
             # Show snippet-not-found.html
             values = {'prefs': prefs, "q": snippet_slug}
             self.response.out.write(template.render(tdir + \
                 "snippets_notfound.html", values))
             return
 
-        values = {'prefs': prefs, "prefs": prefs, "snippet": snippet}
+        values = {"prefs": prefs, "snippet": snippet}
         self.response.out.write(template.render(tdir + \
             "snippets_view.html", values))
 
@@ -195,24 +192,24 @@ class SnippetVote(webapp.RequestHandler):
 
         if not snippet:
             self.error(404)
+            return
 
+        # Check if user has already voted
+        q = SnippetUpvote.all()
+        q.filter("userprefs = ", prefs)
+        q.filter("snippet =", snippet)
+        vote = q.get()
+
+        if vote:
+            # Has already voted
+            self.response.out.write("0")
         else:
-            # Check if user has already voted
-            q = SnippetUpvote.all()
-            q.filter("userprefs = ", prefs)
-            q.filter("snippet =", snippet)
-            vote = q.get()
-
-            if vote:
-                # Has already voted
-                self.response.out.write("0")
-            else:
-                # Create the upvote
-                u = SnippetUpvote(userprefs=prefs, snippet=snippet)
-                u.save()
-                snippet.upvote()
-                snippet.save()
-                self.response.out.write("1")
+            # Create the upvote
+            u = SnippetUpvote(userprefs=prefs, snippet=snippet)
+            u.save()
+            snippet.upvote()
+            snippet.save()
+            self.response.out.write("1")
 
 
 class SnippetEdit(webapp.RequestHandler):
