@@ -181,9 +181,8 @@ p {
 
 /* Edit mode */
 #edit_title {
-
-  margin-top:-4px;
 }
+
 #edit_title input {
   border:1px solid #DDD;
   border-radius:2px;

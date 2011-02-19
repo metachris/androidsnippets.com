@@ -50,11 +50,12 @@
 {% block main %}
 <div id="snippet_view">
 <form action="/{{ snippet.slug1 }}/edit" method="post">
+<div style="height:36px;">
             <h1>
-                <div style="overflow:hidden; display:none;" id="edit_title"> <input  name="title" type="text" style="width:97%;" value="{{ snippet.title }}" /></div>
+                <div style="display:none;" id="edit_title"> <input  name="title" type="text" style="width:97%;" value="{{ snippet.title }}" /></div>
                 <a id="view_title" href="/{{ snippet.slug1 }}">{{ snippet.title }}</a>
             </h1>
-
+</div>
 
             <div class="sidebar">
                 <div style="text-align:center; float:right; padding-top:2px; margin-right:10px;">
