@@ -52,19 +52,20 @@ class Achievement(db.Model):
 
 class Snippet(db.Model):
     """
-    One snippet gets the votes, but all it's content stored in SnippetRevisions
-    starting with revision_id=0. All votes point to this snippet, whereas one
-    snippet can have multiple revisions of content (community wiki).
+    The snippet model always contains the latest version, and all votes and
+    comments are linked to this model.
 
-    This is always the current "master" revision. Others can be merged into
-    that one.
+    One snippet model can have multiple SnippetRevisions, which are edits
+    by the author or other users. By default Revisions are only suggestions.
+    If a revision gets enough upvotes it will be automatically merged, if it
+    gets enough downvotes it will be deleted.
     """
     user = db.UserProperty(required=True)
     date_submitted = db.DateTimeProperty(auto_now_add=True)
 
     # infos for building the urls to this snippet
-    slug1 = db.StringProperty()  # new snippets get referenced by slug and id
-    slug2 = db.StringProperty()  # old snippets set slug2 to old id
+    slug1 = db.StringProperty()  # new snippets get referenced by slug1
+    slug2 = db.StringProperty()  # old snippets haveset slug2 to old id
 
     # Number of pageviews
     views = db.IntegerProperty(default=1)
@@ -86,10 +87,11 @@ class Snippet(db.Model):
     date_lastvote = db.DateTimeProperty(auto_now_add=True)  # up or downvote
     date_lastdownvote = db.DateTimeProperty(auto_now_add=True)
 
-    # Rating - To be defined (for now count of upvotes).
+    # Rating - To be defined (for now sum of up- and downvotes)
     rating = db.IntegerProperty(default=1)
 
     def upvote(self):
+        """Adjust snippet properties after upvote"""
         self.rating += 10
         self.upvote_count += 1
         self.date_lastvote = datetime.datetime.now()
@@ -97,6 +99,7 @@ class Snippet(db.Model):
         self.date_lastactivity = datetime.datetime.now()
 
     def downvote(self):
+        """Adjust snippet properties after downvote"""
         self.rating -= 10
         self.downvote_count += 1
         self.date_lastvote = datetime.datetime.now()
@@ -113,26 +116,31 @@ class Snippet(db.Model):
 
 
 class SnippetUpvote(db.Model):
-    """Vote on a snippet"""
+    """Upvote on a snippet"""
     user = db.UserProperty(required=True)
     snippet = db.ReferenceProperty(Snippet, required=True)
     date = db.DateTimeProperty(auto_now_add=True)
 
 
 class SnippetRevision(db.Model):
-    """A revision is a new version with edits by another user (suggestions
-    how this snippet could be better). held in  moderation until approved."""
-    snippet = db.ReferenceProperty(Snippet, required=True)
+    """
+    A revision is a new version with edits by another user (suggestions
+    how this snippet could be better). held in  moderation until approved
+    or rejected (by upvotes and downvotes).
+    """
     user = db.UserProperty(required=True)
+    snippet = db.ReferenceProperty(Snippet, required=True)
+    date_submitted = db.DateTimeProperty(auto_now_add=True)
 
     # author's comment about this changeset
     revision_description = db.TextProperty()
-    date_submitted = db.DateTimeProperty(auto_now_add=True)
 
+    # has been merged?
     merged = db.BooleanProperty(default=False)
     merged_by = db.UserProperty()
     merged_date = db.DateTimeProperty()
 
+    # has been rejected?
     rejected = db.BooleanProperty(default=False)
     rejected_by = db.UserProperty()
     rejected_date = db.DateTimeProperty()
@@ -145,9 +153,9 @@ class SnippetRevision(db.Model):
     categories = db.StringListProperty(default=[])
     tags = db.StringListProperty(default=[])
 
-    def merge(self, merged_by, update_snippet=True):
+    def merge(self, merged_by):
         """Merges this revision into the snippet (updates snippet and
-        saves snippet to database if update_snippet set to true)."""
+        saves snippet to database)."""
         self.snippet.title = self.title
         self.snippet.description = self.description
         self.snippet.code = self.code
@@ -190,6 +198,12 @@ class SnippetRevision(db.Model):
 
 class SnippetRevisionUpvote(db.Model):
     """Vote on a snippet revision held in moderation"""
+    user = db.UserProperty(required=True)
+    snippet = db.ReferenceProperty(SnippetRevision, required=True)
+
+
+class SnippetRevisionDownvote(db.Model):
+    """Downvote on a snippet revision held in moderation"""
     user = db.UserProperty(required=True)
     snippet = db.ReferenceProperty(SnippetRevision, required=True)
 
