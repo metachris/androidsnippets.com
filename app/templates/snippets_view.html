@@ -92,14 +92,14 @@
                 <hr>
                 <p><b>Editors</b></p>
                 <p>
-                    <a href="/authors/{{ snippet.user.nickname }}" title="author: {{ snippet.user.nickname }}"><img src="http://www.gravatar.com/avatar/{{ prefs.email_md5 }}?s=20" /></a>
+                    <a href="/authors/{{ snippet.userprefs.nickname }}" title="author: {{ snippet.userprefs.nickname }}"><img src="http://www.gravatar.com/avatar/{{ snippet.userprefs.email_md5 }}?s=20" /></a>
                 </p>
 
                 <hr>            
 
                 <p><b>Snippets Stats</b></p>
-                    <p>This snippet has been viewed <b>1,427</b> times, it was edited <b>3</b> times
-                    and has <b>17</b> followers.
+                    <p>This snippet has been viewed <b>{{ snippet.views }}</b> times, it was edited <b>{{ snippet.update_count }}</b> times
+                    and has <b>{{ snippet.snippetfollow_set.count }}</b> followers.
 
                 <hr>
                 <p><b>Related Snippets</b></p>
@@ -123,8 +123,8 @@
                     <div style="padding-left:4px; margin-bottom:4px; color:gray;"><small>markdown suppored</small></div>
                 </div>            
                 
-                <div id="subtitle"><div style="float:right; padding-right:6px;">Last edit Feb. 14, 2011</div> 
-                <a href="#">3 edits open for review</a></div>
+                <div id="subtitle"><div style="float:right; padding-right:6px;">Last edit {{ snippet.date_lastupdate|date }}</div> 
+                <a href="#">{{ snippet.proposal_count }} edits open for review</a></div>
             </div>
 
             <div id="code">

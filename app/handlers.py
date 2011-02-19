@@ -165,6 +165,10 @@ class SnippetView(webapp.RequestHandler):
         q.filter("slug1 =", snippet_slug)
         snippet = q.get()
 
+        # Todo: temporarily store in memcache, update with cron
+        snippet.views += 1
+        snippet.save()
+
         if not snippet:
             # Show snippet-not-found.html
             values = {'prefs': prefs, "q": snippet_slug}
@@ -251,4 +255,5 @@ class SnippetEdit(webapp.RequestHandler):
             snippet.proposal_count += 1
             snippet.date_lastproposal = datetime.datetime.now()
             snippet.date_lastactivity = datetime.datetime.now()
+            snippet.save()
             self.response.out.write("1")

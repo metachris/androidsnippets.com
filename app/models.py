@@ -84,7 +84,7 @@ class Snippet(db.Model):
     update_count = db.IntegerProperty(default=0)
     date_lastupdate = db.DateTimeProperty(auto_now_add=True)
 
-    # proposal_count: how many proposals are currently unreviewed
+    # proposal_count: how many proposals are currently in review queue
     proposal_count = db.IntegerProperty(default=0)
     date_lastproposal = db.DateTimeProperty(auto_now_add=True)
 
@@ -124,6 +124,13 @@ class Snippet(db.Model):
 
 class SnippetUpvote(db.Model):
     """Upvote on a snippet"""
+    userprefs = db.ReferenceProperty(UserPrefs, required=True)
+    snippet = db.ReferenceProperty(Snippet, required=True)
+    date = db.DateTimeProperty(auto_now_add=True)
+
+
+class SnippetFollow(db.Model):
+    """Follower on a snippet"""
     userprefs = db.ReferenceProperty(UserPrefs, required=True)
     snippet = db.ReferenceProperty(Snippet, required=True)
     date = db.DateTimeProperty(auto_now_add=True)
