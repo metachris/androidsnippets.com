@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="/css/jquery-ui-flick.css?v=2">    
     <link rel="stylesheet" href="/css/highlight.css?v=2">
     <link rel="stylesheet" href="/css/tipTip.css?v=2">    
+    <!--<link rel="stylesheet" href="/css/datatable.css?v=2">-->    
     <!--<link href="/css/sh_style.css" type="text/css" rel="stylesheet" />-->
     
 {% endblock %}
@@ -17,6 +18,7 @@
 
     <script src="/js/libs/shCore.js"></script>
     <script src="/js/libs/shBrushJava.js"></script>
+    <!--<script src="/js/libs/jquery.dataTables.min.js"></script>-->
 
 <!--
     <script src="/js/libs/sh_main.js"></script>
@@ -43,7 +45,20 @@
             // $("#editbox").show(); //animate({marginLeft: parseInt($("#editbox").css('marginLeft'),10) == 0 ? $("#editbox").outerWidth() : 0});
             toggle_ui_to_editor(); 
         });
+        
+        //$("#dialogtable").dataTable();
     });
+
+    var dialog_shown = false;
+    function toggle_revisions() {
+        if (dialog_shown) {
+            $("#dialog").dialog("close");
+        } else {
+            $("#dialog").dialog({position:[300, 60], minWidth:380});
+        }
+        dialog_shown = !dialog_shown;
+    }
+    
     </script>
 {% endblock %}
 
@@ -124,7 +139,7 @@
                 </div>            
                 
                 <div id="subtitle"><div style="float:right; padding-right:6px;">Last edit {{ snippet.date_lastupdate|date }}</div> 
-                <a href="#">{{ snippet.proposal_count }} edits open for review</a></div>
+                <a href='javascript:toggle_revisions()'>{{ revisions.count }} edits open for review</a></div>
             </div>
 
             <div id="code">
@@ -148,4 +163,22 @@
 
 </form>
 </div>
+
+
+
+<div id="dialog" title="Snippet Revisions" style="display:none;">
+	<p>
+	   <table id="dialogtable">
+	   <thead>
+	       <tr><th>Rev.</th><th>Editor</th><th>+</th><th>-</th><th>submitted<th></tr>
+       </thead>
+       <tbody>
+	       {% for rev in revisions %}
+	           <tr onclick='javascript:alert("hi");'><td>{{ forloop.counter }}</td><td>{{ rev.userprefs.user }}</td><td>1</td><td>1</td><td>{{ rev.date_submitted|timesince }} ago</tr>
+	       {% endfor %}
+       </tbody>
+	   </table>
+	</p>
+</div>
+
 {% endblock %}

@@ -169,6 +169,11 @@ class SnippetView(webapp.RequestHandler):
         snippet.views += 1
         snippet.save()
 
+        revisions = SnippetRevision.all()
+        revisions.filter("merged =", False)
+        revisions.filter("rejected =", False)
+        revisions.order("-date_submitted")
+
         if not snippet:
             # Show snippet-not-found.html
             values = {'prefs': prefs, "q": snippet_slug}
@@ -176,7 +181,7 @@ class SnippetView(webapp.RequestHandler):
                 "snippets_notfound.html", values))
             return
 
-        values = {"prefs": prefs, "snippet": snippet}
+        values = {"prefs": prefs, "snippet": snippet, "revisions": revisions}
         self.response.out.write(template.render(tdir + \
             "snippets_view.html", values))
 

@@ -37,6 +37,10 @@ p {
 .ui-alert-dismiss { float:right; margin-right:10px; font-weight:bold; }
 .ui-alert-dismiss a { text-decoration:none; }
 
+.ui-dialog { padding:0px; }
+.ui-dialog .ui-dialog-titlebar { padding: .2em 0.8em; }
+.ui-dialog .ui-dialog-title { font-size:12px; }
+
 #main { padding-top:20px; padding-left:20px; /* width:800px; margin:auto; */ }
 
 #header {
@@ -178,6 +182,9 @@ p {
 
 #snippet_view .sidebar p {
 }
+
+#dialogtable td, #dialogtable th { text-align:left; padding:2px 6px;  font-size:12px; }
+#dialogtable tbody tr:hover { background:#DFD; cursor:pointer; }
 
 /* Edit mode */
 #edit_title {
