@@ -5,13 +5,20 @@ import logging
 import datetime
 from hashlib import md5
 
+"""
+Relations to user object
+------------------------
+To be able to access user preferences (eg. email_md5 for gravatar) all models
+reference UserPrefs instead of directly the user property.
+"""
+
 
 class UserPrefs(db.Model):
     """Extended user preferences"""
     user = db.UserProperty(required=True)
     nickname = db.StringProperty(required=False)
     email = db.StringProperty(required=True)
-    email_md5 = db.StringProperty()  # used for gravatar
+    email_md5 = db.StringProperty(required=True)  # used for gravatar
 
     date_joined = db.DateTimeProperty(auto_now_add=True)
     date_lastlogin = db.DateTimeProperty(auto_now=True)
@@ -44,7 +51,7 @@ class UserPrefs(db.Model):
 
 class Achievement(db.Model):
     """Achievement of a user"""
-    user = db.UserProperty(required=True)
+    userprefs = db.ReferenceProperty(UserPrefs, required=True)
     achievement_id = db.IntegerProperty(default=0)
     achievement_title = db.StringProperty()
     date_earned = db.DateTimeProperty(auto_now_add=True)
@@ -60,7 +67,7 @@ class Snippet(db.Model):
     If a revision gets enough upvotes it will be automatically merged, if it
     gets enough downvotes it will be deleted.
     """
-    user = db.UserProperty(required=True)
+    userprefs = db.ReferenceProperty(UserPrefs, required=True)
     date_submitted = db.DateTimeProperty(auto_now_add=True)
 
     # infos for building the urls to this snippet
@@ -117,7 +124,7 @@ class Snippet(db.Model):
 
 class SnippetUpvote(db.Model):
     """Upvote on a snippet"""
-    user = db.UserProperty(required=True)
+    userprefs = db.ReferenceProperty(UserPrefs, required=True)
     snippet = db.ReferenceProperty(Snippet, required=True)
     date = db.DateTimeProperty(auto_now_add=True)
 
@@ -128,7 +135,7 @@ class SnippetRevision(db.Model):
     how this snippet could be better). held in  moderation until approved
     or rejected (by upvotes and downvotes).
     """
-    user = db.UserProperty(required=True)
+    userprefs = db.ReferenceProperty(UserPrefs, required=True)
     snippet = db.ReferenceProperty(Snippet, required=True)
     date_submitted = db.DateTimeProperty(auto_now_add=True)
 
@@ -137,12 +144,14 @@ class SnippetRevision(db.Model):
 
     # has been merged?
     merged = db.BooleanProperty(default=False)
-    merged_by = db.UserProperty()
+    merged_by = db.ReferenceProperty(UserPrefs, \
+            collection_name="mergedrevision_set")
     merged_date = db.DateTimeProperty()
 
     # has been rejected?
     rejected = db.BooleanProperty(default=False)
-    rejected_by = db.UserProperty()
+    rejected_by = db.ReferenceProperty(UserPrefs, \
+            collection_name="rejectedrevision_set")
     rejected_date = db.DateTimeProperty()
 
     # content attributes - copied over into Snippet class on merge
@@ -175,9 +184,9 @@ class SnippetRevision(db.Model):
         self.put()
 
     @staticmethod
-    def create_first_revision(user, snippet):
+    def create_first_revision(userprefs, snippet):
         """When a snippet is created, this creates the first revision"""
-        r = SnippetRevision(user=user, snippet=snippet)
+        r = SnippetRevision(userprefs=userprefs, snippet=snippet)
         r.revision_description = "initial commit"
         r.date_submitted = datetime.datetime.now()
         r.title = snippet.title
@@ -190,7 +199,7 @@ class SnippetRevision(db.Model):
         # Auto-approve the initial revision.
         # snippet was already updated at creation
         r.merged = True
-        r.merged_by = user
+        r.merged_by = userprefs
         r.merged_date = datetime.datetime.now()
 
         return r
@@ -198,19 +207,19 @@ class SnippetRevision(db.Model):
 
 class SnippetRevisionUpvote(db.Model):
     """Vote on a snippet revision held in moderation"""
-    user = db.UserProperty(required=True)
+    userprefs = db.ReferenceProperty(UserPrefs, required=True)
     snippet = db.ReferenceProperty(SnippetRevision, required=True)
 
 
 class SnippetRevisionDownvote(db.Model):
     """Downvote on a snippet revision held in moderation"""
-    user = db.UserProperty(required=True)
+    userprefs = db.ReferenceProperty(UserPrefs, required=True)
     snippet = db.ReferenceProperty(SnippetRevision, required=True)
 
 
 class SnippetComment(db.Model):
     """Comment on a snippet"""
-    user = db.UserProperty(required=True)
+    userprefs = db.ReferenceProperty(UserPrefs, required=True)
     snippet = db.ReferenceProperty(Snippet, required=True)
     parent_comment = db.SelfReferenceProperty()
 
@@ -223,7 +232,7 @@ class SnippetComment(db.Model):
 
 class SnippetRevisionComment(db.Model):
     """Comment on a snippet revision which may be held in moderation"""
-    user = db.UserProperty(required=True)
+    userprefs = db.ReferenceProperty(UserPrefs, required=True)
     snippet = db.ReferenceProperty(SnippetRevision, required=True)
     parent_comment = db.SelfReferenceProperty()
 

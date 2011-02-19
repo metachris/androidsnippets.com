@@ -60,11 +60,11 @@
             <div class="sidebar">
                 <div style="text-align:center; float:right; padding-top:2px; margin-right:10px;">
                     <p><a href="#" class="btn_small tip" title="<p>Receive emails on updates and/or comments</p>">Follow</a></p>
-                    <p><a href="#" id="btn_edit" class="btn_small tip" title="cxx">Edit</a></p>
+                    <p><a href="#" id="btn_edit" class="btn_small">Edit</a></p>
                 </div>            
 
                 <div id="snippet_points">
-                    <div class="votes"><em>2</em></div>
+                    <div class="votes"><em>{{ snippet.upvote_count }}</em></div>
                     <div class="vote">        
                         <a class="teaser" href="" title="Give this snippet a point!">+1&nbsp;</a>
                     </div>
@@ -85,14 +85,14 @@
             
                 <hr>            
 
-                <p title="Compatible Android versions" ><img src="/images/android_icon.png" style="float:right;"/> SDK: Android 1.5+</p>
-                <p>Tags: Internet, System</p>
+                <p title="Compatible Android versions" ><img src="/images/android_icon.png" style="float:right;"/> SDK: {{ snippet.android_minsdk }}</p>
+                <p>Tags: {{ snippet.tags }}</p>
 
                 </p> 
                 <hr>
                 <p><b>Editors</b></p>
                 <p>
-                    <a href="/authors/{{ user.nickname }}" title="author: {{ user.nickname }}"><img src="http://www.gravatar.com/avatar/{{ prefs.email_md5 }}?s=20" /></a>
+                    <a href="/authors/{{ snippet.user.nickname }}" title="author: {{ snippet.user.nickname }}"><img src="http://www.gravatar.com/avatar/{{ prefs.email_md5 }}?s=20" /></a>
                 </p>
 
                 <hr>            

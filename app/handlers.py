@@ -50,7 +50,7 @@ class Main(webapp.RequestHandler):
         q.order("-date_submitted")
         snippets = q.fetch(20)
 
-        values = {'user': user, 'prefs': prefs, 'snippets': snippets}
+        values = {'prefs': prefs, 'snippets': snippets}
         self.response.out.write(template.render(tdir + "index.html", values))
 
 
@@ -63,12 +63,14 @@ class Account(webapp.RequestHandler):
 class SnippetsNew(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
         self.response.out.write(template.render(tdir + \
-            "snippets_new.html", {'user': user}))
+            "snippets_new.html", {'prefs': prefs}))
 
     def post(self):
         """Check and add new snippet to db"""
         user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
 
         # Validate input
         title = self.request.get('title')
@@ -86,7 +88,7 @@ class SnippetsNew(webapp.RequestHandler):
         if not tags:
             errors.append("tags")
         if len(errors) > 0:
-            values = {'user': user, 'errors': errors, 'title': title, \
+            values = {'prefs': prefs, 'errors': errors, 'title': title, \
                 'code': code, 'description': description}
             self.response.out.write(template.render(tdir + \
                 "snippets_new.html", values))
@@ -113,7 +115,7 @@ class SnippetsNew(webapp.RequestHandler):
                 break
 
         # Create snippet (submitter is saved only in first revision)
-        s = Snippet(user=user)
+        s = Snippet(userprefs=prefs)
         s.title = title
         s.slug1 = slug
         s.description = description
@@ -121,11 +123,11 @@ class SnippetsNew(webapp.RequestHandler):
         s.put()
 
         # Create the first revision
-        r = SnippetRevision.create_first_revision(user=user, snippet=s)
+        r = SnippetRevision.create_first_revision(userprefs=prefs, snippet=s)
         r.put()
 
         # Create the first upvote
-        upvote = SnippetUpvote(user=user, snippet=s)
+        upvote = SnippetUpvote(userprefs=prefs, snippet=s)
         upvote.put()
 
         # Redirect to snippet view
@@ -141,7 +143,9 @@ class LegacySnippetView(webapp.RequestHandler):
         if not snippet:
             # Show snippet-not-found.html
             user = users.get_current_user()
-            values = {'user': user}
+            prefs = UserPrefs.from_user(user)
+
+            values = {'prefs': prefs}
             self.response.out.write(template.render(tdir + \
                 "snippets_notfound.html", values))
             return
@@ -166,12 +170,12 @@ class SnippetView(webapp.RequestHandler):
 
         if not snippet:
             # Show snippet-not-found.html
-            values = {'user': user, "q": snippet_slug}
+            values = {'prefs': prefs, "q": snippet_slug}
             self.response.out.write(template.render(tdir + \
                 "snippets_notfound.html", values))
             return
 
-        values = {'user': user, "prefs": prefs, "snippet": snippet}
+        values = {'prefs': prefs, "prefs": prefs, "snippet": snippet}
         self.response.out.write(template.render(tdir + \
             "snippets_view.html", values))
 
@@ -179,6 +183,8 @@ class SnippetView(webapp.RequestHandler):
 class SnippetVote(webapp.RequestHandler):
     def get(self, snippet_slug):
         user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
+
         if not user:
             self.response.out.write("-1")
             return
@@ -193,7 +199,7 @@ class SnippetVote(webapp.RequestHandler):
         else:
             # Check if user has already voted
             q = SnippetUpvote.all()
-            q.filter("user = ", user)
+            q.filter("userprefs = ", prefs)
             q.filter("snippet =", snippet)
             vote = q.get()
 
@@ -202,7 +208,7 @@ class SnippetVote(webapp.RequestHandler):
                 self.response.out.write("0")
             else:
                 # Create the upvote
-                u = SnippetUpvote(user=user, snippet=snippet)
+                u = SnippetUpvote(userprefs=prefs, snippet=snippet)
                 u.save()
                 snippet.upvote()
                 snippet.save()
@@ -213,6 +219,7 @@ class SnippetEdit(webapp.RequestHandler):
     """TODO: Check if all form input is here, if user is allowed, etc"""
     def post(self, snippet_slug):
         user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
 
         title = decode(self.request.get('title'))
         code = decode(self.request.get('code'))
@@ -232,15 +239,15 @@ class SnippetEdit(webapp.RequestHandler):
             return
 
         # Create a new revision
-        r = SnippetRevision(user=user, snippet=snippet)
+        r = SnippetRevision(userprefs=prefs, snippet=snippet)
         r.title = title
         r.description = description
         r.code = code
         r.put()
 
-        if user == snippet.user:
+        if user == snippet.userprefs.user:
             # Auto-merge new revision if edit by author
-            r.merge(merged_by=user)
+            r.merge(merged_by=prefs)
             self.response.out.write("0")
         else:
             # Add proposal info if from another editor
