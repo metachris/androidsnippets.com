@@ -43,10 +43,13 @@
     <script>document.getElementById('title').focus();</script>
     
     <p><b class="inputinfo">Description</b><br />
-    <textarea name="description" cols="60" rows="4" class="tip input" title="A few words describing this snippet, and enough space for references. Markdown is supported.">{{ description }}</textarea></p>
+    <textarea name="description" cols="60" rows="4" class="tip input" title="A few words describing this snippet, and enough space for references. Markdown is supported.">{{ description }}</textarea>
+    <br><small>Markdown supported</small>
+    </p>
 
     <p><b class="inputinfo">Snippet</b><br />
-    <textarea id="code" name="code" cols="70" rows="20" class="tip input" title="Paste the code in here. Everything in this box will be syntax-highlighted.">{{ code }}</textarea></p>
+    <textarea id="code" name="code" cols="70" rows="20" class="tip input" title="Paste the code in here. Everything in this box will be syntax-highlighted.">{{ code }}</textarea>
+    </p>
 
     <hr>
     <b class="inputinfo">Tested with</b><br>
@@ -69,7 +72,10 @@
 
 </td><td class="c2">
 
-    <center><p><input type="submit" class="btn" value="Submit Snippet" /></p></center>
+    <center>
+        <p><input type="submit" class="btn_small" style="width:140px;" value="Preview" /></p>
+        <p><input type="submit" class="btn_small" style="width:140px;" value="Submit Snippet" /></p>
+    </center>
 </tr></table>    
 </form>   
 </div>

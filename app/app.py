@@ -15,6 +15,7 @@ urls = [
     (r'/account', Account),
 
     (r'/add', SnippetsNew),
+    (r'/preview', SnippetsNewPreview),
 
     (r'/snippets/([-\w]+)', LegacySnippetView),
     (r'/([-\w]+)/vote', SnippetVote),
