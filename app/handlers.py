@@ -183,6 +183,12 @@ class SnippetView(webapp.RequestHandler):
         revisions.filter("rejected =", False)
         revisions.order("-date_submitted")
 
+        # but only include merged edits
+        accepted_revisions = SnippetRevision.all()
+        accepted_revisions.filter("snippet =", snippet)
+        accepted_revisions.filter("merged =", True)
+        accepted_revisions.order("date_submitted")
+
         # see if user has voted
         if user:
             q1 = db.GqlQuery("SELECT * FROM SnippetUpvote WHERE \
@@ -192,7 +198,7 @@ class SnippetView(webapp.RequestHandler):
             has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
 
         values = {"prefs": prefs, "snippet": snippet, "revisions": revisions, \
-                'voted': has_voted}
+                'voted': has_voted, 'accepted_revisions': accepted_revisions}
         self.response.out.write(template.render(tdir + \
             "snippets_view.html", values))
 
