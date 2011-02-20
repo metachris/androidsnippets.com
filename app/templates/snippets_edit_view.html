@@ -26,7 +26,7 @@
 
 {% block header %}
 <div id="snippet_edit_view" style="">
-{% if not title %}
+{% if not preview %}
     <div style="border:0px solid gray; width:300px; padding:20px 0px 0px 0px; margin:auto;">
     {% if prefs %}
         {% ifequal rev.userprefs.user prefs.user %}
@@ -56,7 +56,7 @@
 
 {% block main %}
 <div id="snippet_view" style="padding-right:20px;">
-{% if not title %}
+{% if not preview %}
     asd
     <hr>
 {% endif %}

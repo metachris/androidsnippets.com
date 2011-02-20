@@ -106,6 +106,6 @@ class SnippetsNewPreview(webapp.RequestHandler):
         tags = decode(self.request.get('tags'))
 
         values = {"prefs": prefs, "title": title, "code": code, 'desc': \
-                description, 'tags': tags}
+                description, 'tags': tags, 'preview': True}
         self.response.out.write(template.render(tdir + \
             "snippets_edit_view.html", values))
