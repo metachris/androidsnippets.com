@@ -16,11 +16,17 @@
         dp.SyntaxHighlighter.ClipboardSwf = '/flash/clipboard.swf';
         dp.SyntaxHighlighter.HighlightAll('code');        
     });
+    
+    function setContent(title, desc, code, tags) {
+        $("#view_title").html(title);
+        alert(title);
+    }
     </script>
 {% endblock %}
 
 {% block header %}
 <div id="snippet_edit_view" style="">
+{% if not title %}
     <div style="border:0px solid gray; width:300px; padding:20px 0px 0px 0px; margin:auto;">
     {% if prefs %}
         {% ifequal rev.userprefs.user prefs.user %}
@@ -44,18 +50,19 @@
         <a href="/login?continue=/{{ rev.snippet.slug1 }}/edit/{{ rev.key }}">Please sign in to vote</a>
     {% endif %}
     </div>
+{% endif %}
 </div>
 {% endblock %}
 
 {% block main %}
 <div id="snippet_view" style="padding-right:20px;">
-asd
-
-<hr>
-
+{% if not title %}
+    asd
+    <hr>
+{% endif %}
 <div style="height:36px;">
-            <h1>
-                {{ rev.title }}
+            <h1 id="view_title">
+                {{ rev.title|escape }}{{ title|escape }}
             </h1>
 </div>
 
@@ -63,11 +70,11 @@ asd
 <div>            
             
             <div class="envelope">
-                <p id="view_description">{{ rev.description }}</p>            
+                <p id="view_description">{{ rev.description|escape }}{{ desc|escape }}</p>            
             </div>
 
             <div id="code">
-                <pre name="code" class="java">{{ rev.code|escape }}</pre>
+                <pre name="code" class="java" id="view_code">{{ rev.code|escape }}{{ code|escape }}</pre>
             </div>
  
 </div>

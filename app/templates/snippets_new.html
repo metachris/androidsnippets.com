@@ -19,6 +19,19 @@
 		$( "select" ).combobox();
 		//$("#title").focus();
     });
+
+    var previewWindow;    
+    function preview() {
+        uri = "/preview?title=" + encodeURI($("#title").val()) + "&desc=" + encodeURI($("#desc").val())
+            + "&code=" + encodeURI($("#code").val());
+        if (previewWindow && !previewWindow.closed) {
+            previewWindow.location = uri;
+        } else {
+            // opens a new window with the edit
+            previewWindow = window.open(uri, 'mywin',
+            'left=20,top=20,width=600,height=500,toolbar=0,location=0,resizable=0,menubar=0,status=0');
+        }
+    }
     </script>
 {% endblock %}
 
@@ -43,7 +56,7 @@
     <script>document.getElementById('title').focus();</script>
     
     <p><b class="inputinfo">Description</b><br />
-    <textarea name="description" cols="60" rows="4" class="tip input" title="A few words describing this snippet, and enough space for references. Markdown is supported.">{{ description }}</textarea>
+    <textarea name="description" id="desc" cols="60" rows="4" class="tip input" title="A few words describing this snippet, and enough space for references. Markdown is supported.">{{ description }}</textarea>
     <br><small>Markdown supported</small>
     </p>
 
@@ -73,7 +86,7 @@
 </td><td class="c2">
 
     <center>
-        <p><input type="submit" class="btn_small" style="width:140px;" value="Preview" /></p>
+        <p><input type="button" class="btn_small" style="width:140px;" onclick="preview()" value="Preview" /></p>
         <p><input type="submit" class="btn_small" style="width:140px;" value="Submit Snippet" /></p>
     </center>
 </tr></table>    

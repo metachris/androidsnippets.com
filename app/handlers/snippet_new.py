@@ -96,45 +96,16 @@ class SnippetsNew(webapp.RequestHandler):
 
 class SnippetsNewPreview(webapp.RequestHandler):
     """Popup that shows an edit from another user"""
-    def get(self, snippet_slug, rev_key):
+    def get(self):
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
-        rev = SnippetRevision.get(rev_key)
-        #q = db.GqlQuery("SELECT * FROM SnippetRevision WHERE __key__ = :1", \
-        #        db.Key(rev_key))
-        #rev = q.get()  # fetch(1)[0]
+        title = decode(self.request.get('title'))
+        code = decode(self.request.get('code'))
+        description = decode(self.request.get('desc'))
+        tags = decode(self.request.get('tags'))
 
-        if not rev:
-            self.error(404)
-            return
-
-        # TODO: memcache?
-        rev.views += 1
-        rev.put()
-
-        if user:
-            # see if user has already voted
-            q1 = db.GqlQuery("SELECT * FROM SnippetRevisionUpvote WHERE \
-                    userprefs = :1 and snippetrevision = :2", prefs, rev)
-            q2 = db.GqlQuery("SELECT * FROM SnippetRevisionDownvote WHERE \
-                    userprefs = :1 and snippetrevision = :2", prefs, rev)
-            has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
-
-            if not has_voted:
-                # Check if user wantsto vote
-                has_voted = decode(self.request.get('v'))
-                if has_voted == "1":
-                    # user wants to upvote
-                    v = SnippetRevisionUpvote(userprefs=prefs, \
-                            snippetrevision=rev)
-                    v.save()
-                elif has_voted == "-1":
-                    # user downvotes
-                    v = SnippetRevisionDownvote(userprefs=prefs, \
-                            snippetrevision=rev)
-                    v.save()
-
-        values = {"prefs": prefs, "rev": rev, 'voted': str(has_voted)}
+        values = {"prefs": prefs, "title": title, "code": code, 'desc': \
+                description, 'tags': tags}
         self.response.out.write(template.render(tdir + \
             "snippets_edit_view.html", values))
