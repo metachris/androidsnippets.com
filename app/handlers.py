@@ -270,13 +270,18 @@ class SnippetEditView(webapp.RequestHandler):
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
-        q = db.GqlQuery("SELECT * FROM SnippetRevision WHERE __key__ = :1", \
-                db.Key(rev_key))
-        rev = q.get()  # fetch(1)[0]
+        rev = SnippetRevision.get(rev_key)
+        #q = db.GqlQuery("SELECT * FROM SnippetRevision WHERE __key__ = :1", \
+        #        db.Key(rev_key))
+        #rev = q.get()  # fetch(1)[0]
 
         if not rev:
             self.error(404)
             return
+
+        # TODO: memcache?
+        rev.views += 1
+        rev.put()
 
         if user:
             # see if user has already voted
