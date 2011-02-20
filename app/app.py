@@ -15,10 +15,12 @@ urls = [
     (r'/account', Account),
 
     (r'/add', SnippetsNew),
-    (r'/([-\w]+)', SnippetView),
+
     (r'/snippets/([-\w]+)', LegacySnippetView),
     (r'/([-\w]+)/vote', SnippetVote),
+    (r'/([-\w]+)/edit/([-\w]+)', SnippetEditView),
     (r'/([-\w]+)/edit', SnippetEdit),
+    (r'/([-\w]+)', SnippetView),
 ]
 
 application = webapp.WSGIApplication(urls, debug=True)

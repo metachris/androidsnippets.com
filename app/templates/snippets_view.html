@@ -54,11 +54,20 @@
         if (dialog_shown) {
             $("#dialog").dialog("close");
         } else {
-            $("#dialog").dialog({position:[300, 60], minWidth:380});
+            $("#dialog").dialog({position:[300, 60], minWidth:380, beforeClose: function(event, ui) { dialog_shown = false; }});
+            dialog_shown = true;
         }
-        dialog_shown = !dialog_shown;
     }
     
+    var editWindow;
+    function show_edit(id) {
+        if (editWindow && !editWindow.closed) 
+            editWindow.location = "/{{ snippet.slug1 }}/edit/" + id;
+        else
+            // opens a new window with the edit
+            editWindow = window.open("/{{ snippet.slug1 }}/edit/" + id,'mywin',
+            'left=20,top=20,width=600,height=500,toolbar=0,location=0,resizable=0,menubar=0,status=0');   
+    }
     </script>
 {% endblock %}
 
@@ -170,11 +179,11 @@
 	<p>
 	   <table id="dialogtable">
 	   <thead>
-	       <tr><th>Rev.</th><th>Editor</th><th>+</th><th>-</th><th>submitted<th></tr>
+	       <tr><th></th><th>Editor</th><th>submitted</th><th>+</th><th>-<th></tr>
        </thead>
        <tbody>
 	       {% for rev in revisions %}
-	           <tr onclick='javascript:alert("hi");'><td>{{ forloop.counter }}</td><td>{{ rev.userprefs.user }}</td><td>1</td><td>1</td><td>{{ rev.date_submitted|timesince }} ago</tr>
+	           <tr onclick='javascript:show_edit("{{ rev.key }}");'><td><!--{{ forloop.counter }}--></td><td>{{ rev.userprefs.user }}</td><td>{{ rev.date_submitted|timesince }} ago</td><td>{{ rev.snippetrevisionupvote_set.count }}</td><td>{{ rev.snippetrevisiondownvote_set.count }}</td></tr>
 	       {% endfor %}
        </tbody>
 	   </table>

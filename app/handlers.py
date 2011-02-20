@@ -262,3 +262,46 @@ class SnippetEdit(webapp.RequestHandler):
             snippet.date_lastactivity = datetime.datetime.now()
             snippet.save()
             self.response.out.write("1")
+
+
+class SnippetEditView(webapp.RequestHandler):
+    """Popup that shows an edit from another user"""
+    def get(self, snippet_slug, rev_key):
+        user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
+
+        q = db.GqlQuery("SELECT * FROM SnippetRevision WHERE __key__ = :1", \
+                db.Key(rev_key))
+        rev = q.get()  # fetch(1)[0]
+
+        if not rev:
+            self.error(404)
+            return
+
+        if user:
+            # see if user has already voted
+            q1 = db.GqlQuery("SELECT * FROM SnippetRevisionUpvote WHERE \
+                    userprefs = :1 and snippetrevision = :2", prefs, rev)
+            q2 = db.GqlQuery("SELECT * FROM SnippetRevisionDownvote WHERE \
+                    userprefs = :1 and snippetrevision = :2", prefs, rev)
+            has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
+            logging.info("has_voted: %s" % has_voted)
+            logging.info("q1: %s" % q1.count())
+            logging.info("q2: %s" % q2.count())
+            if not has_voted:
+                # Check if user wantsto vote
+                has_voted = decode(self.request.get('v'))
+                if has_voted == "1":
+                    # user wants to upvote
+                    v = SnippetRevisionUpvote(userprefs=prefs, \
+                            snippetrevision=rev)
+                    v.save()
+                elif has_voted == "-1":
+                    # user downvotes
+                    v = SnippetRevisionDownvote(userprefs=prefs, \
+                            snippetrevision=rev)
+                    v.save()
+
+        values = {"prefs": prefs, "rev": rev, 'voted': str(has_voted)}
+        self.response.out.write(template.render(tdir + \
+            "snippets_edit_view.html", values))

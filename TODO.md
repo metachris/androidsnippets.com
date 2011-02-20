@@ -3,4 +3,11 @@
 
 New Snippets
 -------------
-  [ ] Read submit guidelines
+
+* Read and confirm submit guidelines
+
+
+Memcache
+--------
+
+* Snippet view count

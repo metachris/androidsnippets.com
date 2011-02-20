@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="/css/highlight.css?v=2">
+{% endblock %}
+
+{% block scripts %}
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+
+    <script src="/js/libs/shCore.js"></script>
+    <script src="/js/libs/shBrushJava.js"></script>
+
+    <script>
+    $(document).ready(function() {
+        //prettyPrint(); 
+        dp.SyntaxHighlighter.ClipboardSwf = '/flash/clipboard.swf';
+        dp.SyntaxHighlighter.HighlightAll('code');        
+    });
+    </script>
+{% endblock %}
+
+{% block header %}
+<div id="snippet_edit_view" style="">
+    <div style="border:0px solid gray; width:300px; padding:20px 0px 0px 0px; margin:auto;">
+    {% if prefs %}
+        {% if voted %}
+            <center>
+            {% ifequal voted '1' %}
+                upvoted
+            {% endifequal %}
+            {% ifequal voted '-1' %}
+                downvoted
+            {% endifequal %}
+            </center>
+        {% else %}
+            <div style="float:right; text-align:right;"><a href="/{{ rev.snippet.slug1 }}/edit/{{ rev.key }}?v=-1" class="btn_small">Dislike this edit</a></div>
+            <div style='border:0px solid red;'><a href="/{{ rev.snippet.slug1 }}/edit/{{ rev.key }}?v=1" class="btn_small">Recommend this edit</a></div>
+        {% endif %}
+    {% else %}
+        <a href="/login?continue=/{{ rev.snippet.slug1 }}/edit/{{ rev.key }}">Please sign in to vote</a>
+    {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block main %}
+<div id="snippet_view" style="padding-right:20px;">
+asd
+
+<hr>
+
+<div style="height:36px;">
+            <h1>
+                {{ rev.title }}
+            </h1>
+</div>
+
+
+<div>            
+            
+            <div class="envelope">
+                <p id="view_description">{{ rev.description }}</p>            
+            </div>
+
+            <div id="code">
+                <pre name="code" class="java">{{ rev.code|escape }}</pre>
+            </div>
+ 
+</div>
+
+</div>
+
+{% endblock %}

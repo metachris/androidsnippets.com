@@ -146,6 +146,9 @@ class SnippetRevision(db.Model):
     snippet = db.ReferenceProperty(Snippet, required=True)
     date_submitted = db.DateTimeProperty(auto_now_add=True)
 
+    # Number of pageviews
+    views = db.IntegerProperty(default=0)
+
     # author's comment about this changeset
     revision_description = db.TextProperty()
 
@@ -215,13 +218,13 @@ class SnippetRevision(db.Model):
 class SnippetRevisionUpvote(db.Model):
     """Vote on a snippet revision held in moderation"""
     userprefs = db.ReferenceProperty(UserPrefs, required=True)
-    snippet = db.ReferenceProperty(SnippetRevision, required=True)
+    snippetrevision = db.ReferenceProperty(SnippetRevision, required=True)
 
 
 class SnippetRevisionDownvote(db.Model):
     """Downvote on a snippet revision held in moderation"""
     userprefs = db.ReferenceProperty(UserPrefs, required=True)
-    snippet = db.ReferenceProperty(SnippetRevision, required=True)
+    snippetrevision = db.ReferenceProperty(SnippetRevision, required=True)
 
 
 class SnippetComment(db.Model):
@@ -240,7 +243,7 @@ class SnippetComment(db.Model):
 class SnippetRevisionComment(db.Model):
     """Comment on a snippet revision which may be held in moderation"""
     userprefs = db.ReferenceProperty(UserPrefs, required=True)
-    snippet = db.ReferenceProperty(SnippetRevision, required=True)
+    snippetrevision = db.ReferenceProperty(SnippetRevision, required=True)
     parent_comment = db.SelfReferenceProperty()
 
     date_submitted = db.DateTimeProperty(auto_now_add=True)
