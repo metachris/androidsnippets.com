@@ -165,15 +165,6 @@ class SnippetView(webapp.RequestHandler):
         q.filter("slug1 =", snippet_slug)
         snippet = q.get()
 
-        # Todo: temporarily store in memcache, update with cron
-        snippet.views += 1
-        snippet.save()
-
-        revisions = SnippetRevision.all()
-        revisions.filter("merged =", False)
-        revisions.filter("rejected =", False)
-        revisions.order("-date_submitted")
-
         if not snippet:
             # Show snippet-not-found.html
             values = {'prefs': prefs, "q": snippet_slug}
@@ -181,7 +172,27 @@ class SnippetView(webapp.RequestHandler):
                 "snippets_notfound.html", values))
             return
 
-        values = {"prefs": prefs, "snippet": snippet, "revisions": revisions}
+        # Todo: temporarily store in memcache, update with cron
+        snippet.views += 1
+        snippet.save()
+
+        # get all open revisions
+        revisions = SnippetRevision.all()
+        revisions.filter("snippet =", snippet)
+        revisions.filter("merged =", False)
+        revisions.filter("rejected =", False)
+        revisions.order("-date_submitted")
+
+        # see if user has voted
+        if user:
+            q1 = db.GqlQuery("SELECT * FROM SnippetUpvote WHERE \
+                    userprefs = :1 and snippet = :2", prefs, snippet)
+            q2 = db.GqlQuery("SELECT * FROM SnippetDownvote WHERE \
+                    userprefs = :1 and snippet = :2", prefs, snippet)
+            has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
+
+        values = {"prefs": prefs, "snippet": snippet, "revisions": revisions, \
+                'voted': has_voted}
         self.response.out.write(template.render(tdir + \
             "snippets_view.html", values))
 
@@ -290,9 +301,7 @@ class SnippetEditView(webapp.RequestHandler):
             q2 = db.GqlQuery("SELECT * FROM SnippetRevisionDownvote WHERE \
                     userprefs = :1 and snippetrevision = :2", prefs, rev)
             has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
-            logging.info("has_voted: %s" % has_voted)
-            logging.info("q1: %s" % q1.count())
-            logging.info("q2: %s" % q2.count())
+
             if not has_voted:
                 # Check if user wantsto vote
                 has_voted = decode(self.request.get('v'))

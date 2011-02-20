@@ -68,6 +68,19 @@
             editWindow = window.open("/{{ snippet.slug1 }}/edit/" + id,'mywin',
             'left=20,top=20,width=600,height=500,toolbar=0,location=0,resizable=0,menubar=0,status=0');   
     }
+    
+    var upvotes = {{ snippet.upvote_count }};
+    {% if not voted %}
+    function vote() {
+        $.ajax({
+            url: "/{{ snippet.slug1 }}/vote",
+            success: function(){
+                $("#vote_count").html("<em>" + (upvotes+1) + "</em>");
+                $("#snippet_points .vote").html('<span class="teaser">voted</span>');
+            }
+        });
+    }
+    {% endif %}
     </script>
 {% endblock %}
 
@@ -88,9 +101,17 @@
                 </div>            
 
                 <div id="snippet_points">
-                    <div class="votes"><em>{{ snippet.upvote_count }}</em></div>
-                    <div class="vote">        
-                        <a class="teaser" href="" title="Give this snippet a point!">+1&nbsp;</a>
+                    <div class="votes" id="vote_count"><em>{{ snippet.upvote_count }}</em></div>
+                    <div class="vote">
+                        {% if voted %}
+                            <span class="teaser">voted</span>
+                        {% else %}
+                            <a class="teaser" href="javascript:vote()" title="Give this snippet a point!">vote</a>
+                        {% endif %}
+                        <!--<div class="teaser">
+                            <a href="" title="Give this snippet a point!"><img src="/images/thumb_up.gif" /></a>
+                            <a href="" title="Give this snippet a point!"><img src="/images/thumb_down.gif" /></a>
+                        </div>-->
                     </div>
                 </div>
 
@@ -147,8 +168,10 @@
                     <div style="padding-left:4px; margin-bottom:4px; color:gray;"><small>markdown suppored</small></div>
                 </div>            
                 
-                <div id="subtitle"><div style="float:right; padding-right:6px;">Last edit {{ snippet.date_lastupdate|date }}</div> 
-                <a href='javascript:toggle_revisions()'>{{ revisions.count }} edits open for review</a></div>
+                <div id="subtitle">
+                    <div style="float:right; padding-right:6px;">Last edit {{ snippet.date_lastupdate|date }}</div> 
+                    {% if revisions.count %}<a href='javascript:toggle_revisions()'>{{ revisions.count }} edit{{ revisions.count|pluralize }} for review</a>{% endif %}
+                </div>
             </div>
 
             <div id="code">
@@ -183,7 +206,7 @@
        </thead>
        <tbody>
 	       {% for rev in revisions %}
-	           <tr onclick='javascript:show_edit("{{ rev.key }}");'><td><!--{{ forloop.counter }}--></td><td>{{ rev.userprefs.user }}</td><td>{{ rev.date_submitted|timesince }} ago</td><td>{{ rev.snippetrevisionupvote_set.count }}</td><td>{{ rev.snippetrevisiondownvote_set.count }}</td></tr>
+	           <tr onclick='javascript:show_edit("{{ rev.key }}");'><td><!--{{ forloop.counter }}--></td><td>{% ifequal prefs.user rev.userprefs.user %}you{% else %}{{ rev.userprefs.nickname }}{% endifequal %}</td><td>{{ rev.date_submitted|timesince }} ago</td><td>{{ rev.snippetrevisionupvote_set.count }}</td><td>{{ rev.snippetrevisiondownvote_set.count }}</td></tr>
 	       {% endfor %}
        </tbody>
 	   </table>

@@ -41,7 +41,13 @@ p {
 .ui-dialog .ui-dialog-titlebar { padding: .2em 0.8em; }
 .ui-dialog .ui-dialog-title { font-size:12px; }
 
-#main { padding-top:20px; padding-left:20px; /* width:800px; margin:auto; */ }
+#main { padding-top:20px; padding-left:20px; min-height:500px;/* width:800px; margin:auto; */ }
+
+#footer {
+    height:100px;
+    /*background:#30587C;*/
+    margin-top:50px;
+}
 
 #header {
     background: #30587C;
@@ -284,7 +290,7 @@ overflow: hidden;
     position:relative;
 }
 
-#snippet_points .vote a.teaser {
+#snippet_points .vote .teaser {
     -moz-border-radius-bottomleft:2pxem;
     -moz-border-radius-bottomright:2pxem;
     border-bottom-left-radius:2px;

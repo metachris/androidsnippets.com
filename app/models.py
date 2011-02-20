@@ -129,6 +129,13 @@ class SnippetUpvote(db.Model):
     date = db.DateTimeProperty(auto_now_add=True)
 
 
+class SnippetDownvote(db.Model):
+    """Upvote on a snippet"""
+    userprefs = db.ReferenceProperty(UserPrefs, required=True)
+    snippet = db.ReferenceProperty(Snippet, required=True)
+    date = db.DateTimeProperty(auto_now_add=True)
+
+
 class SnippetFollow(db.Model):
     """Follower on a snippet"""
     userprefs = db.ReferenceProperty(UserPrefs, required=True)
