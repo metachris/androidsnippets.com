@@ -14,7 +14,7 @@
             source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
         });
         
-        $(".tip").tipTip({defaultPosition:"right"});
+        //$(".tip").tipTip({defaultPosition:"right"});
 
 		$( "select" ).combobox();
 		//$("#title").focus();
@@ -56,7 +56,7 @@
     <script>document.getElementById('title').focus();</script>
     
     <p><b class="inputinfo">Description</b><br />
-    <textarea name="description" id="desc" cols="60" rows="4" class="tip input" title="A few words describing this snippet, and enough space for references. Markdown is supported.">{{ description }}</textarea>
+    <textarea name="description" id="desc" cols="60" rows="10" class="tip input" title="A few words describing this snippet, and enough space for references. Markdown is supported.">{{ description }}</textarea>
     <br><small>Markdown supported</small>
     </p>
 
@@ -85,10 +85,25 @@
 
 </td><td class="c2">
 
-    <center>
-        <p><input type="button" class="btn_small" style="width:140px;" onclick="preview()" value="Preview" /></p>
+       <p><input type="button" class="btn_small" style="width:140px;" onclick="preview()" value="Preview" /></p>
         <p><input type="submit" class="btn_small" style="width:140px;" value="Submit Snippet" /></p>
-    </center>
+    
+    <div id="markdown_info">
+<p><h3>Markdown Format</h3></p>
+
+<p>put returns between paragraphs</p>
+<p>for linebreak add 2 spaces at end</p>
+<p>_<i>italic</i>_ or <b>**bold**</b></p>
+<p>indent code by 4 spaces</p>
+<p>backtick escapes `like _so_`</p>
+<p>quote by placing > at start of line</lip
+<p><p>to make links:</p>
+<div style="padding-left:10px;"><p>http://foo.com</p>
+<p>[foo](http://foo.com)</p>
+<p>&lt;a href="http://foo.com">foo</a></p>
+</p></div>
+
+</div>    
 </tr></table>    
 </form>   
 </div>

@@ -12,6 +12,9 @@ white-space: pre;
 
 a { color: #0073EA; }
 
+i, em { font-style:italic; }
+blockquote { margin-left:28px; }
+
 b { font-weight:bold; }
 hr { border-color: #DFDFDF; margin:12px 00px; }
 h1 {
@@ -87,6 +90,13 @@ p {
     height:20px;
     padding:0px 2px;
     font-size:14px;
+}
+
+#snippet_new #markdown_info {
+    margin-top:40px;
+    width:200px;
+    padding:0px 2px;
+    font-size:13px;
 }
 
 /* Input descriptions for forms */
