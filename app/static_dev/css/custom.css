@@ -200,6 +200,9 @@ ul, ol { margin-bottom:6px; }
 #dialogtable td, #dialogtable th { text-align:left; padding:2px 6px;  font-size:12px; }
 #dialogtable tbody tr:hover { background:#DFD; cursor:pointer; }
 
+#dialog_signin a { text-decoration:none; color:#0073EA; }
+#dialog_signin a:hover { text-decoration:underline; }
+
 /* Edit mode */
 #edit_title {
 }
