@@ -11,6 +11,9 @@ Libraries used
 * [tipTip tooltip plugin] [4] (MIT)
 * [Python-markdown] [5] (BSD)
 * * JS Alternatives: Openlibrary fork of [WMD and showdown.js] [6] (MIT), [Github flavored markdown] [7]
+* [JS Syntax Highlighter] [8] (GNU LGPL)
+* * switch to [new version] [9] (MIT and GPL)?
+* * copy to clipboard ([zeroclipboard] [10] (MIT)?)
 
    [1]: https://github.com/paulirish/html5-boilerplate
    [2]: http://jquery.com/
@@ -19,4 +22,6 @@ Libraries used
    [5]: http://www.freewisdom.org/projects/python-markdown/
    [6]: https://github.com/abgrilo/wmd
    [7]: https://github.com/github/github-flavored-markdown/blob/gh-pages/scripts/showdown.js
-   
+   [8]: http://code.google.com/p/syntaxhighlighter   
+   [9]: http://alexgorbatchev.com/SyntaxHighlighter
+   [10]: http://code.google.com/p/zeroclipboard

@@ -27,7 +27,7 @@
     <script>
     $(document).ready(function() {
         //prettyPrint(); 
-        dp.SyntaxHighlighter.ClipboardSwf = '/flash/clipboard.swf';
+        dp.SyntaxHighlighter.ClipboardSwf = '/swf/clipboard.swf';
         dp.SyntaxHighlighter.HighlightAll('code');
         
         // http://shjs.sourceforge.net/
@@ -168,16 +168,21 @@
                 <hr>            
 
                 <p title="Compatible Android versions" ><img src="/images/android_icon.png" style="float:right;"/> SDK: {{ snippet.android_minsdk }}</p>
-                <p>Tags: {% for tag in snippet.snippettag_set %}<a href="/tags/{{ tag.tag.name }}">{{ tag.tag.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</p>
-
-                </p> 
+                <p>Tags: {% for tag in snippet.snippettag_set %}
+                    <a href="/tags/{{ tag.tag.name }}" title="{{ tag.tag.snippettag_set.count }} snippets">{{ tag.tag.name }}</a>{% if not forloop.last %}, {% endif %}
+                {% endfor %}</p>
+                </p>
+                 
                 <hr>
+
                 <p><b>Edits</b></p>
                 <p>
                     {% for rev in accepted_revisions %}
                         <a href="/authors/{{ rev.userprefs.nickname }}" title="{{ rev.userprefs.nickname }}"><img src="http://www.gravatar.com/avatar/{{ rev.userprefs.email_md5 }}?s=20" /></a>
                     {% endfor %}
                 </p>
+                
+                <p><a href="#comments">{{ snippet.snippetcomment_set.count }} comments</a></p>
 
                 <hr>            
 
