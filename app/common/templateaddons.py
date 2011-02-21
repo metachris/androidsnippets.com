@@ -14,4 +14,10 @@ def showTag(tag):
     return """<a href="javascript:_add_tag('%s')">%s</a>
             <small>(%s)</small>""" % (tag, tag, cnt)
 
+
+def first(l):
+    # template cannot do {% for x,y in tag %} :/
+    return l[0]
+
 register.filter(showTag)
+register.filter(first)

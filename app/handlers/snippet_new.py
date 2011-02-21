@@ -71,7 +71,8 @@ class SnippetsNew(webapp.RequestHandler):
             tags_mostused = get_tags_mostused()
             values = {'prefs': prefs, 'errors': errors, 'title': title, \
                 'code': code, 'description': description, 'tags': tags, \
-                'tag_cnt': len(tags), "tags_mostused": tags_mostused}}
+                'tag_cnt': len(tags), "tags_mostused": tags_mostused}
+
             self.response.out.write(template.render(tdir + \
                 "snippets_new.html", values))
             return

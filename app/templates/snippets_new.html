@@ -9,12 +9,14 @@
     <script src="/js/libs/wmd.js"></script>
     <script src="/js/libs/jquery-wmd-plugin.js"></script>
     <script>
+    var _tags = Array({% for tag in tags %}"{{ tag }}"{% if not forloop.last %},{% endif %}{% endfor %});
     $(document).ready(function() {
 		$( ".btn" ).button();
 		$( ".btn_small" ).button();
 
 		$("input#autocomplete").autocomplete({
-            source: ["c++", "java", "php", "coldfusion", "javascript", "asp", "ruby"]
+            source: [{% for tag in tags_mostused %}"{{ tag|first }}"{% if not forloop.last %},{% endif %}{% endfor %}],
+            select: function(event, ui) { _add_tag(ui.item.value); this.value=""; }
         });
         
         //$(".tip").tipTip({defaultPosition:"right"});
@@ -24,7 +26,7 @@
 		
 	    $("#desc").wmd({
 	        "preview": false,
-	        "helpLink": "/help/markdown",
+	        "helpLink": "/about/markdown",
 	        "helpHoverTitle": "Markdown Help",
 	    });
 		
@@ -40,9 +42,13 @@
     }
             
     function _add_tag(tag) {
-        if (tag.trim().length == 0)
+        if (tag.trim().length == 0 || tag in _tags)
             return ;
+        for (var i=0; i<_tags.length; i++)
+            if (_tags[i] == tag)
+                return ;
             
+        _tags.push(tag);
         var hiddenField = document.createElement("input");              
         hiddenField.setAttribute("name", "tag" + tag_cnt);
         hiddenField.setAttribute("id", "input_tag" + tag_cnt);
