@@ -245,6 +245,7 @@ class SnippetComment(db.Model):
     edits_count = db.IntegerProperty(default=0)
 
     comment = db.TextProperty(required=False)
+    comment_md = db.TextProperty(required=False)
 
 
 class SnippetRevisionComment(db.Model):

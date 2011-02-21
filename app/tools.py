@@ -26,6 +26,8 @@ def slugify(value):
 
 def decode(var):
     """Decode form input"""
+    if not var:
+        return var
     return unicode(var, 'utf-8') if isinstance(var, str) else unicode(var)
 
 
@@ -36,9 +38,9 @@ def decode_iftrue(var):
     return unicode(var, 'utf-8') if isinstance(var, str) else unicode(var)
 
 
-def get_tags_mostused(force_refresh=False):
+def get_tags_mostused(force_update=False):
     tags = memcache.get("tags_mostused")
-    if tags and not force_refresh:
+    if tags and not force_update:
         return tags
 
     else:

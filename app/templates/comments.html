@@ -1,6 +1,12 @@
  
 {% for comment in comments %}
 <div class="comment">
-{{ comment.comment }}
+    <div class="header">
+        <div class="date">{{ comment.date_lastupdate|timesince }} ago</div>
+        <div class="author"><a href="/authors/{{ comment.userprefs.nickname }}" title="{{ comment.userprefs.nickname }}"><img src="http://www.gravatar.com/avatar/{{ comment.userprefs.email_md5 }}?s=12" width="12" height="12" /> {{ comment.userprefs.nickname }}</a></div>
+    </div>
+    <div class="body">
+        {{ comment.comment_md }}
+    </div>
 </div>
 {% endfor %}

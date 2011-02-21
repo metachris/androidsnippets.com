@@ -226,9 +226,9 @@
     <h2>{% if snippet.snippetcomment_set.count %}{{ snippet.snippetcomment_set.count }} Comments{% else %}Be the first to comment{% endif %}</h2>
 
     {% if prefs %}
-    <div style="width:500px; margin-top:20px;">
+    <div style="width:500px; margin-top:20px; margin-bottom:20px;">
         <form action="/{{ snippet.slug1 }}/comment" method="post">
-        <textarea id="wmd" name="comment" style="width:500px; border:1px solid lightgray;" rows="8"></textarea>
+        <textarea id="wmd" name="comment" style="width:500px; border:1px solid lightgray;" rows="6"></textarea>
         <div style="text-align:right; padding-top:6px;">
             <input type="button" class="btn_small" value="Cancel" onclick="javascript:$('#wmd').val('')" />
             <input type="submit" class="btn_small" value="Submit" />

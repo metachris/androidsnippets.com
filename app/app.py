@@ -21,6 +21,7 @@ urls = [
     (r'/([-\w]+)/vote', SnippetVote),
     (r'/([-\w]+)/edit/([-\w]+)', SnippetEditView),
     (r'/([-\w]+)/edit', SnippetEdit),
+    (r'/([-\w]+)/comment', SnippetCommentView),
     (r'/([-\w]+)', SnippetView),
 
     (r'/tags/([-\w]+)', TagView),

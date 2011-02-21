@@ -125,9 +125,7 @@ class SnippetView(webapp.RequestHandler):
                     userprefs = :1 and snippet = :2", prefs, snippet)
             has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
 
-        comments = SnippetComment.all()
-        comments.filter("snippet =", snippet)
-        comments.order("-date_submitted")
+        comments = snippet.snippetcomment_set
         comments_html = template.render(tdir + "comments.html", \
                 {"comments": comments})
 
@@ -297,3 +295,30 @@ class TagView(webapp.RequestHandler):
         values = {'prefs': prefs, 'tag': tag, 'tags': tags}
         self.response.out.write(template.render(tdir + "tags_index.html", \
                 values))
+
+
+class SnippetCommentView(webapp.RequestHandler):
+    def post(self, snippet_slug):
+        user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
+
+        q = Snippet.all()
+        q.filter("slug1 =", snippet_slug)
+        snippet = q.get()
+
+        if not snippet:
+            self.error(404)
+            return
+
+        comment = decode(self.request.get('comment'))
+        if not comment or len(comment.strip()) == 0:
+            self.redirect("/%s" % snippet_slug)
+            return
+
+        # Add the comment now
+        comment_md = markdown.markdown(comment)
+        c = SnippetComment(userprefs=prefs, snippet=snippet, comment=comment)
+        c.comment_md = comment_md
+        c.save()
+
+        self.redirect("/%s" % snippet_slug)
