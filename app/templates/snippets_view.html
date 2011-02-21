@@ -160,11 +160,11 @@
                 <hr>            
 
                 <p title="Compatible Android versions" ><img src="/images/android_icon.png" style="float:right;"/> SDK: {{ snippet.android_minsdk }}</p>
-                <p>Tags: {{ snippet.tags }}</p>
+                <p>Tags: {% for tag in snippet.snippettag_set %}{{ tag.tag.name }}, {% endfor %}</p>
 
                 </p> 
                 <hr>
-                <p><b>Editors</b></p>
+                <p><b>Edits</b></p>
                 <p>
                     {% for rev in accepted_revisions %}
                         <a href="/authors/{{ rev.userprefs.nickname }}" title="{{ rev.userprefs.nickname }}"><img src="http://www.gravatar.com/avatar/{{ rev.userprefs.email_md5 }}?s=20" /></a>

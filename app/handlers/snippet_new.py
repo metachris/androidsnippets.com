@@ -28,7 +28,7 @@ class SnippetsNew(webapp.RequestHandler):
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
         self.response.out.write(template.render(tdir + \
-            "snippets_new.html", {'prefs': prefs}))
+            "snippets_new.html", {'prefs': prefs, 'tag_cnt': 0}))
 
     def post(self):
         """Check and add new snippet to db"""
@@ -39,7 +39,20 @@ class SnippetsNew(webapp.RequestHandler):
         title = self.request.get('title')
         code = self.request.get('code')
         description = self.request.get('description')
-        tags = self.request.get('tags')
+
+        tags = []
+        i = 0
+        while True:
+            tag = self.request.get('tag%s' % i)
+            logging.info("tag: %s" % tag)
+            if not tag:
+                break
+            elif tag == "0":
+                # placeholder for removed tag
+                pass
+            else:
+                tags.append(decode(tag))
+            i += 1
 
         errors = []
         if not title:
@@ -48,11 +61,12 @@ class SnippetsNew(webapp.RequestHandler):
             errors.append("snippet")
         if not description:
             errors.append("description")
-        if not tags:
-            errors.append("tags")
+        if len(tags) < 2:
+            errors.append("a few tags")
         if len(errors) > 0:
             values = {'prefs': prefs, 'errors': errors, 'title': title, \
-                'code': code, 'description': description}
+                'code': code, 'description': description, 'tags': tags, \
+                'tag_cnt': len(tags)}
             self.response.out.write(template.render(tdir + \
                 "snippets_new.html", values))
             return
@@ -61,7 +75,6 @@ class SnippetsNew(webapp.RequestHandler):
         title = decode(title.strip())
         code = decode(code)
         description = decode(description)
-        tags = decode(tags)
 
         # Find a free slug
         slug = slugify(title)
@@ -92,6 +105,23 @@ class SnippetsNew(webapp.RequestHandler):
         # Create the first upvote
         upvote = SnippetUpvote(userprefs=prefs, snippet=s)
         upvote.put()
+
+        # Create the tags
+        for tag in tags:
+            if not tag or len(tag.strip()) < 4:
+                # skip empty and too short tags
+                continue
+
+            # See if tag base object already exists, if not then create it
+            q = Tag.all()
+            q.filter("name =", tag)
+            t = q.get()
+            if not t:
+                t = Tag(name=tag)
+                t.put()
+
+            st = SnippetTag(snippet=s, tag=t)
+            st.put()
 
         # Redirect to snippet view
         self.redirect("/%s" % s.slug1)

@@ -24,11 +24,44 @@
 		
 	    $("#desc").wmd({
 	        "preview": false,
-	        "helpLink": "http://daringfireball.net/projects/markdown/",
+	        "helpLink": "/help/markdown",
 	        "helpHoverTitle": "Markdown Help",
 	    });
 		
     });
+    
+    var tag_cnt = {{ tag_cnt }};
+    function add_tag() {
+        tags = $("#autocomplete").val();
+        $("#autocomplete").val("");
+        tags_arr = tags.split(" ");
+        for (tag in tags_arr)
+            _add_tag(tags_arr[tag]);
+    }
+            
+    function _add_tag(tag) {
+        if (tag.trim().length == 0)
+            return ;
+            
+        var hiddenField = document.createElement("input");              
+        hiddenField.setAttribute("name", "tag" + tag_cnt);
+        hiddenField.setAttribute("id", "input_tag" + tag_cnt);
+        hiddenField.setAttribute("value", tag);
+        hiddenField.style.display = "none";
+        document.getElementById("new_snippet_form").appendChild(hiddenField);
+
+        var li = document.createElement("li");
+        li.setAttribute("id", "tag" + tag_cnt);
+        $(li).html(tag + " <small><a href='javascript:del_tag(" + tag_cnt + ")'>rm</a></small>");
+        document.getElementById("taglist").appendChild(li);
+        
+        tag_cnt++;
+    }
+
+    function del_tag(id) {
+        $("#input_tag" + id).val("0");
+        $("#tag" + id).remove();
+    }
     </script>
 {% endblock %}
 
@@ -36,7 +69,7 @@
 <div id="snippet_new" style="margin:auto; width:800px;">
 <h1>Add a new snippet</h1> 
 
-<form action="/add" method="post" style="margin-top:20px;">
+<form action="/add" method="post" id="new_snippet_form" style="margin-top:20px;">
 <table><tr>
 <td class="c1">
 {% if errors %}
@@ -49,21 +82,27 @@
 				</div>
 {% endif %}
     <p><b class="inputinfo">Title</b><br>
-    <input type="text" name="title" id="title" class="tip input" value="{{ title }}" title="A precise title makes it easy for others to find this snippet." /></p>
+    <input type="text" name="title" id="title" class="tip input" value="{{ title }}" /></p>
     <script>document.getElementById('title').focus();</script>
     
     <p style="margin-top:20px;">
     
     <div><b class="inputinfo">Description</b></div> 
-    <textarea name="description" id="desc" cols="60" rows="10" class="tip input" title="A few words describing this snippet, and enough space for references. Markdown is supported.">{{ description }}</textarea>
+    <textarea name="description" id="desc" cols="60" rows="10" class="tip input">{{ description }}</textarea>
     <br>
     </p>
 
     <p style="margin-top:20px;"><b class="inputinfo">Snippet</b><br />
-    <textarea id="input_code" name="code" cols="70" rows="20" class="tip input" title="Paste the code in here. Everything in this box will be syntax-highlighted.">{{ code }}</textarea>
+    <textarea id="input_code" name="code" cols="70" rows="20" class="tip input">{{ code }}</textarea>
     </p>
 
     <hr>
+    
+    <div id="tags_mostused" style="float:right; border-left:1px solid #DDD; padding-left:10px;">
+        <b class="inputinfo">Most used tags:</b><br>
+        
+    </div>
+    
     <b class="inputinfo">Tested with</b><br>
         <div style="margin-top:4px;">
         <select name="version" size="0">
@@ -78,9 +117,15 @@
     <div id="addtag">
         <b class="inputinfo">Tags</b><br>
         <input type="text" name="tags" id="autocomplete" class="input" /> 
-        <a href="#" class="btn_small">Add</a>
+        <a href="javascript:add_tag()" class="btn_small">Add</a>
     </div>
-    <div id="taglist"></div>
+    
+    <div style="margin-top:20px;"><ul id="taglist">
+        {% for tag in tags %}
+            <li id="tag{{ forloop.counter0 }}">{{ tag }} <small><a href='javascript:del_tag({{ forloop.counter0 }})'>rm</a></small></li>
+            <input type="hidden" name="tag{{ forloop.counter0 }}" id="input_tag{{ forloop.counter0 }}" value="{{ tag }}" />
+        {% endfor %}
+    </ul></div>
 
 </td><td class="c2">
 
@@ -97,7 +142,7 @@
 <p>backtick escapes `like _so_`</p>
 <p>quote by placing > at start of line</lip
 <p><p>to make links:</p>
-<div style="padding-left:10px;"><p>http://foo.com</p>
+<div style="padding-left:10px;"><p>&lt;http://foo.com></p>
 <p>[foo](http://foo.com)</p>
 <p>&lt;a href="http://foo.com">foo</a></p>
 </p></div>
