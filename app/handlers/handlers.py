@@ -124,7 +124,8 @@ class SnippetView(webapp.RequestHandler):
             has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
 
         values = {"prefs": prefs, "snippet": snippet, "revisions": revisions, \
-                'voted': has_voted, 'accepted_revisions': accepted_revisions}
+                'voted': has_voted, 'accepted_revisions': accepted_revisions,
+                "openedit": self.request.get('edit')}
         self.response.out.write(template.render(tdir + \
             "snippets_view.html", values))
 

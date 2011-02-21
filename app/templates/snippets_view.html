@@ -54,7 +54,9 @@
 
       	openid.init('openid_identifier');
         
+        {% if openedit %}toggle_ui_to_editor();{% endif %}
     });
+    
     var dialog_shown = false;
     function toggle_revisions() {
         if (dialog_shown) {
@@ -86,7 +88,6 @@
     }
     
     var upvotes = {{ snippet.upvote_count }};
-    {% if not voted %}
     function vote() {
         $.ajax({
             url: "/{{ snippet.slug1 }}/vote",
@@ -96,14 +97,13 @@
             }
         });
     }
-    {% endif %}
 
     function toggle_ui_to_editor() {
-        {% if userprefs %}_toggle_ui_to_editor(){% else %}show_dialog_signin("/{{ snippet.slug1 }}?edit=1");{% endif %}
+        {% if prefs %}_toggle_ui_to_editor(){% else %}show_dialog_signin("/{{ snippet.slug1 }}?edit=1");{% endif %}
     }
 
     function follow_snippet() {
-        {% if userprefs %}_follow(){% else %}show_dialog_signin("/{{ snippet.slug1 }}/follow");{% endif %}
+        {% if prefs %}_follow(){% else %}show_dialog_signin("/{{ snippet.slug1 }}/follow");{% endif %}
     }
     </script>
 {% endblock %}
@@ -130,7 +130,7 @@
                         {% if voted %}
                             <span class="teaser">voted</span>
                         {% else %}
-                            {% if userprefs %}
+                            {% if prefs %}
                             <a class="teaser" href="javascript:vote()" title="Give this snippet a point!">vote</a>
                             {% else %}                            
                             <a class="teaser" href="javascript:show_dialog_signin('{{ snippet.slug1 }}/vote')" title="Give this snippet a point!">vote</a>
