@@ -43,6 +43,7 @@ class SnippetsNew(webapp.RequestHandler):
         title = self.request.get('title')
         code = self.request.get('code')
         description = self.request.get('description')
+        version = self.request.get('version')
 
         tags = []
         i = 0
@@ -102,6 +103,7 @@ class SnippetsNew(webapp.RequestHandler):
         s.slug1 = slug
         s.description = description
         s.code = code
+        s.android_minsdk = int(version)
         s.put()
 
         # Create the first revision
