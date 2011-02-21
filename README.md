@@ -1,14 +1,16 @@
-Rewrite of androidsnippets.com (started with appengine-boilerplate)
+Rewrite of androidsnippets.com
+
+Currently in prototyping, models are not yet finalized.
 
 Libraries used
 --------------
 
-* [html5-boilerplate] (1) (MIT,BSD,Public Domain)
-* [jquery] (2) (MIT and GPL2)
-* [jquery-ui] (3) (MIT and GPL)
-* [tipTip tooltip plugin] (4) (MIT)
-* [Python-markdown] (5) (BSD)
-** JS Alternatives: Openlibrary fork of [WMD and showdown.js] (6) (MIT), [Github flavored markdown] (7)
+* [html5-boilerplate] [1] (MIT,BSD,Public Domain)
+* [jquery] [2] (MIT and GPL2)
+* [jquery-ui] [3] (MIT and GPL)
+* [tipTip tooltip plugin] [4] (MIT)
+* [Python-markdown] [5] (BSD)
+* * JS Alternatives: Openlibrary fork of [WMD and showdown.js] [6] (MIT), [Github flavored markdown] [7]
 
    [1]: https://github.com/paulirish/html5-boilerplate
    [2]: http://jquery.com/
