@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="/css/jquery-ui-flick.css?v=2">    
     <link rel="stylesheet" href="/css/highlight.css?v=2">
     <link rel="stylesheet" href="/css/tipTip.css?v=2">    
+    <link type="text/css" rel="stylesheet" href="/css/openid.css" /> 
     <!--<link rel="stylesheet" href="/css/datatable.css?v=2">-->    
     <!--<link href="/css/sh_style.css" type="text/css" rel="stylesheet" />-->
     
@@ -12,13 +13,16 @@
 
 {% block scripts %}
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
-
+    <script src="/js/libs/showdown.js"></script>
+    <script type="text/javascript" src="/js/libs/openid-en.js"></script>
+    
 <!--    <script type="text/javascript" src="/js/libs/prettify.js"></script>
 -->
 
     <script src="/js/libs/shCore.js"></script>
     <script src="/js/libs/shBrushJava.js"></script>
     <!--<script src="/js/libs/jquery.dataTables.min.js"></script>-->
+
 
 <!--
     <script src="/js/libs/sh_main.js"></script>
@@ -39,16 +43,18 @@
 		
         $(".tip").tipTip({defaultPosition:"bottom", maxWidth:"140px"});
 
-            //$("#editbox").animate({marginLeft: parseInt($("#editbox").css('marginLeft'),10) == 0 ? $("#editbox").outerWidth() : 0});            
-        
-        $("#btn_edit").click(function(){
-            // $("#editbox").show(); //animate({marginLeft: parseInt($("#editbox").css('marginLeft'),10) == 0 ? $("#editbox").outerWidth() : 0});
-            toggle_ui_to_editor(); 
-        });
-        
+        //$("#editbox").animate({marginLeft: parseInt($("#editbox").css('marginLeft'),10) == 0 ? $("#editbox").outerWidth() : 0});                    
         //$("#dialogtable").dataTable();
-    });
+        
+        // showdown
+        var converter = new Attacklab.showdown.converter();
+        var html = converter.makeHtml($("#view_description").html().replace("&gt;", ">"));
+        //alert(html);
+        $("#view_description_md").html(html);
 
+      	openid.init('openid_identifier');
+        
+    });
     var dialog_shown = false;
     function toggle_revisions() {
         if (dialog_shown) {
@@ -58,9 +64,19 @@
             dialog_shown = true;
         }
     }
-    
+
+    function show_dialog_signin(continue_to) {
+        $("#continue_to").val(continue_to);
+        $("#dialog_signin").dialog({
+            position:["center", 160], 
+            width:600, 
+            beforeClose: function(event, ui) { dialog_siginin_shown = false; },
+      
+        });
+    }
+        
     var editWindow;
-    function show_edit(id) {
+    function show_edit(id) {        
         if (editWindow && !editWindow.closed) 
             editWindow.location = "/{{ snippet.slug1 }}/edit/" + id;
         else
@@ -81,6 +97,14 @@
         });
     }
     {% endif %}
+
+    function toggle_ui_to_editor() {
+        {% if userprefs %}_toggle_ui_to_editor(){% else %}show_dialog_signin("/{{ snippet.slug1 }}?edit=1");{% endif %}
+    }
+
+    function follow_snippet() {
+        {% if userprefs %}_follow(){% else %}show_dialog_signin("/{{ snippet.slug1 }}/follow");{% endif %}
+    }
     </script>
 {% endblock %}
 
@@ -89,15 +113,15 @@
 <form action="/{{ snippet.slug1 }}/edit" method="post">
 <div style="height:36px;">
             <h1>
-                <div style="display:none;" id="edit_title"> <input  name="title" type="text" style="width:97%;" value="{{ snippet.title }}" /></div>
+                <div style="display:none;" id="edit_title"> <input  name="title" id="title" type="text" style="width:97%;" value="{{ snippet.title }}" /></div>
                 <a id="view_title" href="/{{ snippet.slug1 }}">{{ snippet.title }}</a>
             </h1>
 </div>
 
             <div class="sidebar">
                 <div style="text-align:center; float:right; padding-top:2px; margin-right:10px;">
-                    <p><a href="#" class="btn_small tip" title="<p>Receive emails on updates and/or comments</p>">Follow</a></p>
-                    <p><a href="#" id="btn_edit" class="btn_small">Edit</a></p>
+                    <p><a href="javascript:follow_snippet()" class="btn_small tip" title="<p>Receive emails on updates and/or comments</p>">Follow</a></p>
+                    <p><a href="javascript:toggle_ui_to_editor()" id="btn_edit" class="btn_small">Edit</a></p>
                 </div>            
 
                 <div id="snippet_points">
@@ -106,7 +130,11 @@
                         {% if voted %}
                             <span class="teaser">voted</span>
                         {% else %}
+                            {% if userprefs %}
                             <a class="teaser" href="javascript:vote()" title="Give this snippet a point!">vote</a>
+                            {% else %}                            
+                            <a class="teaser" href="javascript:show_dialog_signin('{{ snippet.slug1 }}/vote')" title="Give this snippet a point!">vote</a>
+                            {% endif %}
                         {% endif %}
                         <!--<div class="teaser">
                             <a href="" title="Give this snippet a point!"><img src="/images/thumb_up.gif" /></a>
@@ -120,7 +148,7 @@
             <div id="editbox" style="display:none;">
             
                 <div style="text-align:right; padding-top:2px; margin-right:10px;">
-                    <p><a href="#" class="btn_small" title="<p>Receive emails on updates and/or comments</p>">Preview</a></p>
+                    <p><a href="javascript:preview()" class="btn_small" title="">Preview</a></p>
                     <p><input type="submit" id="btn_publish" class="btn_small" value="Submit" /></p>
                 </div>            
                 <div style="clear:both; margin-bottom:20px;"></div>
@@ -164,9 +192,10 @@
 <div>            
             
             <div class="envelope">
-                <p id="view_description">{{ snippet.description }}</p>            
+                <p id="view_description" style="display:none;">{{ snippet.description }}</p>            
+                <p id="view_description_md"></p>            
                 <div style=" display:none;" id="edit_description">
-                    <div><textarea style="width:98%;" rows="12" name="description">{{ snippet.description }}</textarea></div>
+                    <div><textarea style="width:98%;" rows="14" id="desc" name="description">{{ snippet.description }}</textarea></div>
                     <div style="padding-left:4px; margin-bottom:4px; color:gray;"><small>markdown suppored</small></div>
                 </div>            
                 
@@ -180,7 +209,7 @@
                 <pre name="code" class="java">{{ snippet.code|escape }}</pre>
             </div>
             <div style="overflow:hidden; display:none;" id="edit_code">
-                <div><textarea style="width:98%; padding:4px;" rows="28" name="code">{{ snippet.code }}</textarea></div>
+                <div><textarea style="width:98%; padding:4px;" rows="28" id="input_code" name="code">{{ snippet.code }}</textarea></div>
                 <div style="margin-top:20px;">
                     <a href="#" class="btn_small">Preview</a>
                     <a href="#" class="btn_small">Publish</a>
@@ -213,6 +242,32 @@
        </tbody>
 	   </table>
 	</p>
+</div>
+
+{% if not userprefs %}
+<div id="dialog_signin" title="Sign In" style="display:none;">
+	<!-- Simple OpenID Selector --> 
+	<form action="/login" method="get" id="openid_form"> 
+		<input type="hidden" name="action" value="verify" />
+		<input type="hidden" name="continue" id="continue_to" value="/{{ snippet.slug1 }}/vote" />
+		<fieldset> 
+			<legend>Sign-in or Create New Account</legend> 
+			<div id="openid_choice"> 
+				<p>Please click your account provider:</p> 
+				<div id="openid_btns"></div> 
+			</div> 
+			<div id="openid_input_area"> 
+				<input id="openid_identifier" name="openid_identifier" type="text" value="http://" /> 
+				<input id="openid_submit" type="submit" value="Sign-In"/> 
+			</div> 
+			<noscript> 
+				<p>OpenID is service that allows you to log-on to many different websites using a single indentity.
+				Find out <a href="http://openid.net/what/">more about OpenID</a> and <a href="http://openid.net/get/">how to get an OpenID enabled account</a>.</p>
+			</noscript> 
+		</fieldset> 
+	</form> 
+	<!-- /Simple OpenID Selector -->
+{% endif %} 
 </div>
 
 {% endblock %}

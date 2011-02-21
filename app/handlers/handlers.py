@@ -60,8 +60,6 @@ class Account(webapp.RequestHandler):
         prefs = UserPrefs.from_user(user)
 
 
-
-
 class LegacySnippetView(webapp.RequestHandler):
     """Redirects for snippets of legacy androidsnippets.org, which have
     links such as http://androidsnippets.org/snippets/198"""
@@ -116,6 +114,7 @@ class SnippetView(webapp.RequestHandler):
         accepted_revisions.filter("merged =", True)
         accepted_revisions.order("date_submitted")
 
+        has_voted = False
         # see if user has voted
         if user:
             q1 = db.GqlQuery("SELECT * FROM SnippetUpvote WHERE \
@@ -155,14 +154,17 @@ class SnippetVote(webapp.RequestHandler):
 
         if vote:
             # Has already voted
-            self.response.out.write("0")
+            # self.response.out.write("0")
+            pass
         else:
             # Create the upvote
             u = SnippetUpvote(userprefs=prefs, snippet=snippet)
             u.save()
             snippet.upvote()
             snippet.save()
-            self.response.out.write("1")
+            # self.response.out.write("1")
+
+        self.redirect("/%s" % snippet_slug)
 
 
 class SnippetEdit(webapp.RequestHandler):
@@ -198,14 +200,16 @@ class SnippetEdit(webapp.RequestHandler):
         if user == snippet.userprefs.user:
             # Auto-merge new revision if edit by author
             r.merge(merged_by=prefs)
-            self.response.out.write("0")
+            # self.response.out.write("0")
         else:
             # Add proposal info if from another editor
             snippet.proposal_count += 1
             snippet.date_lastproposal = datetime.datetime.now()
             snippet.date_lastactivity = datetime.datetime.now()
             snippet.save()
-            self.response.out.write("1")
+            # self.response.out.write("1")
+
+        self.redirect("/%s" % snippet_slug)
 
 
 class SnippetEditView(webapp.RequestHandler):
@@ -227,6 +231,7 @@ class SnippetEditView(webapp.RequestHandler):
         rev.views += 1
         rev.put()
 
+        has_voted = False
         if user:
             # see if user has already voted
             q1 = db.GqlQuery("SELECT * FROM SnippetRevisionUpvote WHERE \

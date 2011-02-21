@@ -19,7 +19,7 @@ b { font-weight:bold; }
 hr { border-color: #DFDFDF; margin:12px 00px; }
 h1 {
     font-size:20px;
-    margin-bottom:12px;   
+    margin-bottom:2px;   
 }
 h1 a { color:#333; text-decoration:none; }
 h1 a:hover { color:#111; }
@@ -27,12 +27,14 @@ h1 a:hover { color:#111; }
 h2 {
     color:#444;
     font-size:18px;
-    margin-bottom:10px;   
+    margin-bottom:2px;   
 }
 
 p {
     margin-bottom:8px;
 }
+
+ul, ol { margin-bottom:6px; }
 
 .btn_small .ui-button-text { padding:0.2em 0.8em; }
 .ui-combobox-button { font-size:10px; }
@@ -144,10 +146,6 @@ p {
 
 #snippet_view #code { 
     margin-left:-10px; /* fix for syntax highlighter spacing */
-}
-
-#snippet_view h1 {
-   margin-bottom:8px;
 }
 
 #snippet_view #subtitle {

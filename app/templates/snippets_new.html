@@ -20,26 +20,14 @@
 		//$("#title").focus();
     });
 
-    var previewWindow;    
-    function preview() {
-        uri = "/preview?title=" + encodeURI($("#title").val()) + "&desc=" + encodeURI($("#desc").val())
-            + "&code=" + encodeURI($("#code").val());
-        if (previewWindow && !previewWindow.closed) {
-            previewWindow.location = uri;
-        } else {
-            // opens a new window with the edit
-            previewWindow = window.open(uri, 'mywin',
-            'left=20,top=20,width=600,height=500,toolbar=0,location=0,resizable=0,menubar=0,status=0');
-        }
-    }
     </script>
 {% endblock %}
 
-{% block main %}
-<h2>Add a new snippet</h2> 
-			
-<div id="snippet_new">
-<form action="/add" method="post">
+{% block main %}			
+<div id="snippet_new" style="margin:auto; width:800px;">
+<h1>Add a new snippet</h1> 
+
+<form action="/add" method="post" style="margin-top:20px;">
 <table><tr>
 <td class="c1">
 {% if errors %}
@@ -55,13 +43,15 @@
     <input type="text" name="title" id="title" class="tip input" value="{{ title }}" title="A precise title makes it easy for others to find this snippet." /></p>
     <script>document.getElementById('title').focus();</script>
     
-    <p><b class="inputinfo">Description</b><br />
+    <p style="margin-top:20px;">
+    <div style="float:right; padding-right:10px; color:#888;"><small>Markdown supported</small></div>
+    <div><b class="inputinfo">Description</b></div> 
     <textarea name="description" id="desc" cols="60" rows="10" class="tip input" title="A few words describing this snippet, and enough space for references. Markdown is supported.">{{ description }}</textarea>
-    <br><small>Markdown supported</small>
+    <br>
     </p>
 
-    <p><b class="inputinfo">Snippet</b><br />
-    <textarea id="code" name="code" cols="70" rows="20" class="tip input" title="Paste the code in here. Everything in this box will be syntax-highlighted.">{{ code }}</textarea>
+    <p style="margin-top:20px;"><b class="inputinfo">Snippet</b><br />
+    <textarea id="input_code" name="code" cols="70" rows="20" class="tip input" title="Paste the code in here. Everything in this box will be syntax-highlighted.">{{ code }}</textarea>
     </p>
 
     <hr>

@@ -75,7 +75,7 @@ class Snippet(db.Model):
     slug2 = db.StringProperty()  # old snippets haveset slug2 to old id
 
     # Number of pageviews
-    views = db.IntegerProperty(default=1)
+    views = db.IntegerProperty(default=0)
 
     # LastActivity includes edits, comments and votes
     date_lastactivity = db.DateTimeProperty(auto_now_add=True)
