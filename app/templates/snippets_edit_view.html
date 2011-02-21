@@ -17,16 +17,8 @@
         //prettyPrint(); 
         dp.SyntaxHighlighter.ClipboardSwf = '/flash/clipboard.swf';
         dp.SyntaxHighlighter.HighlightAll('code');  
-
-    /*
-        // showdown
-        var converter = new Attacklab.showdown.converter();
-        var html = converter.makeHtml($("#view_description").html().replace("&gt;", ">"));
-        //alert(html);
-        $("#view_description_md").html(html);
-    */
     });
-    
+
     </script>
 {% endblock %}
 
@@ -77,6 +69,9 @@
             
             <div class="envelope">
                 <p id="view_description">{{ desc_md }}{{ desc|escape }}</p>            
+                {% if code %}
+                    <p id="view_description_md"></p>
+                {% endif %}            
             </div>
 
             <div id="code">
