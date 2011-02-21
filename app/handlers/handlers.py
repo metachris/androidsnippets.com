@@ -10,6 +10,8 @@ from google.appengine.ext.webapp.util import login_required
 #from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 from google.appengine.ext.webapp import template
 
+import markdown
+
 from time import sleep
 from tools import slugify, decode
 from models import *
@@ -123,9 +125,10 @@ class SnippetView(webapp.RequestHandler):
                     userprefs = :1 and snippet = :2", prefs, snippet)
             has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
 
+        desc_md = markdown.markdown(snippet.description)
         values = {"prefs": prefs, "snippet": snippet, "revisions": revisions, \
                 'voted': has_voted, 'accepted_revisions': accepted_revisions,
-                "openedit": self.request.get('edit')}
+                "openedit": self.request.get('edit'), 'desc_md': desc_md}
         self.response.out.write(template.render(tdir + \
             "snippets_view.html", values))
 

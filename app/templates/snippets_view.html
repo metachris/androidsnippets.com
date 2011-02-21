@@ -13,7 +13,7 @@
 
 {% block scripts %}
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
-    <script src="/js/libs/showdown.js"></script>
+    <!--<script src="/js/libs/showdown.js"></script>-->
     <script type="text/javascript" src="/js/libs/openid-en.js"></script>
     
 <!--    <script type="text/javascript" src="/js/libs/prettify.js"></script>
@@ -47,11 +47,12 @@
         //$("#dialogtable").dataTable();
         
         // showdown
+        /*
         var converter = new Attacklab.showdown.converter();
         var html = converter.makeHtml($("#view_description").html().replace("&gt;", ">"));
         //alert(html);
         $("#view_description_md").html(html);
-
+        */
       	openid.init('openid_identifier');
         
         {% if openedit %}toggle_ui_to_editor();{% endif %}
@@ -191,9 +192,8 @@
 
 <div>            
             
-            <div class="envelope">
-                <p id="view_description" style="display:none;">{{ snippet.description }}</p>            
-                <p id="view_description_md"></p>            
+            <div class="envelope">            
+                <p id="view_description">{{ desc_md }}</p>            
                 <div style=" display:none;" id="edit_description">
                     <div><textarea style="width:98%;" rows="14" id="desc" name="description">{{ snippet.description }}</textarea></div>
                     <div style="padding-left:4px; margin-bottom:4px; color:gray;"><small>markdown suppored</small></div>

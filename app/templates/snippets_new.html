@@ -2,9 +2,12 @@
 
 {% block head %}
     <link rel="stylesheet" href="/css/tipTip.css?v=2">
+    <link rel="stylesheet" type="text/css" href="/css/wmd.css" />     
 {% endblock %}
 
 {% block scripts %}    
+    <script src="/js/libs/wmd.js"></script>
+    <script src="/js/libs/jquery-wmd-plugin.js"></script>
     <script>
     $(document).ready(function() {
 		$( ".btn" ).button();
@@ -18,8 +21,14 @@
 
 		$( "select" ).combobox();
 		//$("#title").focus();
+		
+	    $("#desc").wmd({
+	        "preview": false,
+	        "helpLink": "http://daringfireball.net/projects/markdown/",
+	        "helpHoverTitle": "Markdown Help",
+	    });
+		
     });
-
     </script>
 {% endblock %}
 
@@ -44,7 +53,7 @@
     <script>document.getElementById('title').focus();</script>
     
     <p style="margin-top:20px;">
-    <div style="float:right; padding-right:10px; color:#888;"><small>Markdown supported</small></div>
+    
     <div><b class="inputinfo">Description</b></div> 
     <textarea name="description" id="desc" cols="60" rows="10" class="tip input" title="A few words describing this snippet, and enough space for references. Markdown is supported.">{{ description }}</textarea>
     <br>
