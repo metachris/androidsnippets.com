@@ -10,6 +10,9 @@ _slugify_strip_re = re.compile(r'[^\w\s-]')
 _slugify_hyphenate_re = re.compile(r'[-\s]+')
 
 
+"""Some common tools. All BSD licensed"""
+
+
 def slugify(value):
     """
     Normalizes string, converts to lowercase, removes non-alpha characters,
@@ -43,17 +46,16 @@ def get_tags_mostused(force_update=False):
     if tags and not force_update:
         return tags
 
-    else:
-        # Get all tags, build dict with key=name, val=snippet-count
-        _tags = Tag.all()
-        tags = {}
-        for tag in _tags:
-            cnt = tag.snippettag_set.count()
-            tags[tag.name] = cnt
+    # Get all tags, build dict with key=name, val=snippet-count
+    _tags = Tag.all()
+    tags = {}
+    for tag in _tags:
+        cnt = tag.snippettag_set.count()
+        tags[tag.name] = cnt
 
-        # Now sort and take only top 50
-        sorted_tags = sorted(tags.iteritems(), key=itemgetter(1), reverse=True)
-        sorted_tags = sorted_tags[:100]
+    # Now sort and take only top 50
+    sorted_tags = sorted(tags.iteritems(), key=itemgetter(1), reverse=True)
+    sorted_tags = sorted_tags[:100]
 
-        memcache.set("tags_mostused", sorted_tags)
-        return sorted_tags
+    memcache.set("tags_mostused", sorted_tags)
+    return sorted_tags
