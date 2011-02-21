@@ -258,6 +258,9 @@ class SnippetEditView(webapp.RequestHandler):
                             snippetrevision=rev)
                     v.save()
 
-        values = {"prefs": prefs, "rev": rev, 'voted': str(has_voted)}
+        # TODO: memcache
+        desc_md = markdown.markdown(rev.description)
+        values = {"prefs": prefs, "rev": rev, 'voted': str(has_voted), \
+                'desc_md': desc_md}
         self.response.out.write(template.render(tdir + \
             "snippets_edit_view.html", values))

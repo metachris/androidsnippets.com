@@ -11,7 +11,7 @@ function ui_to_editor() {
     $("#view_title").hide();
     $("#edit_title").show();
     //$("#view_description").hide();
-    $("#view_description_md").hide();
+    $("#view_description").hide();
     $("#edit_description").show();
     $("#code").hide();
     $("#edit_code").show();
@@ -25,7 +25,7 @@ function ui_to_editor() {
 function ui_to_viewmode() {
     $("#view_title").show();
     $("#edit_title").hide();
-    $("#view_description_md").show();
+    $("#view_description").show();
     $("#edit_description").hide();
     $("#code").show();
     $("#editbox").hide();

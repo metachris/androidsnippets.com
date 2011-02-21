@@ -10,6 +10,8 @@ from google.appengine.ext.webapp.util import login_required
 #from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 from google.appengine.ext.webapp import template
 
+import markdown
+
 from time import sleep
 from tools import slugify, decode
 from models import *
@@ -103,9 +105,10 @@ class SnippetsNewPreview(webapp.RequestHandler):
         title = decode(self.request.get('title'))
         code = decode(self.request.get('code'))
         description = decode(self.request.get('desc'))
+        desc_md = markdown.markdown(description)
         tags = decode(self.request.get('tags'))
 
-        values = {"prefs": prefs, "title": title, "code": code, 'desc': \
-                description, 'tags': tags, 'preview': True}
+        values = {"prefs": prefs, "title": title, "code": code, 'desc_md': \
+                desc_md, 'tags': tags, 'preview': True}
         self.response.out.write(template.render(tdir + \
             "snippets_edit_view.html", values))

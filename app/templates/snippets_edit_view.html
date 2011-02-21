@@ -10,7 +10,7 @@
     <script src="/js/libs/shCore.js"></script>
     <script src="/js/libs/shBrushJava.js"></script>
 
-    <script src="/js/libs/showdown.js"></script>
+    <!--<script src="/js/libs/showdown.js"></script>-->
 
     <script>
     $(document).ready(function() {
@@ -18,11 +18,13 @@
         dp.SyntaxHighlighter.ClipboardSwf = '/flash/clipboard.swf';
         dp.SyntaxHighlighter.HighlightAll('code');  
 
+    /*
         // showdown
         var converter = new Attacklab.showdown.converter();
         var html = converter.makeHtml($("#view_description").html().replace("&gt;", ">"));
         //alert(html);
         $("#view_description_md").html(html);
+    */
     });
     
     </script>
@@ -74,8 +76,7 @@
 <div>            
             
             <div class="envelope">
-                <p id="view_description" style="display:none;">{{ rev.description|escape }}{{ desc|escape }}</p>            
-                <p id="view_description_md"></p>            
+                <p id="view_description">{{ desc_md }}{{ desc|escape }}</p>            
             </div>
 
             <div id="code">
