@@ -58,14 +58,13 @@
   <!-- Grab Google CDN's jQuery. -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
-  <script src="/js/plugins.js"></script>
-
-  {% block scripts %}{% endblock %}
-  
   <!-- scripts concatenated and minified via ant build script-->
+  <script src="/js/plugins.js"></script>
   <script src="/js/script.js"></script>
   <!-- end concatenated and minified scripts-->
-  
+
+  {% block scripts %}{% endblock %}
+    
   <!--[if lt IE 7 ]>
     <script src="/js/libs/dd_belatedpng.js"></script>
     <script>DD_belatedPNG.fix('img, .png_bg'); // Fix any <img> or .png_bg bg-images. Also, please read goo.gl/mZiyb </script>

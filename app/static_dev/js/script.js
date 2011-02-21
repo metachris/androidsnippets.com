@@ -83,6 +83,6 @@ function preview() {
 }
 
 
-function follow() {
+function _follow() {
     alert("follow");
 }

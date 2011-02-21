@@ -4,7 +4,7 @@ version: 1
 runtime: python
 api_version: 1
 
-# default_expiration: "30d"
+default_expiration: "30d"
 
 builtins:
 - datastore_admin: on
@@ -21,6 +21,10 @@ handlers:
   login: required
 
 - url: /*/edit
+  script: app.py
+  login: required
+
+- url: /*/comment
   script: app.py
   login: required
 

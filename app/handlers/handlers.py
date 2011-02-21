@@ -125,10 +125,20 @@ class SnippetView(webapp.RequestHandler):
                     userprefs = :1 and snippet = :2", prefs, snippet)
             has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
 
+        comments = SnippetComment.all()
+        comments.filter("snippet =", snippet)
+        comments.order("-date_submitted")
+        comments_html = template.render(tdir + "comments.html", \
+                {"comments": comments})
+
+        # markdown the description
         desc_md = markdown.markdown(snippet.description)
+
         values = {"prefs": prefs, "snippet": snippet, "revisions": revisions, \
-                'voted': has_voted, 'accepted_revisions': accepted_revisions,
-                "openedit": self.request.get('edit'), 'desc_md': desc_md}
+                'voted': has_voted, 'accepted_revisions': accepted_revisions, \
+                "openedit": self.request.get('edit'), 'desc_md': desc_md, \
+                "comments": comments_html}
+
         self.response.out.write(template.render(tdir + \
             "snippets_view.html", values))
 

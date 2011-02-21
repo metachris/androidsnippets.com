@@ -8,26 +8,21 @@
     <link type="text/css" rel="stylesheet" href="/css/openid.css" /> 
     <!--<link rel="stylesheet" href="/css/datatable.css?v=2">-->    
     <!--<link href="/css/sh_style.css" type="text/css" rel="stylesheet" />-->
+    <link rel="stylesheet" type="text/css" href="/css/wmd.css" />     
     
 {% endblock %}
 
 {% block scripts %}
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
-    <!--<script src="/js/libs/showdown.js"></script>-->
     <script type="text/javascript" src="/js/libs/openid-en.js"></script>
     
-<!--    <script type="text/javascript" src="/js/libs/prettify.js"></script>
--->
-
     <script src="/js/libs/shCore.js"></script>
     <script src="/js/libs/shBrushJava.js"></script>
     <!--<script src="/js/libs/jquery.dataTables.min.js"></script>-->
 
-
-<!--
-    <script src="/js/libs/sh_main.js"></script>
-    <script src="/js/libs/sh_java.min.js"></script>
--->
+    <script src="/js/libs/showdown.js"></script>
+    <script src="/js/libs/wmd.js"></script>
+    <script src="/js/libs/jquery-wmd-plugin.js"></script>
 
     <script>
     $(document).ready(function() {
@@ -56,6 +51,13 @@
       	openid.init('openid_identifier');
         
         {% if openedit %}toggle_ui_to_editor();{% endif %}
+        
+	    $("#wmd").wmd({
+	        "preview": true,
+	        "helpLink": "/about/markdown",
+	        "helpHoverTitle": "Markdown Help",
+	    });            
+        
     });
     
     var dialog_shown = false;
@@ -217,14 +219,31 @@
             </div>                
  
 </div>
+</form>
 
 <div id="comments">
+<a name="comments"></a>
     <h2>{% if snippet.snippetcomment_set.count %}{{ snippet.snippetcomment_set.count }} Comments{% else %}Be the first to comment{% endif %}</h2>
 
-    <div id="comment_thread"></div>
-</div>
+    {% if prefs %}
+    <div style="width:500px; margin-top:20px;">
+        <form action="/{{ snippet.slug1 }}/comment" method="post">
+        <textarea id="wmd" name="comment" style="width:500px; border:1px solid lightgray;" rows="8"></textarea>
+        <div style="text-align:right; padding-top:6px;">
+            <input type="button" class="btn_small" value="Cancel" onclick="javascript:$('#wmd').val('')" />
+            <input type="submit" class="btn_small" value="Submit" />
+        </div>
+        </form>
+    </div>
+    {% else %}
+        <div style="margin:10px;">
+            <a href="javascript:show_dialog_signin('/{{ snippet.slug1 }}#comments')">Please sign in to comment</a>
+        </div>
+    {% endif %}
 
-</form>
+    <div id="comment_thread">    
+        {{ comments }}
+    </div>
 </div>
 
 
