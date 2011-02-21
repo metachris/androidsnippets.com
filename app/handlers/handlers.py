@@ -11,10 +11,13 @@ from google.appengine.ext.webapp.util import login_required
 from google.appengine.ext.webapp import template
 
 import markdown
+import akismet
 
 from time import sleep
 from tools import slugify, decode
 from models import *
+
+import settings
 
 # Setup jinja templating
 tdir = os.path.join(os.path.dirname(__file__), '../templates/')
@@ -48,6 +51,10 @@ class Main(webapp.RequestHandler):
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
+        logging.info("== %s" % self.request.cookies)
+        logging.info("== %s" % self.request.headers)
+        logging.info("== %s" % self.request.remote_addr)
+        
         q = Snippet.all()
         q.order("-date_submitted")
         snippets = q.fetch(20)
@@ -116,6 +123,9 @@ class SnippetView(webapp.RequestHandler):
         accepted_revisions.filter("merged =", True)
         accepted_revisions.order("date_submitted")
 
+        # if commented and was marked as spam:
+        commentspam = decode(self.request.get('c')) == "m"
+
         has_voted = False
         # see if user has voted
         if user:
@@ -125,7 +135,7 @@ class SnippetView(webapp.RequestHandler):
                     userprefs = :1 and snippet = :2", prefs, snippet)
             has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
 
-        comments = snippet.snippetcomment_set
+        comments = snippet.snippetcomment_set.filter("flagged_as_spam =", False)
         comments_html = template.render(tdir + "comments.html", \
                 {"comments": comments})
 
@@ -135,7 +145,8 @@ class SnippetView(webapp.RequestHandler):
         values = {"prefs": prefs, "snippet": snippet, "revisions": revisions, \
                 'voted': has_voted, 'accepted_revisions': accepted_revisions, \
                 "openedit": self.request.get('edit'), 'desc_md': desc_md, \
-                "comments": comments_html}
+                "comments": comments, "comments_html": comments_html, \
+                'commentspam': commentspam}
 
         self.response.out.write(template.render(tdir + \
             "snippets_view.html", values))
@@ -319,6 +330,25 @@ class SnippetCommentView(webapp.RequestHandler):
         comment_md = markdown.markdown(comment)
         c = SnippetComment(userprefs=prefs, snippet=snippet, comment=comment)
         c.comment_md = comment_md
+
+        # Check if comment is spam
+        try:
+            real_key = akismet.verify_key(settings.AKISMET_APIKEY, \
+                settings.AKISMET_URL)
+            if real_key:
+                is_spam = akismet.comment_check(settings.AKISMET_APIKEY, \
+                    settings.AKISMET_URL, \
+                    self.request.remote_addr, \
+                    self.request.headers["User-Agent"], \
+                    comment_content=comment)
+                if is_spam:
+                    logging.warning("= comment: Yup, that's spam alright.")
+                    c.flagged_as_spam = True
+                else:
+                    logging.info("= comment: Hooray, your users aren't scum!")
+        except akismet.AkismetError, e:
+            logging.error("%s, %s" % (e.response, e.statuscode))
+        
         c.save()
 
-        self.redirect("/%s" % snippet_slug)
+        self.redirect("/%s#comments" % snippet_slug)

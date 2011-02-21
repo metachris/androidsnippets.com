@@ -247,6 +247,7 @@ class SnippetComment(db.Model):
     comment = db.TextProperty(required=False)
     comment_md = db.TextProperty(required=False)
 
+    flagged_as_spam = db.BooleanProperty(default=False)
 
 class SnippetRevisionComment(db.Model):
     """Comment on a snippet revision which may be held in moderation"""

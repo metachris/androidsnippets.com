@@ -182,7 +182,7 @@
                     {% endfor %}
                 </p>
                 
-                <p><a href="#comments">{{ snippet.snippetcomment_set.count }} comments</a></p>
+                <p><a href="#comments">{{ comments.count }} comment {{ comments.count|pluralize }}</a></p>
 
                 <hr>            
 
@@ -234,26 +234,33 @@
 
 <div id="comments">
 <a name="comments"></a>
-    <h2>{% if snippet.snippetcomment_set.count %}{{ snippet.snippetcomment_set.count }} Comments{% else %}Be the first to comment{% endif %}</h2>
+    <h2>{% if comments.count %}{{ comments.count }} Comment{{ comments.count|pluralize }}{% else %}Be the first to comment{% endif %}</h2>
 
-    {% if prefs %}
-    <div style="width:500px; margin-top:20px; margin-bottom:20px;">
-        <form action="/{{ snippet.slug1 }}/comment" method="post">
-        <textarea id="wmd" name="comment" style="width:500px; border:1px solid lightgray;" rows="6"></textarea>
-        <div style="text-align:right; padding-top:6px;">
-            <input type="button" class="btn_small" value="Cancel" onclick="javascript:$('#wmd').val('')" />
-            <input type="submit" class="btn_small" value="Submit" />
-        </div>
-        </form>
-    </div>
+    {% if commentspam %}
+		<div class="ui-state-error ui-corner-all" style="padding: 8px 0px 0px .7em; margin:14px 0px 24px 10px; width:470px;">			 
+			<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+			Your comment was flagged by akismet. It will be manually reviewed.
+			</p>
+		</div>        
     {% else %}
-        <div style="margin:10px;">
-            <a href="javascript:show_dialog_signin('/{{ snippet.slug1 }}#comments')">Please sign in to comment</a>
+        {% if prefs %}
+        <div style="width:500px; margin-top:20px; margin-bottom:20px;">
+            <form action="/{{ snippet.slug1 }}/comment" method="post">
+            <textarea id="wmd" name="comment" style="width:500px; border:1px solid lightgray;" rows="6"></textarea>
+            <div style="text-align:right; padding-top:6px;">
+                <input type="button" class="btn_small" value="Cancel" onclick="javascript:$('#wmd').val('')" />
+                <input type="submit" class="btn_small" value="Submit" />
+            </div>
+            </form>
         </div>
+        {% else %}
+            <div style="margin:10px;">
+                <a href="javascript:show_dialog_signin('/{{ snippet.slug1 }}#comments')">Please sign in to comment</a>
+            </div>
+        {% endif %}
     {% endif %}
-
     <div id="comment_thread">    
-        {{ comments }}
+        {{ comments_html }}
     </div>
 </div>
 
