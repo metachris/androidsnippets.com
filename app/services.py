@@ -16,35 +16,6 @@ from handlers import *
 class Cron1(webapp.RequestHandler):
     def get(self):
         """Cron job that queries the db and forks a worker for each entry"""
-        emails = db.GqlQuery("SELECT * FROM emails WHERE 1")
-        for email in emails:
-            # Fork worker requests in the background
-            taskqueue.add(url='/services/cron1-worker1/%s' % email.key())
-            # print prefs, prefs.key(), "dispatched"
-
-
-class Cron1_Worker1(webapp.RequestHandler):
-    def post(self, key):
-        """Worker that runs in the 'background'"""
-        # Get the object from the database
-        email = Emails.get(key)
-
-        # Construct a appengine.api.mail object
-        message = mail.EmailMessage()
-        message.sender = "Your Name <you@domain.x>"
-        message.to = email.to
-        message.subject = email.subject
-
-        # Set text and html body
-        message.body = email.body_text
-        message.html = email.body_html
-
-        # Send. Important: Sometimes emails fail to send, which will throw an
-        # exception and end the function there. Next round tries again.
-        message.send()
-
-        # Now the message was sent and we can safely delete it.
-        message.delete()
 
 
 urls = [

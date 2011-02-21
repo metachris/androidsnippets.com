@@ -14,12 +14,13 @@ import markdown
 
 from urllib import unquote
 from time import sleep
-from tools import slugify, decode
+from tools import slugify, decode, get_tags_mostused
 from models import *
 
-# Setup jinja templating
+
+# Setup template dir
 tdir = os.path.join(os.path.dirname(__file__), '../templates/')
-#env = Environment(loader=FileSystemLoader(template_dirs))
+webapp.template.register_template_library('common.templateaddons')
 
 
 # @login_required only works on get, now handled via app.yaml
@@ -27,8 +28,11 @@ class SnippetsNew(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
+        tags_mostused = get_tags_mostused()
+
         self.response.out.write(template.render(tdir + \
-            "snippets_new.html", {'prefs': prefs, 'tag_cnt': 0}))
+            "snippets_new.html", {'prefs': prefs, 'tag_cnt': 0, \
+            "tags_mostused": tags_mostused}))
 
     def post(self):
         """Check and add new snippet to db"""
@@ -48,7 +52,7 @@ class SnippetsNew(webapp.RequestHandler):
             if not tag:
                 break
             elif tag == "0":
-                # placeholder for removed tag
+                # 0 is placeholder for removed tag
                 pass
             else:
                 tags.append(decode(tag))
@@ -64,9 +68,10 @@ class SnippetsNew(webapp.RequestHandler):
         if len(tags) < 2:
             errors.append("a few tags")
         if len(errors) > 0:
+            tags_mostused = get_tags_mostused()
             values = {'prefs': prefs, 'errors': errors, 'title': title, \
                 'code': code, 'description': description, 'tags': tags, \
-                'tag_cnt': len(tags)}
+                'tag_cnt': len(tags), "tags_mostused": tags_mostused}}
             self.response.out.write(template.render(tdir + \
                 "snippets_new.html", values))
             return
@@ -122,6 +127,9 @@ class SnippetsNew(webapp.RequestHandler):
 
             st = SnippetTag(snippet=s, tag=t)
             st.put()
+
+        # Recalculate most used tags and store in memcache
+        get_tags_mostused(force_update=True)
 
         # Redirect to snippet view
         self.redirect("/%s" % s.slug1)

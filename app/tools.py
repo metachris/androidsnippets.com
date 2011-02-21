@@ -1,5 +1,10 @@
 import re
 import unicodedata
+from operator import itemgetter
+
+from google.appengine.api import memcache
+
+from models import *
 
 _slugify_strip_re = re.compile(r'[^\w\s-]')
 _slugify_hyphenate_re = re.compile(r'[-\s]+')
@@ -29,3 +34,24 @@ def decode_iftrue(var):
     if not var:
         return var
     return unicode(var, 'utf-8') if isinstance(var, str) else unicode(var)
+
+
+def get_tags_mostused(force_refresh=False):
+    tags = memcache.get("tags_mostused")
+    if tags and not force_refresh:
+        return tags
+
+    else:
+        # Get all tags, build dict with key=name, val=snippet-count
+        _tags = Tag.all()
+        tags = {}
+        for tag in _tags:
+            cnt = tag.snippettag_set.count()
+            tags[tag.name] = cnt
+
+        # Now sort and take only top 50
+        sorted_tags = sorted(tags.iteritems(), key=itemgetter(1), reverse=True)
+        sorted_tags = sorted_tags[:100]
+
+        memcache.set("tags_mostused", sorted_tags)
+        return sorted_tags

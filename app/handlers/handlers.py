@@ -264,3 +264,26 @@ class SnippetEditView(webapp.RequestHandler):
                 'desc_md': desc_md}
         self.response.out.write(template.render(tdir + \
             "snippets_edit_view.html", values))
+
+
+class TagView(webapp.RequestHandler):
+    def get(self, tag):
+        user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
+
+        # Find base tag
+        q = Tag.all()
+        q.filter("name =", tag)
+        tag = q.get()
+
+        if not tag:
+            self.error(404)
+            return
+
+        # Find all snippets with tag
+        tags = SnippetTag.all()
+        tags.filter("tag =", tag)
+
+        values = {'prefs': prefs, 'tag': tag, 'tags': tags}
+        self.response.out.write(template.render(tdir + "tags_index.html", \
+                values))

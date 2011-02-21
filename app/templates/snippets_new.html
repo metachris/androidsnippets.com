@@ -98,8 +98,13 @@
 
     <hr>
     
-    <div id="tags_mostused" style="float:right; border-left:1px solid #DDD; padding-left:10px;">
-        <b class="inputinfo">Most used tags:</b><br>
+    <div id="tags_mostused" style="float:right; border-left:1px solid #DDD; padding-left:10px; padding-bottom:10px;">
+        <b class="inputinfo">Often used tags</b><br>
+        <ul style="margin-top:6px;">
+            {% for tag in tags_mostused %}
+                <li>{{ tag|showTag }}</li>
+            {% endfor %}
+        </ul>
         
     </div>
     
