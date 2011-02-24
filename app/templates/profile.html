@@ -9,44 +9,57 @@
 
     <script>
     $(document).ready(function() {
-        $("#tabs").tabs();
+    });
+    
+    $(function() {
+        $("#tabs").tabs({% if tab2 %}{ selected:1 }{% endif %});
+		$(".btn_small").button();        
     });
     </script>
 {% endblock %}
 
 {% block main %}
-    <h1>{{ profile.nickname }}</h1>
-    <small style="color:gray;">Member since {{ profile.date_joined|timesince }}</small>
+    <h1>Account Settings</h1>
+    <small style="color:gray;">Member since {{ prefs.date_joined|timesince }}</small>
     
-    <div style="padding:20px 10px;">
-    <div id="tabs" style="margin-right:20px;">
+    <div id="tabs" style="margin:20px 10px;">
     	<ul>
-    		<li><a href="#tabs-1">Submissions</a></li>
-    		<li><a href="#tabs-2">Edits</a></li>
-    		<li><a href="#tabs-3">Comments</a></li>
+    		<li><a href="#tabs-1">About</a></li>
+    		<li><a href="#tabs-2">Notifications</a></li>
     	</ul>
     	<div id="tabs-1">
-            <p><ul>
-    	       {% for snippet in profile.snippet_set %}
-    	           <li><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></li>
-	           {% endfor %}
-    	   </ul></p>
+            <p>     
+            <form action="/profile" method="post">
+            <input type="hidden" name="update" value="about" />
+            <table class="padX">
+                <tr><td>Avatar</td><td><img src="http://www.gravatar.com/avatar/{{ prefs.email_md5 }}?s=20" /> <small style="color:gray; padding-left:10px;">(from <a href="http://gravatar.com">gravatar.com</a>)</small></td></tr>
+                <tr><td>Nickname</td><td><input type="text" name="nickname" value="{{ prefs.email }}" /></td></tr>
+                <tr><td>Email</td><td><input type="text" name="email" value="{{ prefs.email }}"/></td></tr>
+                <tr><td>Twitter</td><td><input type="text" name="twitter" value="{{ prefs.twitter }}"/></td></tr>
+                <tr><td>About you</td><td><textarea name="about" rows="6" cols="55">{{ prefs.about }}</textarea></td></tr>
+                <tr><td></td><td><input type="submit" value="Apply" class="btn_small" /></td></tr>
+            </table>    
+            </form>
+            </p>
     	</div>
     	<div id="tabs-2">
-            <p><ul>
-    	       {% for snippet in profile.snippetrevision_set %}
-    	           <li><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></li>
-	           {% endfor %}
-    	   </ul></p>
+            <p style="padding-top:10px;">
+            Send me an email when
+            <form action="/profile" method="post">
+            <input type="hidden" name="update" value="notification" />
+            <table class="padX">
+                <tr><td><input type="checkbox" name="n1" value="1" checked="checked" id="n1" /></td><td><label for="n1">Someone suggest an edit on one of my snippets</label></td></tr>
+                <tr><td><input type="checkbox" name="n2" value="1" checked="checked" id="n2" /></td><td><label for="n2">Someone comments on one of my snippets</label></td></tr>
+                <tr><td><input type="checkbox" name="n3" value="1" checked="checked" id="n3" /></td><td><label for="n3">Someone comments on any snippet i've commented on</label></td></tr>
+                <tr><td><input type="checkbox" name="n4" value="1" checked="checked" id="n4" /></td><td><label for="n4">Someone edits or comments on a snippet i follow</label></td></tr>
+                <tr><td colspan='2'></td></tr>
+                <tr><td colspan='2'><input type="submit" value="Apply" class="btn_small" /></td></tr>
+            </table>    
+            </form>
+            </p>
     	</div>
     	<div id="tabs-3">
-            <p><ul>
-    	       {% for comment in profile.snippetcomment_set %}
-    	           <li><a href="/{{ comment.snippet.slug1 }}#{{ comment.key }}">{{ comment.snippet.title }}</a></li>
-	           {% endfor %}
-    	   </ul></p>
+            <p></p>
     	</div>
-    </div>
-    
     </div>
 {% endblock %}

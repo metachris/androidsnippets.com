@@ -23,6 +23,11 @@ class UserPrefs(db.Model):
     date_joined = db.DateTimeProperty(auto_now_add=True)
     date_lastlogin = db.DateTimeProperty(auto_now=True)
 
+    twitter = db.StringProperty(default="")  # twitter username
+    about = db.TextProperty(default="")
+    # notifications are a bitfield. default: lower 8 bits set to 1 (all on)
+    notifications = db.IntegerProperty(default=255)
+
     # user access levels. 0=default, 1=editor, 2=admin
     level = db.IntegerProperty(default=0)
 
@@ -248,6 +253,7 @@ class SnippetComment(db.Model):
     comment_md = db.TextProperty(required=False)
 
     flagged_as_spam = db.BooleanProperty(default=False)
+
 
 class SnippetRevisionComment(db.Model):
     """Comment on a snippet revision which may be held in moderation"""

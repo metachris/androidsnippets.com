@@ -37,4 +37,17 @@ class UserProfileView(webapp.RequestHandler):
         profile = q.get()
 
         values = {'prefs': prefs, 'profile': profile}
+        self.response.out.write(template.render(tdir + "user_profile.html", \
+                values))
+
+
+class ProfileView(webapp.RequestHandler):
+    @login_required
+    def get(self):
+        user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
+
+        values = {'prefs': prefs}
         self.response.out.write(template.render(tdir + "profile.html", values))
+
+    def post(self):

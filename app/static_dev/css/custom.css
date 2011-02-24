@@ -36,6 +36,14 @@ p {
 
 ul, ol { margin-bottom:6px; }
 
+td { padding:2px 6px; }
+.padX td { padding:8px 8px; vertical-align:middle; }
+.padX input[type=text], .padX textarea { 
+    padding:3px 6px;
+    border:1px solid lightgray;
+    border-radius:2px; 
+}
+
 .btn_small .ui-button-text { padding:0.2em 0.8em; }
 .ui-combobox-button { font-size:10px; }
 .ui-autocomplete-input { line-height:20px; padding:2px 4px; }

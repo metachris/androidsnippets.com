@@ -17,6 +17,12 @@ urls = [
     (r'/add', SnippetsNew),
     (r'/preview', SnippetsNewPreview),
 
+    (r'/tags/([-\w]+)', TagView),
+
+    (r'/profile', ProfileView),
+    (r'/authors/(.*)', UserProfileView),
+
+    # snippet slug url's at the bottom
     (r'/snippets/([-\w]+)', LegacySnippetView),
     (r'/([-\w]+)/vote', SnippetVote),
     (r'/([-\w]+)/edit/([-\w]+)', SnippetEditView),
@@ -24,9 +30,6 @@ urls = [
     (r'/([-\w]+)/comment', SnippetCommentView),
     (r'/([-\w]+)', SnippetView),
 
-    (r'/tags/([-\w]+)', TagView),
-
-    (r'/authors/(.*)', UserProfileView),
 ]
 
 application = webapp.WSGIApplication(urls, debug=True)
