@@ -41,6 +41,14 @@ def decode_iftrue(var):
     return unicode(var, 'utf-8') if isinstance(var, str) else unicode(var)
 
 
+def is_valid_email(email):
+    if email and len(email) > 7 and re.match( \
+        "^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", \
+        email):
+        return True
+    return False
+
+
 def get_tags_mostused(force_update=False):
     tags = memcache.get("tags_mostused")
     if tags and not force_update:

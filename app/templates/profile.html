@@ -33,8 +33,14 @@
             <input type="hidden" name="update" value="about" />
             <table class="padX">
                 <tr><td>Avatar</td><td><img src="http://www.gravatar.com/avatar/{{ prefs.email_md5 }}?s=20" /> <small style="color:gray; padding-left:10px;">(from <a href="http://gravatar.com">gravatar.com</a>)</small></td></tr>
-                <tr><td>Nickname</td><td><input type="text" name="nickname" value="{{ prefs.email }}" /></td></tr>
-                <tr><td>Email</td><td><input type="text" name="email" value="{{ prefs.email }}"/></td></tr>
+                <tr><td>Nickname</td><td>
+                    <input type="text" name="nickname" value="{{ prefs.nickname }}" />
+                    {% if error2 %}<small style="color:gray;">Only your own email is permitted as username</small>{% endif %}                    
+                </td></tr>
+                <tr><td>Email</td><td>
+                    <input type="text" name="email" value="{{ prefs.email }}" disabled=true />
+                    <small style="color:gray;">We are working on email verification. You can <a href="/about/contact">contact us</a> in the meantime.</small>                    
+                </td></tr>
                 <tr><td>Twitter</td><td><input type="text" name="twitter" value="{{ prefs.twitter }}"/></td></tr>
                 <tr><td>About you</td><td><textarea name="about" rows="6" cols="55">{{ prefs.about }}</textarea></td></tr>
                 <tr><td></td><td><input type="submit" value="Apply" class="btn_small" /></td></tr>
