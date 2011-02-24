@@ -6,7 +6,7 @@
             <tr>
                 <td><a href="/"><img src="/images/logo.png" border="0" /></a></td>
                 <td align="right">
-                    <p>{% if prefs %}{{ prefs.user }} | <a href='/logout'>Log out</a>{% else %}<a href='/login'>Sign in</a>{% endif %}</p>
+                    <p>{% if prefs %}<a href="/profile">{{ prefs.user }}</a> | <a href='/logout'>Log out</a>{% else %}<a href='/login'>Sign in</a>{% endif %}</p>
                     <br />
                     
                     <p><a href="/add">Add Snippet</a></p>
