@@ -42,12 +42,68 @@ class UserProfileView(webapp.RequestHandler):
 
 
 class ProfileView(webapp.RequestHandler):
-    @login_required
     def get(self):
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
-        values = {'prefs': prefs}
+        values = {'prefs': prefs, 'tab2': self.request.get('n') == '1'}
         self.response.out.write(template.render(tdir + "profile.html", values))
 
     def post(self):
+        user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
+
+        update = decode(self.request.get('update'))
+        if update == "about":
+            nickname = decode(self.request.get('nickname'))
+            email = decode(self.request.get('email'))
+            twitter = decode(self.request.get('twitter'))
+            about = decode(self.request.get('about'))
+
+            url_addon = ""
+            if nickname and nickname != prefs.nickname:
+                # check if nick is still available
+                # update nick
+                url_addon += "&n=1"
+
+            if email and email != prefs.email:
+                # verify email
+                url_addon += "&e=1"
+
+            if twitter and twitter != prefs.twitter:
+                prefs.twitter = twitter
+                url_addon += "&t=1"
+
+            if about and about != prefs.about:
+                prefs.about = about
+                url_addon += "&a=1"
+
+            if url_addon:
+                prefs.put()
+                url_addon = "%s%s" % ("?u=1", url_addon)
+
+            self.redirect("/profile%s" % url_addon)
+            return
+
+        if update == "notifications":
+            # Currently only 4 notification settings. increase as necessary
+            notifications = 0
+            for i in xrange(4):
+                s = decode(self.request.get('n%s' % i))
+                # n1 = lowest bit, n2 next higher, ...
+                notifications |= 1 << i if s else 0
+
+            #logging.info("= n before: %s" % prefs.notifications)
+            #logging.info("= n after: %s" % notifications)
+
+            url_addon = ""
+            if notifications != prefs.notifications:
+                prefs.notifications = notifications
+                url_addon = "%s%s" % ("&n=1", url_addon)
+
+            if url_addon:
+                prefs.put()
+                url_addon = "%s%s" % ("?u=1", url_addon)
+
+            self.redirect("/profile%s" % url_addon)
+            return

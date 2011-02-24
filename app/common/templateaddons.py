@@ -1,6 +1,10 @@
 from google.appengine.ext import webapp
 from django.template import Node
 
+"""
+http://docs.djangoproject.com/en/dev/howto/custom-template-tags/
+"""
+
 # get registry, we need it to register our filter later.
 register = webapp.template.create_template_register()
 
@@ -31,6 +35,12 @@ def android_sdk_to_name(sdk):
     if sdk in android_versions:
         return android_versions[sdk]
 
+
+def is_notification(bitfield, test_bit):
+    return "checked='checked'" if bitfield & test_bit == test_bit else ""
+
+
 register.filter(showTag)
 register.filter(first)
 register.filter(android_sdk_to_name)
+register.filter(is_notification)

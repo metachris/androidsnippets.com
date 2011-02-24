@@ -46,12 +46,12 @@
             <p style="padding-top:10px;">
             Send me an email when
             <form action="/profile" method="post">
-            <input type="hidden" name="update" value="notification" />
+            <input type="hidden" name="update" value="notifications" />
             <table class="padX">
-                <tr><td><input type="checkbox" name="n1" value="1" checked="checked" id="n1" /></td><td><label for="n1">Someone suggest an edit on one of my snippets</label></td></tr>
-                <tr><td><input type="checkbox" name="n2" value="1" checked="checked" id="n2" /></td><td><label for="n2">Someone comments on one of my snippets</label></td></tr>
-                <tr><td><input type="checkbox" name="n3" value="1" checked="checked" id="n3" /></td><td><label for="n3">Someone comments on any snippet i've commented on</label></td></tr>
-                <tr><td><input type="checkbox" name="n4" value="1" checked="checked" id="n4" /></td><td><label for="n4">Someone edits or comments on a snippet i follow</label></td></tr>
+                <tr><td><input type="checkbox" name="n0" value="1" {{ prefs.notifications|is_notification:1 }} id="n1" /></td><td><label for="n1">Someone suggest an edit on one of my snippets</label></td></tr>
+                <tr><td><input type="checkbox" name="n1" value="1" {{ prefs.notifications|is_notification:2 }} id="n2" /></td><td><label for="n2">Someone comments on one of my snippets</label></td></tr>
+                <tr><td><input type="checkbox" name="n2" value="1" {{ prefs.notifications|is_notification:4 }} id="n3" /></td><td><label for="n3">Someone comments on any snippet i've commented on</label></td></tr>
+                <tr><td><input type="checkbox" name="n3" value="1" {{ prefs.notifications|is_notification:8 }} id="n4" /></td><td><label for="n4">Someone edits or comments on a snippet i follow</label></td></tr>
                 <tr><td colspan='2'></td></tr>
                 <tr><td colspan='2'><input type="submit" value="Apply" class="btn_small" /></td></tr>
             </table>    
