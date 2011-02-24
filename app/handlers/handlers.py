@@ -7,7 +7,6 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import login_required
 
-#from jinja2 import Environment, FileSystemLoader, TemplateNotFound
 from google.appengine.ext.webapp import template
 
 import markdown
@@ -51,10 +50,10 @@ class Main(webapp.RequestHandler):
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
-        logging.info("== %s" % self.request.cookies)
-        logging.info("== %s" % self.request.headers)
-        logging.info("== %s" % self.request.remote_addr)
-        
+        #logging.info("== %s" % self.request.cookies)
+        #logging.info("== %s" % self.request.headers)
+        #logging.info("== %s" % self.request.remote_addr)
+
         q = Snippet.all()
         q.order("-date_submitted")
         snippets = q.fetch(20)
@@ -135,7 +134,8 @@ class SnippetView(webapp.RequestHandler):
                     userprefs = :1 and snippet = :2", prefs, snippet)
             has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
 
-        comments = snippet.snippetcomment_set.filter("flagged_as_spam =", False)
+        comments = snippet.snippetcomment_set.filter("flagged_as_spam =", \
+                False)
         comments_html = template.render(tdir + "comments.html", \
                 {"comments": comments})
 
@@ -344,11 +344,13 @@ class SnippetCommentView(webapp.RequestHandler):
                 if is_spam:
                     logging.warning("= comment: Yup, that's spam alright.")
                     c.flagged_as_spam = True
+                    url_addon = "?c=m"
                 else:
                     logging.info("= comment: Hooray, your users aren't scum!")
+                    url_addon = ""
         except akismet.AkismetError, e:
             logging.error("%s, %s" % (e.response, e.statuscode))
-        
+
         c.save()
 
-        self.redirect("/%s#comments" % snippet_slug)
+        self.redirect("/%s%s#comments" % (snippet_slug, url_addon))

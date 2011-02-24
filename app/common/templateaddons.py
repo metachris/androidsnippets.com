@@ -28,7 +28,8 @@ def first(l):
 
 
 def android_sdk_to_name(sdk):
-    return android_versions[sdk]
+    if sdk in android_versions:
+        return android_versions[sdk]
 
 register.filter(showTag)
 register.filter(first)

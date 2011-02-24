@@ -117,10 +117,10 @@
     <b class="inputinfo">Tested with</b><br>
         <div style="margin-top:4px;">
         <select name="version" size="0">
-            <option value="3">Android 1.5+ (API 3)</option>
-            <option value="4">Android 1.6+ (API 4)</option>
-            <option value="7">Android 2.1+ (API 7)</option>
-            <option value="8">Android 2.2+ (API 8)</option>
+            <option value="3" {% ifequal version '3' %}selected=selected{% endifequal %}>Android 1.5+ (API 3)</option>
+            <option value="4" {% ifequal version '4' %}selected=selected{% endifequal %}>Android 1.6+ (API 4)</option>
+            <option value="7" {% ifequal version '7' %}selected=selected{% endifequal %}>Android 2.1+ (API 7)</option>
+            <option value="8" {% ifequal version '8' %}selected=selected{% endifequal %}>Android 2.2+ (API 8)</option>
         </select>
         </div>
 
