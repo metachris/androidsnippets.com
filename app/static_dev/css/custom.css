@@ -150,6 +150,8 @@ td { padding:2px 6px; }
 
 #snippet_view #code { 
     margin-left:-10px; /* fix for syntax highlighter spacing */
+    margin-top:30px;
+    margin-bottom:100px;
 }
 
 #snippet_view #subtitle {
@@ -273,7 +275,9 @@ border-left: 1px solid #BEDCE7;
 border-right: 1px solid #BEDCE7;
 border-top: 1px solid #BEDCE7;
 padding: .7em .7em .2em .7em;
+/*
 background: #EAF2F5 url(/images/bg_gradient.gif) 0 100% repeat-x;
+background-color: #EAF2F5;
 background-repeat-x: repeat;
 background-repeat-y: no-repeat;
 background-attachment: initial;
@@ -281,7 +285,7 @@ background-position-x: 0px;
 background-position-y: 100%;
 background-origin: initial;
 background-clip: initial;
-background-color: #EAF2F5;
+*/
 overflow: hidden;
 }
 

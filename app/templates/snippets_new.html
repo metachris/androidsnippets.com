@@ -42,8 +42,9 @@
     }
             
     function _add_tag(tag) {
-        if (tag.trim().length == 0 || tag in _tags)
+        if (tag.trim().length < 3 || tag in _tags)
             return ;
+
         for (var i=0; i<_tags.length; i++)
             if (_tags[i] == tag)
                 return ;
