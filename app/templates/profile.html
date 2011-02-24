@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="/css/jquery-ui-flick.css?v=2">    
+{% endblock %}
+
+{% block scripts %}
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+
+    <script>
+    $(document).ready(function() {
+        $("#tabs").tabs();
+    });
+    </script>
+{% endblock %}
+
+{% block main %}
+    <h1>{{ profile.nickname }}</h1>
+    <small style="color:gray;">Member since {{ profile.date_joined|timesince }}</small>
+    
+    <div style="padding:20px 10px;">
+    <div id="tabs" style="margin-right:20px;">
+    	<ul>
+    		<li><a href="#tabs-1">Submissions</a></li>
+    		<li><a href="#tabs-2">Edits</a></li>
+    		<li><a href="#tabs-3">Comments</a></li>
+    	</ul>
+    	<div id="tabs-1">
+            <p><ul>
+    	       {% for snippet in profile.snippet_set %}
+    	           <li><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></li>
+	           {% endfor %}
+    	   </ul></p>
+    	</div>
+    	<div id="tabs-2">
+            <p><ul>
+    	       {% for snippet in profile.snippetrevision_set %}
+    	           <li><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></li>
+	           {% endfor %}
+    	   </ul></p>
+    	</div>
+    	<div id="tabs-3">
+            <p><ul>
+    	       {% for comment in profile.snippetcomment_set %}
+    	           <li><a href="/{{ comment.snippet.slug1 }}#{{ comment.key }}">{{ comment.snippet.title }}</a></li>
+	           {% endfor %}
+    	   </ul></p>
+    	</div>
+    </div>
+    
+    </div>
+{% endblock %}

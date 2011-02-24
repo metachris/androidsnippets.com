@@ -25,6 +25,8 @@ urls = [
     (r'/([-\w]+)', SnippetView),
 
     (r'/tags/([-\w]+)', TagView),
+
+    (r'/authors/(.*)', UserProfileView),
 ]
 
 application = webapp.WSGIApplication(urls, debug=True)
