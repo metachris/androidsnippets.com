@@ -49,12 +49,14 @@ class Main(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
 
+        """
         if user:
             logging.info("== user email: %s" % user.email())
             logging.info("== user nickname: %s" % user.nickname())
             logging.info("== user id: %s" % user.user_id())
             logging.info("== fed id: %s" % user.federated_identity())
             logging.info("== fed provider: %s" % user.federated_provider())
+        """
         prefs = UserPrefs.from_user(user)
 
         #logging.info("== %s" % self.request.cookies)

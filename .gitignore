@@ -2,3 +2,4 @@
 app/static_dev/publish/*
 app/static_dev/build/config/buildinfo.properties
 app/settings.py
+app/templates/footer.html
