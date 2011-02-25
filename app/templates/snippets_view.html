@@ -98,11 +98,11 @@
     
     var upvotes = {{ snippet.upvote_count }};
     function vote() {
+        $("#vote_count").html("<em>" + (upvotes+1) + "</em>");
+        $("#snippet_points .vote").html('<span class="teaser">voted</span>');
         $.ajax({
             url: "/{{ snippet.slug1 }}/vote",
             success: function(){
-                $("#vote_count").html("<em>" + (upvotes+1) + "</em>");
-                $("#snippet_points .vote").html('<span class="teaser">voted</span>');
             }
         });
     }
@@ -125,6 +125,8 @@
                 <div style="display:none;" id="edit_title"> <input  name="title" id="title" type="text" style="width:97%;" value="{{ snippet.title }}" /></div>
                 <a id="view_title" href="/{{ snippet.slug1 }}">{{ snippet.title }}</a>
             </h1>
+
+
 </div>
 
             <div class="sidebar">
@@ -166,6 +168,15 @@
             </div>
             
                 <hr>            
+
+
+                {% if revisions.count %}
+                    <!-- <div style="font-weight:bold; padding-right:6px;">Last edit {{ snippet.date_lastupdate|date }}</div> --> 
+                        <div style="font-weight:bold; text-align:center;">
+                            <a href='javascript:toggle_revisions()'>{{ revisions.count }} edit suggestion{{ revisions.count|pluralize }}</a>
+                        </div>
+                <hr>            
+                {% endif %}                    
 
                 <p title="Compatible Android versions" >SDK: {{ snippet.android_minsdk|android_sdk_to_name }}</p>
                 <p>Tags: {% for tag in snippet.snippettag_set %}
@@ -213,11 +224,6 @@
                     <div><textarea style="width:98%;" rows="14" id="desc" name="description">{{ snippet.description }}</textarea></div>
                     <div style="padding-left:4px; margin-bottom:4px; color:gray;"><small>markdown suppored</small></div>
                 </div>            
-                
-                <div id="subtitle">
-                    <div style="float:right; padding-right:6px;">Last edit {{ snippet.date_lastupdate|date }}</div> 
-                    {% if revisions.count %}<a href='javascript:toggle_revisions()'>{{ revisions.count }} edit{{ revisions.count|pluralize }} for review</a>{% endif %}
-                </div>
             </div>
 
             <div id="code">

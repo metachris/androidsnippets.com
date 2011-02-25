@@ -10,7 +10,8 @@ white-space: pre;
   border:1px solid lightgray;  
 }
 
-a { color: #0073EA; }
+a { color: #0073EA; text-decoration:none; }
+a:hover { text-decoration:underline; }
 
 i, em { font-style:italic; }
 blockquote { margin-left:28px; }
@@ -43,6 +44,8 @@ td { padding:2px 6px; }
     border:1px solid lightgray;
     border-radius:2px; 
 }
+
+#fdbk_tab { margin-top:100px; }
 
 .btn_small .ui-button-text { padding:0.2em 0.8em; }
 .ui-combobox-button { font-size:10px; }
@@ -81,6 +84,11 @@ td { padding:2px 6px; }
     margin-right:30px;
 }
 
+#header .separator {
+    padding:0px 3px;
+    color:lightgray;
+    font-size:10px;
+}
 
 #comments {
     margin-top:20px;
@@ -150,12 +158,12 @@ td { padding:2px 6px; }
 
 #snippet_view #code { 
     margin-left:-10px; /* fix for syntax highlighter spacing */
-    margin-top:30px;
+    margin-top:0px;
     margin-bottom:100px;
 }
 
 #snippet_view #subtitle {
-   margin-bottom:4px;
+   margin-bottom:14px;
    color:gray;
    font-size:11px;
 }
@@ -270,12 +278,12 @@ td { padding:2px 6px; }
 }
 
 .envelope {
+/*
 border-bottom: 1px solid #BEDCE7;
 border-left: 1px solid #BEDCE7;
 border-right: 1px solid #BEDCE7;
 border-top: 1px solid #BEDCE7;
 padding: .7em .7em .2em .7em;
-/*
 background: #EAF2F5 url(/images/bg_gradient.gif) 0 100% repeat-x;
 background-color: #EAF2F5;
 background-repeat-x: repeat;
@@ -287,6 +295,7 @@ background-origin: initial;
 background-clip: initial;
 */
 overflow: hidden;
+margin-bottom:20px;
 }
 
 /* Styles for the tools */
