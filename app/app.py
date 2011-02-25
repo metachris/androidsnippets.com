@@ -22,6 +22,8 @@ urls = [
     (r'/profile', ProfileView),
     (r'/authors/(.*)', UserProfileView),
 
+    (r'/admin/x', AdminX),
+
     # snippet slug url's at the bottom
     (r'/snippets/([-\w]+)', LegacySnippetView),
     (r'/([-\w]+)/vote', SnippetVote),

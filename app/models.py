@@ -15,7 +15,7 @@ reference UserPrefs instead of directly the user property.
 
 class UserPrefs(db.Model):
     """Extended user preferences"""
-    user = db.UserProperty(required=True)
+    user = db.UserProperty(required=False)
     nickname = db.StringProperty(required=False)
     email = db.StringProperty(required=True)
     email_md5 = db.StringProperty(required=True)  # used for gravatar
@@ -42,15 +42,45 @@ class UserPrefs(db.Model):
         if not user:
             return None
 
-        # Valid user, now lets see if we have a userpref object in the db
         q = db.GqlQuery("SELECT * FROM UserPrefs WHERE user = :1", user)
         prefs = q.get()
+        # most of the time we will return an already saved prefs
         if not prefs:
-            # First time for this user, create userpref object now
-            m = md5(user.email().strip().lower()).hexdigest()
-            prefs = UserPrefs(user=user, nickname=user.nickname(), \
-                        email=user.email(), email_md5=m)
-            prefs.put()
+            # if no matching pref is found, check if legacy prefs exist
+            q = db.GqlQuery("SELECT * FROM UserPrefs WHERE user = :1 AND \
+                    email = :2", None, user.email())
+            prefs = q.get()
+            if prefs:
+                # prefs imported from legacy system
+                logging.info("==== not prefs.user")
+                if prefs.email == user.email():
+                    # Associate this prefs with the new user
+                    logging.info("==== matching email")
+                    prefs.user = user
+                    prefs.put()
+
+            else:
+                # create regular new userpref object now
+                m = md5(user.email().strip().lower()).hexdigest()
+                prefs = UserPrefs(user=user, nickname=user.nickname(), \
+                            email=user.email(), email_md5=m)
+                prefs.put()
+
+        return prefs
+
+    @staticmethod
+    def from_data(nickname, email, datetime_joined):
+        """Creates an orphaned prefs object (one without user).
+        Used for imports from the legacy database. Once a user
+        with matching email registers, it will be assigned."""
+        if not email or not nickname or not datetime_joined:
+            return
+
+        # Valid data
+        m = md5(email.strip().lower()).hexdigest()
+        prefs = UserPrefs(nickname=nickname, email=email, email_md5=m)
+        prefs.date_joined = datetime_joined
+        prefs.put()
         return prefs
 
 
