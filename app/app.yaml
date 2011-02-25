@@ -15,6 +15,10 @@ handlers:
   script: services.py
   login: admin
 
+- url: /admin/.*
+  script: app.py
+  login: admin
+
 # If non-authenticated user, appengine will ask for login and redirect afterwards: 
 - url: /add
   script: app.py

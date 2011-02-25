@@ -52,10 +52,8 @@ class UserPrefs(db.Model):
             prefs = q.get()
             if prefs:
                 # prefs imported from legacy system
-                logging.info("==== not prefs.user")
                 if prefs.email == user.email():
                     # Associate this prefs with the new user
-                    logging.info("==== matching email")
                     prefs.user = user
                     prefs.put()
 
