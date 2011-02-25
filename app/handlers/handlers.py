@@ -48,6 +48,8 @@ class LogOut(webapp.RequestHandler):
 class Main(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
+        logging.info("== user email: %s" % user.email())
+        logging.info("== user nickname: %s" % user.nickname())
         prefs = UserPrefs.from_user(user)
 
         #logging.info("== %s" % self.request.cookies)
