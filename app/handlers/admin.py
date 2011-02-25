@@ -28,9 +28,12 @@ class AdminX(webapp.RequestHandler):
         f.close()
 
         _users = json.loads(s)
-        cnt = 0
-        _d = time.strptime(user[2], "%Y-%m-%d %H:%M:%S")
-        d = datetime.datetime(*_d[:6])
+        for user in _users[page * 100:(page + 1) * 100]:
+            _d = time.strptime(user[3], "%Y-%m-%d %H:%M:%S")
+            d = datetime.datetime(*_d[:6])
+            if user[3] == "NULL":
+                user[3] = None
+            UserPrefs.from_data(user[1], user[2], d, user[4], int(user[0]))
 
 
 class AdminY(webapp.RequestHandler):
@@ -39,3 +42,10 @@ class AdminY(webapp.RequestHandler):
             q = UserPrefs.all()
             q.filter("email =", unquote(email))
             self.response.out.write(", %s: %s" % (email, q.count()))
+
+
+class AdminDel(webapp.RequestHandler):
+    def get(self):
+        q = UserPrefs.all()
+        for p in q:
+            p.delete()

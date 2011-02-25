@@ -17,8 +17,8 @@ class UserPrefs(db.Model):
     """Extended user preferences"""
     user = db.UserProperty(required=False)
     nickname = db.StringProperty(required=False)
-    email = db.StringProperty(required=True)
-    email_md5 = db.StringProperty(required=True)  # used for gravatar
+    email = db.StringProperty(default="")
+    email_md5 = db.StringProperty(default="")  # used for gravatar
 
     date_joined = db.DateTimeProperty(auto_now_add=True)
     date_lastlogin = db.DateTimeProperty(auto_now=True)
@@ -37,6 +37,11 @@ class UserPrefs(db.Model):
     # How to submit guidelines
     has_accepted_terms0 = db.BooleanProperty(default=False)
 
+    # legacy openid is used to find users of the old system
+    # because eg. myopenid does not provide an email, this can work
+    legacy_federated_id = db.StringProperty()
+    legacy_user_id = db.IntegerProperty(default=0)  # to re-associate snippets
+
     @staticmethod
     def from_user(user):
         if not user:
@@ -46,18 +51,32 @@ class UserPrefs(db.Model):
         prefs = q.get()
         # most of the time we will return an already saved prefs
         if not prefs:
-            # if no matching pref is found, check if legacy prefs exist
-            q = db.GqlQuery("SELECT * FROM UserPrefs WHERE user = :1 AND \
-                    email = :2", None, user.email())
-            prefs = q.get()
+            # 1st check for legacy prefs is by email
+            if user.email():
+                logging.info("_ searching for orphaned prefs by email")
+                # if no matching pref is found, check if legacy prefs exist
+                q = db.GqlQuery("SELECT * FROM UserPrefs WHERE user = :1 AND \
+                        email = :2", None, user.email())
+                prefs = q.get()
+
+            # 2nd check for legacy prefs is by federated_id
+            if not prefs and user.federated_identity():
+                logging.info("_ searching for orphaned prefs by fed-id")
+                # if no matching pref is found, check if legacy prefs exist
+                q = UserPrefs.all()
+                q.filter("user =", None)
+                q.filter("legacy_federated_id =", user.federated_identity())
+                prefs = q.get()
+
             if prefs:
+                logging.info("_ orphaned user prefs found, attaching to user")
                 # prefs imported from legacy system
-                if prefs.email == user.email():
-                    # Associate this prefs with the new user
-                    prefs.user = user
-                    prefs.put()
+                # Associate this prefs with the new user
+                prefs.user = user
+                prefs.put()
 
             else:
+                logging.info("_ create new prefs")
                 # create regular new userpref object now
                 m = md5(user.email().strip().lower()).hexdigest()
                 prefs = UserPrefs(user=user, nickname=user.nickname(), \
@@ -67,7 +86,7 @@ class UserPrefs(db.Model):
         return prefs
 
     @staticmethod
-    def from_data(nickname, email, datetime_joined):
+    def from_data(nickname, email, datetime_joined, fed_id, legacy_id):
         """Creates an orphaned prefs object (one without user).
         Used for imports from the legacy database. Once a user
         with matching email registers, it will be assigned."""
@@ -78,6 +97,10 @@ class UserPrefs(db.Model):
         m = md5(email.strip().lower()).hexdigest()
         prefs = UserPrefs(nickname=nickname, email=email, email_md5=m)
         prefs.date_joined = datetime_joined
+        if fed_id:
+            prefs.legacy_federated_id = fed_id
+        if legacy_id:
+            prefs.legacy_user_id = legacy_id
         prefs.put()
         return prefs
 
