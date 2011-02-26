@@ -34,13 +34,6 @@ def decode(var):
     return unicode(var, 'utf-8') if isinstance(var, str) else unicode(var)
 
 
-def decode_iftrue(var):
-    """If var is False or None, return it again, else decode form input"""
-    if not var:
-        return var
-    return unicode(var, 'utf-8') if isinstance(var, str) else unicode(var)
-
-
 def is_valid_email(email):
     if email and len(email) > 7 and re.match( \
         "^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$", \
