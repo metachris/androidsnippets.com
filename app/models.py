@@ -172,6 +172,7 @@ class Snippet(db.Model):
     # content attributes, copied over from the revision
     title = db.StringProperty()
     description = db.TextProperty()
+    description_md = db.TextProperty()  # TODO
     code = db.TextProperty()
     android_minsdk = db.IntegerProperty(default=0)
     categories = db.StringListProperty(default=[])

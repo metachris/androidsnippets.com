@@ -117,7 +117,7 @@ class SnippetsNew(webapp.RequestHandler):
 
         # Create the tags
         for tag in tags:
-            if not tag or len(tag.strip()) < 4:
+            if not tag or len(tag.strip()) < 3:
                 # skip empty and too short tags
                 continue
 
