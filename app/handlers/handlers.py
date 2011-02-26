@@ -228,7 +228,7 @@ class SnippetEdit(webapp.RequestHandler):
         r = SnippetRevision(userprefs=prefs, snippet=snippet)
         r.title = title
         r.description = description
-        r.description_md = markdown.markdown(description).replace(
+        r.description_md = markdown.markdown(description).replace( \
                 "<a ", "<a target='_blank' ")
         r.code = code
         r.put()

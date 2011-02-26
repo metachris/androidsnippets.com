@@ -25,6 +25,8 @@ class UserPrefs(db.Model):
 
     twitter = db.StringProperty(default="")  # twitter username
     about = db.TextProperty(default="")
+    about_md = db.TextProperty(default="")
+
     # notifications are a bitfield. default: lower 8 bits set to 1 (all on)
     notifications = db.IntegerProperty(default=255)
 

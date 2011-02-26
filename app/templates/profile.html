@@ -2,25 +2,32 @@
 
 {% block head %}
     <link rel="stylesheet" href="/css/jquery-ui-flick.css?v=2">    
+    <link rel="stylesheet" type="text/css" href="/css/wmd.css" />
 {% endblock %}
 
 {% block scripts %}
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
+    <script src="/js/libs/wmd.js"></script>
+    <script src="/js/libs/jquery-wmd-plugin.js"></script>
+    <script src="/js/libs/showdown.js"></script>    
 
     <script>
-    $(document).ready(function() {
-    });
-    
     $(function() {
         $("#tabs").tabs({% if tab2 %}{ selected:1 }{% endif %});
 		$(".btn_small").button();        
+
+	    $("#about").wmd({
+	        "preview": true,
+	        "helpLink": "http://stackoverflow.com/editing-help",
+	        "helpHoverTitle": "Markdown Help",
+	    });
     });
     </script>
 {% endblock %}
 
 {% block main %}
     <h1>Account Settings</h1>
-    <small style="color:gray;">Member since {{ prefs.date_joined|timesince }} (<a href="/logout">sign out</a>)</small>
+    <small style="color:gray;">You are a member since {{ prefs.date_joined|timesince }}<br> (<a href="/authors/{{ prefs.nickname }}">public profile</a> | <a href="/logout">sign out</a>)</small>
     
     <div id="tabs" style="margin:20px 10px;">
     	<ul>
@@ -39,10 +46,10 @@
                 </td></tr>
                 <tr><td>Email</td><td>
                     <input type="text" name="email" value="{{ prefs.email }}" disabled=true />
-                    <small style="color:gray;">We are working on email verification. You can <a href="/about/contact">contact us</a> in the meantime.</small>                    
+                    <small style="color:gray;">We are working on email verification, <a href="/about/contact">contact us</a> in the meantime.</small>                    
                 </td></tr>
-                <tr><td>Twitter</td><td><input type="text" name="twitter" value="{{ prefs.twitter }}"/></td></tr>
-                <tr><td>About you</td><td><textarea name="about" rows="6" cols="55">{{ prefs.about }}</textarea></td></tr>
+                <!--<tr><td>Twitter</td><td><input type="text" name="twitter" value="{{ prefs.twitter }}"/></td></tr>-->
+                <tr><td>About you</td><td><textarea name="about" id="about" rows="12" cols="65">{{ prefs.about }}</textarea></td></tr>
                 <tr><td></td><td><input type="submit" value="Apply" class="btn_small" /></td></tr>
             </table>    
             </form>

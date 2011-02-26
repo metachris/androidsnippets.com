@@ -99,6 +99,8 @@ class ProfileView(webapp.RequestHandler):
 
             if about and about != prefs.about:
                 prefs.about = about
+                prefs.about_md = markdown.markdown(about).replace( \
+                        "<a ", "<a target='_blank' ")
                 url_addon += "&a=1"
 
             if url_addon:
