@@ -30,7 +30,8 @@
             <p>{{ profile.about_md|safe }}</p>
     	</div>
     	<div id="tabs-1">
-            <p><ul>
+            <p>
+            <ul>
     	       {% for snippet in profile.snippet_set %}
     	           <li><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></li>
 	           {% endfor %}
@@ -38,9 +39,9 @@
     	</div>
     	<div id="tabs-2">
             <p><ul>
-    	       {% for snippet in profile.snippetrevision_set %}
-    	           {% if snippet.snippet.userprefs.user != prefs.user %} 
-    	               <li><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></li>
+    	       {% for revision in profile.snippetrevision_set %}
+    	           {% if not revision.initial_revision %} 
+    	               <li><a href="/{{ revision.snippet.slug1 }}">{{ revision.snippet.title }}</a></li>
     	           {% endif %}
 	           {% endfor %}
     	   </ul></p>

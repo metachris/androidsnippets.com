@@ -115,6 +115,7 @@ class AdminY(webapp.RequestHandler):
             for rev in q:
                 if not rev.initial_revision:
                     rev.initial_revision = True
+                    rev.put()
                     cnt += 1
             self.response.out.write("initial set on %s" % (cnt))
 
