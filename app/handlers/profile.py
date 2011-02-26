@@ -30,6 +30,7 @@ tdir = os.path.join(os.path.dirname(__file__), '../templates/')
 
 # Custom sites
 class UserProfileView(webapp.RequestHandler):
+    """View an user's public profile"""
     def get(self, nickname):
         memcache.incr("pv_otherprofile", initial_value=0)
         user = users.get_current_user()
@@ -45,15 +46,27 @@ class UserProfileView(webapp.RequestHandler):
 
 
 class ProfileView(webapp.RequestHandler):
+    """Private profile"""
     def get(self):
         memcache.incr("pv_profile", initial_value=0)
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
+        # This user's edits on other snippets
+        edits = prefs.snippetrevision_set
+        edits.filter("initial_revision =", False)
+        edits.order("-date_lastactivity")
+
+        # This user's submissions
+        snippets = prefs.snippet_set
+        snippets.order("-date_lastactivity")
+
         values = {
             'prefs': prefs,
             'tab2': self.request.get('n') == '1',
-            'error2': self.request.get('u') == '2'
+            'error2': self.request.get('u') == '2',
+            'snippets': snippets,
+            'edits': edits,
         }
         self.response.out.write(template.render(tdir + "profile.html", values))
 

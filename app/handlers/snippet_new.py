@@ -111,6 +111,7 @@ class SnippetsNew(webapp.RequestHandler):
 
         # Create the first revision
         r = SnippetRevision.create_first_revision(userprefs=prefs, snippet=s)
+        r.initial_revision = True
         r.put()
 
         # Create the first upvote
@@ -133,6 +134,9 @@ class SnippetsNew(webapp.RequestHandler):
 
             st = SnippetTag(snippet=s, tag=t)
             st.put()
+
+        prefs.points += 1
+        prefs.put()
 
         # Recalculate most used tags and store in memcache
         get_tags_mostused(force_update=True)

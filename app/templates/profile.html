@@ -33,6 +33,8 @@
     	<ul>
     		<li><a href="#tabs-1">About</a></li>
     		<li><a href="#tabs-2">Notifications</a></li>
+    		<li><a href="#tabs-3">Edits</a></li>
+    		<li><a href="#tabs-4">Snippets</a></li>
     	</ul>
     	<div id="tabs-1">
             <p>     
@@ -72,7 +74,25 @@
             </p>
     	</div>
     	<div id="tabs-3">
-            <p></p>
+            <p style="padding-top:10px;">
+<table class="snippetlist">
+       <tr><th>edit on</th><th><big style="color:green;">+</big></th><th><big style="color:red;">-</big></th><th>last activity</th></tr>    
+    {% for edit in edits %}
+        <tr class="{% cycle 'even' 'odd' %}">
+            <td><a href="/{{ edit.snippet.slug1 }}">{{ edit.snippet.title }}</a></td>
+            <td>{{ edit.snippetrevisionupvote_set.count }}</td>
+            <td>{{ edit.snippetrevisiondownvote_set.count }}</td>
+            <td><small>{{ edit.date_lastactivity|timesince }} ago</small></td>
+        </tr>
+    {% endfor %}
+</table>
+
+            </p>
+    	</div>
+    	<div id="tabs-4">
+            <p style="padding-top:10px;">
+                {% include "snippet_list_items.html" %}            
+            </p>
     	</div>
     </div>
 {% endblock %}

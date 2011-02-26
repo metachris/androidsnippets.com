@@ -30,11 +30,14 @@ class UserPrefs(db.Model):
     # notifications are a bitfield. default: lower 8 bits set to 1 (all on)
     notifications = db.IntegerProperty(default=255)
 
-    # user access levels. 0=default, 1=editor, 2=admin
+    # user level. 0=default, 1=editor, 2=admin
     level = db.IntegerProperty(default=0)
 
-    karma = db.IntegerProperty(default=1)
+    # reputation
     points = db.IntegerProperty(default=1)
+
+    # unused
+    karma = db.IntegerProperty(default=1)
 
     # How to submit guidelines
     has_accepted_terms0 = db.BooleanProperty(default=False)
@@ -215,13 +218,14 @@ class SnippetRevision(db.Model):
     userprefs = db.ReferenceProperty(UserPrefs, required=True)
     snippet = db.ReferenceProperty(Snippet, required=True)
     date_submitted = db.DateTimeProperty(auto_now_add=True)
-    comment = db.TextProperty()
+    comment = db.TextProperty()  # author's comment
+    initial_revision = db.BooleanProperty(default=False)
 
-    # Number of pageviews
+    # unused
     views = db.IntegerProperty(default=0)
 
-    # author's comment about this changeset
-    revision_description = db.TextProperty()
+    # last up or downvote on this revision
+    date_lastactivity = db.DateTimeProperty(auto_now=True)
 
     # has been merged?
     merged = db.BooleanProperty(default=False)
@@ -271,7 +275,7 @@ class SnippetRevision(db.Model):
     def create_first_revision(userprefs, snippet):
         """When a snippet is created, this creates the first revision"""
         r = SnippetRevision(userprefs=userprefs, snippet=snippet)
-        r.revision_description = "initial commit"
+        r.comment = "initial commit"
         r.date_submitted = datetime.datetime.now()
         r.title = snippet.title
         r.description = snippet.description

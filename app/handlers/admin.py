@@ -108,6 +108,15 @@ class AdminY(webapp.RequestHandler):
             q = UserPrefs.all()
             q.filter("email =", unquote(email))
             self.response.out.write(", %s: %s" % (email, q.count()))
+        else:
+            q = SnippetRevision.all()
+            #q.filter("initial_revision =", None)
+            cnt = 0
+            for rev in q:
+                if not rev.initial_revision:
+                    rev.initial_revision = True
+                    cnt += 1
+            self.response.out.write("initial set on %s" % (cnt))
 
 
 class AdminDel(webapp.RequestHandler):

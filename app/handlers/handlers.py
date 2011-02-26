@@ -236,16 +236,21 @@ class SnippetVote(webapp.RequestHandler):
         q.filter("snippet =", snippet)
         vote = q.get()
 
-        if vote:
-            # Has already voted
-            # self.response.out.write("0")
-            pass
-        else:
-            # Create the upvote
+        if not vote:
+            # Has not already voted, create the upvote now
             u = SnippetUpvote(userprefs=prefs, snippet=snippet)
             u.save()
             snippet.upvote()
             snippet.save()
+
+            # +1 rep point for author and  all accepted editors
+            for revision in snippet.snippetrevision_set:
+                if revision.merged:
+                    logging.info("+1 rep for editor %s" % \
+                            revision.userprefs.nickname)
+                    revision.userprefs.points += 1
+                    revision.userprefs.put()
+
             # self.response.out.write("1")
 
         self.redirect("/%s" % snippet_slug)
@@ -298,6 +303,9 @@ class SnippetEdit(webapp.RequestHandler):
             snippet.save()
             # self.response.out.write("1")
 
+            #prefs.points += 1
+            #prefs.put()
+
         self.redirect("/%s" % snippet_slug)
 
 
@@ -330,19 +338,29 @@ class SnippetEditView(webapp.RequestHandler):
                     userprefs = :1 and snippetrevision = :2", prefs, rev)
             has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
 
+            # Check if user wants to vote
             if not has_voted:
-                # Check if user wantsto vote
                 has_voted = decode(self.request.get('v'))
                 if has_voted == "1":
                     # user wants to upvote
                     v = SnippetRevisionUpvote(userprefs=prefs, \
                             snippetrevision=rev)
                     v.save()
+
+                    rev.userprefs.points += 3
+                    rev.userprefs.put()
+                    rev.date_lastactivity = datetime.datetime.now()
+                    rev.put()
                 elif has_voted == "-1":
                     # user downvotes
                     v = SnippetRevisionDownvote(userprefs=prefs, \
                             snippetrevision=rev)
                     v.save()
+
+                    rev.userprefs.points -= 1
+                    rev.userprefs.put()
+                    rev.date_lastactivity = datetime.datetime.now()
+                    rev.save()
 
         # TODO: memcache
         desc_md = markdown.markdown(rev.description)
