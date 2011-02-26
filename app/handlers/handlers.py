@@ -152,7 +152,8 @@ class SnippetView(webapp.RequestHandler):
 
         values = {"prefs": prefs, "snippet": snippet, "revisions": revisions, \
                 'voted': has_voted, 'accepted_revisions': accepted_revisions, \
-                "openedit": self.request.get('edit'), 'desc_md': desc_md, \
+                "openedit": self.request.get('edit'), 'desc_md': \
+                desc_md.replace("<a ", "<a target='_blank' "), \
                 "comments": comments, "comments_html": comments_html, \
                 'commentspam': commentspam}
 

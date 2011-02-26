@@ -1,3 +1,4 @@
+html, body, #container { height:100%; }
 body, select, input, textarea {
   /* #444 looks better than black: twitter.com/H_FJ/statuses/11800719859 */
   color: #333;
@@ -60,9 +61,6 @@ td { padding:2px 6px; }
 #main { padding-top:20px; padding-left:20px; min-height:500px;/* width:800px; margin:auto; */ }
 
 #footer {
-    height:100px;
-    /*background:#30587C;*/
-    margin-top:50px;
 }
 
 #header {
