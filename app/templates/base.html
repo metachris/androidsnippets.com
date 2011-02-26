@@ -2,21 +2,23 @@
 
 {% block header %}
     <div id="header">
-        <table width="100%">
-            <tr>
-                <td><a href="/"><img src="/images/logo.png" border="0" /></a></td>
-                <td align="right">
-                    <p>
-                        {% if prefs %}<a href="/profile">{{ prefs.nickname }}</a> <span class='separator'>|</span>{% endif %} 
-                        <a href='/about'>Help</a> <span class='separator'>|</span>
-                        {% if prefs %}<a href='/logout'>Sign out</a>{% else %}<a href='/login'>Sign in</a>{% endif %}
-                    </p>
+                <div style="float:right; width:320px; text-align:right;">
+                    <form>
+                    <div class='search'><input type='text' name='q' title='enter a search term and press enter' /></div>
+                    <div class='headinfos'>
+                        {% if prefs %}<a href="/profile" class='nick'>{{ prefs.nickname }}</a> <span class='rep'>{{ prefs.points }}</span> <span class='separator'>|</span>{% endif %} 
+                        <a href='/about'>about</a> 
+                        {% comment %}{% if prefs %}<a href='/logout'>Sign out</a>{% else %}<a href='/login'>Sign in</a>{% endif %}{% endcomment %}
+                    </div>
+                    </form>
+                    <div style="clear:both;"></div>
                     <br />
                     
                     <p><b><a href="/add">Add Snippet</a></b></p>
-                </td>
-            </tr>
-        </table>
+                </div>
+                <div>
+                    <a href="/"><img src="/images/logo.png" border="0" height="56" width="243" /></a>
+                </div>
     </div>
 {% endblock %}
 

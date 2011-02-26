@@ -31,6 +31,8 @@ urls = [
     (r'/admin/del', AdminDel),
     (r'/admin(.*)', AdminView),
 
+    (r'/about(.*)', AboutView),
+
     # snippet slug url's at the bottom
     (r'/snippets/([-\w]+)', LegacySnippetView),
     (r'/([-\w]+)/vote', SnippetVote),

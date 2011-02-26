@@ -371,3 +371,25 @@ class SnippetCommentView(webapp.RequestHandler):
         c.save()
 
         self.redirect("/%s%s#comments" % (snippet_slug, url_addon))
+
+
+class AboutView(webapp.RequestHandler):
+    def get(self, category=None):
+        user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
+        values = {'prefs': prefs}
+
+        if not category:
+            self.response.out.write( \
+                    template.render(tdir + "about.html", values))
+
+        if category == "/stats":
+            for item in mc_items:
+                values["stats"].append((item, memcache.get(item)))
+            self.response.out.write( \
+                    template.render(tdir + "admin_stats.html", values))
+
+        if category == "/stats/reset":
+            for item in mc_items:
+                memcache.set(item, 0)
+            self.redirect("/admin/stats")

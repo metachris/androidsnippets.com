@@ -65,7 +65,7 @@ td { padding:2px 6px; }
 
 #header {
     background: #30587C;
-    padding:6px 20px;
+    padding:6px 20px 6px 20px;
     color:white;
 }
 
@@ -87,6 +87,21 @@ td { padding:2px 6px; }
     color:lightgray;
     font-size:10px;
 }
+
+#header .headinfos {
+    padding-top:2px;
+    padding-right:24px;
+    float:right;
+}
+#header .search {
+    float:right;
+}
+#header .search input {
+    border:1px solid gray;
+}
+#header .nick { font-size:15px; padding-right:3px; font-weight:bold; }
+#header .rep { font-size:15px; color:lightgreen; color:#97C03D; }
+
 
 #comments {
     margin-top:20px;
