@@ -96,6 +96,7 @@ class LegacySnippetView(webapp.RequestHandler):
                 q.order("-upvote_count")
                 title = "Popular Snippets"
             elif legacy_slug == "comments":
+                q.filter("comment_count >", 0)
                 q.order("-comment_count")
                 title = "Recently Commented Snippets"
             elif legacy_slug == "edits":

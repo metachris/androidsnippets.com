@@ -158,12 +158,15 @@ margin-top: 0px;
     color:gray;
 }
 
-.snippetlist .odd {
-    background:#fdf;
+.snippetlist .even {
+    background:#E6EFD1;
 }
 
 .snippetlist td a {
     display:block;
+}
+.snippetlist td {
+    padding:2px 10px;
 }
 
 
@@ -381,8 +384,10 @@ margin-bottom:20px;
     float:right;
 	border-left: 0px solid #6CE26C;
     border-bottom: 1px solid #CFCFCF;
-    padding-bottom:4px;	
     padding-left:10px;
+    padding-bottom:2px;	
+    margin-bottom:4px;
+    width:120px;	
 
 	font: 9px Verdana, Geneva, Arial, Helvetica, sans-serif;
 	color: silver;
