@@ -66,7 +66,7 @@
 <div>            
             
             <div class="envelope">
-                <p id="view_description">{{ desc_md }}{{ desc|escape }}</p>            
+                <p id="view_description">{{ desc_md|safe }}{{ desc }}</p>            
                 {% if code %}
                     <p id="view_description_md"></p>
                 {% endif %}            

@@ -2,6 +2,14 @@ Rewrite of androidsnippets.com which runs on appengine.
 
 Currently in prototyping, models are not yet finalized.
 
+Important Improvements
+----------------------
+
+* Cleaner user interface (need more help on this!)
+* Markdown support for descriptions
+* Ability to edit/improve existing snippets
+* Akismet integration to catch comment spam
+
 Libraries used
 --------------
 
