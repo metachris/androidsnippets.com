@@ -215,6 +215,7 @@ class SnippetRevision(db.Model):
     userprefs = db.ReferenceProperty(UserPrefs, required=True)
     snippet = db.ReferenceProperty(Snippet, required=True)
     date_submitted = db.DateTimeProperty(auto_now_add=True)
+    comment = db.TextProperty()
 
     # Number of pageviews
     views = db.IntegerProperty(default=0)
@@ -237,7 +238,7 @@ class SnippetRevision(db.Model):
     # content attributes - copied over into Snippet class on merge
     title = db.StringProperty()
     description = db.TextProperty()
-    description_md = db.TextProperty()  # TODO
+    description_md = db.TextProperty()
     code = db.TextProperty()
     android_minsdk = db.IntegerProperty(default=0)
     categories = db.StringListProperty(default=[])

@@ -241,6 +241,7 @@ class SnippetEdit(webapp.RequestHandler):
         code = decode(self.request.get('code'))
         description = decode(self.request.get('description'))
         tags = decode(self.request.get('tags'))
+        comment = decode(self.request.get('comment'))
 
         if not title or not code or not description:
             self.response.out.write("-1")
@@ -261,6 +262,7 @@ class SnippetEdit(webapp.RequestHandler):
         r.description_md = markdown.markdown(description).replace( \
                 "<a ", "<a target='_blank' ")
         r.code = code
+        r.comment = comment
         r.put()
 
         if user == snippet.userprefs.user:

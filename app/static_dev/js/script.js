@@ -18,7 +18,8 @@ function ui_to_editor() {
     $("#editbox").show();
     $("#subtitle").hide();
     $("#comments").hide();
-    
+
+    $("#fdbk_tab").hide();    
     $("#btn_edit .ui-button-text").html("Cancel");
 }
 
@@ -33,6 +34,7 @@ function ui_to_viewmode() {
     $("#subtitle").show();
     $("#comments").show();
     
+    $("#fdbk_tab").show();    
     $("#btn_edit .ui-button-text").html("Edit");
 }
 
