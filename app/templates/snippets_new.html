@@ -109,8 +109,10 @@
     <div id="tags_mostused" style="float:right; border-left:1px solid #DDD; padding-left:10px; padding-bottom:10px;">
         <b class="inputinfo">Often used tags</b><br>
         <ul style="margin-top:6px;">
-            {% for tag in tags_mostused %}
-                <li>{{ tag|showTag }}</li>
+            {% for tag,cnt in tags_mostused %}
+            <li><a href="javascript:_add_tag('{{ tag }}')">{{ tag }}</a>
+            <small>({{ cnt }})</small>
+            </li>
             {% endfor %}
         </ul>
         

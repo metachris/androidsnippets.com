@@ -16,16 +16,6 @@ android_versions = {
 }
 
 
-# template-tag: use with {{ somevar|half }}
-# in the handler, before rendering the template, include tags with
-#    webapp.template.register_template_library('common.templateaddons')
-def showTag(tag):
-    # template cannot do {% for x,y in tag %} :/
-    tag, cnt = tag
-    return """<a href="javascript:_add_tag('%s')">%s</a>
-            <small>(%s)</small>""" % (tag, tag, cnt)
-
-
 def first(l):
     # template cannot do {% for x,y in tag %} :/
     return l[0]
@@ -40,7 +30,6 @@ def is_notification(bitfield, test_bit):
     return "checked='checked'" if bitfield & test_bit == test_bit else ""
 
 
-register.filter(showTag)
 register.filter(first)
 register.filter(android_sdk_to_name)
 register.filter(is_notification)
