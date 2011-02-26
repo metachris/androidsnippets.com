@@ -59,17 +59,23 @@ class AdminView(webapp.RequestHandler):
         prefs = UserPrefs.from_user(user)
         values = {'prefs': prefs, "stats": []}
 
+        mc_items = ["pv_login", "pv_main", "pv_profile", "pv_snippet", \
+        "pv_snippet_legacy", "ua_vote_snippet", "ua_edit_snippet", \
+        "pv_snippet_edit", "pv_tag", "ua_comment", "ua_comment_spam", \
+        "ua_comment_ham", "pv_otherprofile"]
+        mc_items.sort()
+
         if not category:
             self.response.out.write( \
                     template.render(tdir + "admin.html", values))
 
         if category == "/stats":
-            mc_items = ["pv_login", "pv_main", "pv_profile", "pv_snippet", \
-            "pv_snippet_legacy", "ua_vote_snippet", "ua_edit_snippet", \
-            "pv_snippet_edit", "pv_tag", "ua_comment", "ua_comment_spam", \
-            "ua_comment_ham", "pv_otherprofile"]
-            mc_items.sort()
             for item in mc_items:
                 values["stats"].append((item, memcache.get(item)))
             self.response.out.write( \
                     template.render(tdir + "admin_stats.html", values))
+
+        if category == "/stats/reset":
+            for item in mc_items:
+                memcache.set(item, 0)
+            self.redirect("/admin/stats")
