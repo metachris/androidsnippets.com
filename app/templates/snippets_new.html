@@ -110,9 +110,11 @@
         <b class="inputinfo">Often used tags</b><br>
         <ul style="margin-top:6px;">
             {% for tag,cnt in tags_mostused %}
-            <li><a href="javascript:_add_tag('{{ tag }}')">{{ tag }}</a>
-            <small>({{ cnt }})</small>
-            </li>
+                {% if cnt > 2 %}
+                <li><a href="javascript:_add_tag('{{ tag }}')">{{ tag }}</a>
+                <small>({{ cnt }})</small>
+                </li>
+                {% endif %}
             {% endfor %}
         </ul>
         

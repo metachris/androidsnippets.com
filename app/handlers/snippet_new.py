@@ -103,6 +103,8 @@ class SnippetsNew(webapp.RequestHandler):
         s.title = title
         s.slug1 = slug
         s.description = description
+        s.description_md = markdown.markdown(description).replace(
+                "<a ", "<a target='_blank' ")
         s.code = code
         s.android_minsdk = int(version)
         s.put()

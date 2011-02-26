@@ -149,12 +149,11 @@ class SnippetView(webapp.RequestHandler):
                 {"comments": comments})
 
         # markdown the description
-        desc_md = markdown.markdown(snippet.description)
+        # desc_md = markdown.markdown(snippet.description)
 
         values = {"prefs": prefs, "snippet": snippet, "revisions": revisions, \
                 'voted': has_voted, 'accepted_revisions': accepted_revisions, \
-                "openedit": self.request.get('edit'), 'desc_md': \
-                desc_md.replace("<a ", "<a target='_blank' "), \
+                "openedit": self.request.get('edit'), \
                 "comments": comments, "comments_html": comments_html, \
                 'commentspam': commentspam}
 
@@ -229,6 +228,8 @@ class SnippetEdit(webapp.RequestHandler):
         r = SnippetRevision(userprefs=prefs, snippet=snippet)
         r.title = title
         r.description = description
+        r.description_md = markdown.markdown(description).replace(
+                "<a ", "<a target='_blank' ")
         r.code = code
         r.put()
 

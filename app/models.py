@@ -142,13 +142,13 @@ class Snippet(db.Model):
 
     # proposal_count: how many proposals are currently in review queue
     proposal_count = db.IntegerProperty(default=0)
-    date_lastproposal = db.DateTimeProperty(auto_now_add=True)
+    date_lastproposal = db.DateTimeProperty()
 
     # Vote information
     upvote_count = db.IntegerProperty(default=1)
-    downvote_count = db.IntegerProperty(default=1)
+    downvote_count = db.IntegerProperty(default=0)
     date_lastvote = db.DateTimeProperty(auto_now_add=True)  # up or downvote
-    date_lastdownvote = db.DateTimeProperty(auto_now_add=True)
+    date_lastdownvote = db.DateTimeProperty()
 
     # Rating - To be defined (for now sum of up- and downvotes)
     rating = db.IntegerProperty(default=1)
@@ -172,7 +172,7 @@ class Snippet(db.Model):
     # content attributes, copied over from the revision
     title = db.StringProperty()
     description = db.TextProperty()
-    description_md = db.TextProperty()  # TODO
+    description_md = db.TextProperty()
     code = db.TextProperty()
     android_minsdk = db.IntegerProperty(default=0)
     categories = db.StringListProperty(default=[])
@@ -231,6 +231,7 @@ class SnippetRevision(db.Model):
     # content attributes - copied over into Snippet class on merge
     title = db.StringProperty()
     description = db.TextProperty()
+    description_md = db.TextProperty()  # TODO
     code = db.TextProperty()
     android_minsdk = db.IntegerProperty(default=0)
     categories = db.StringListProperty(default=[])
@@ -241,6 +242,7 @@ class SnippetRevision(db.Model):
         saves snippet to database)."""
         self.snippet.title = self.title
         self.snippet.description = self.description
+        self.snippet.description_md = self.description_md
         self.snippet.code = self.code
         self.snippet.android_minsdk = self.android_minsdk
         self.snippet.categories = self.categories

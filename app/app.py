@@ -35,13 +35,18 @@ urls = [
     (r'/search', SearchView),
 
     # snippet slug url's at the bottom
+    # legacy snippets (301 redirect to slug ones)
     (r'/snippets/([-\w]+)', LegacySnippetView),
+    (r'/snippets/([-\w]+)/', LegacySnippetView),
+    (r'/snippets/([-\w]+)/index.html', LegacySnippetView),
+
+    # snippets by slug
     (r'/([-\w]+)/vote', SnippetVote),
     (r'/([-\w]+)/edit/([-\w]+)', SnippetEditView),
     (r'/([-\w]+)/edit', SnippetEdit),
     (r'/([-\w]+)/comment', SnippetCommentView),
+    (r'/([-\w]+)/index.html', SnippetView),
     (r'/([-\w]+)', SnippetView),
-
 ]
 
 application = webapp.WSGIApplication(urls, debug=True)

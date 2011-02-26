@@ -72,11 +72,6 @@ handlers:
   mime_type: text/javascript
   static_files: static/js/\1
   upload: static/js/(.*\.js)
-
-- url: /(.*\.html)
-  mime_type: text/html
-  static_files: static/\1
-  upload: static/(.*\.html)
     
 # All other requests go to app.py
 - url: /.*
