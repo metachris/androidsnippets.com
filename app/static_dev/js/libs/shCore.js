@@ -7,24 +7,28 @@
 
 var dp={sh:{Toolbar:{},Utils:{},RegexLib:{},Brushes:{},Strings:{AboutDialog:'<html><head><title>About...</title></head><body class="dp-about"><table cellspacing="0"><tr><td class="copy"><p class="title">dp.SyntaxHighlighter</div><div class="para">Version: {V}</p><p><a href="http://www.dreamprojections.com/syntaxhighlighter/?ref=about" target="_blank">http://www.dreamprojections.com/syntaxhighlighter</a></p>&copy;2004-2007 Alex Gorbatchev.</td></tr><tr><td class="footer"><input type="button" class="close" value="OK" onClick="window.close()"/></td></tr></table></body></html>'},ClipboardSwf:null,Version:'1.5.1'}};dp.SyntaxHighlighter=dp.sh;dp.sh.Toolbar.Commands={
     ExpandSource:{label:'+ expand source',check:function(highlighter){return highlighter.collapse;},func:function(sender,highlighter){sender.parentNode.removeChild(sender);highlighter.div.className=highlighter.div.className.replace('collapsed','');}},
-    ViewSource:{label:'<font title="View plain source code">raw</font>',func:function(sender,highlighter){var code=dp.sh.Utils.FixForBlogger(highlighter.originalCode).replace(/</g,'&lt;');var wnd=window.open('','_blank','width=750, height=400, location=0, resizable=1, menubar=0, scrollbars=0');wnd.document.write('<textarea style="width:99%;height:99%">'+code+'\n// see ' + document.location.href.replace(/#$/, "") + '</textarea>');wnd.document.close();}},
-    CopyToClipboard:{label:"<font title='Copy to clipboard'>copy</font>",check:function(){return window.clipboardData!=null||dp.sh.ClipboardSwf!=null;},func:function(sender,highlighter)
-        {var code=dp.sh.Utils.FixForBlogger(highlighter.originalCode).replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&amp;/g,'&');if(window.clipboardData){window.clipboardData.setData('text',code);}
-        else if(dp.sh.ClipboardSwf!=null)
-        {var flashcopier=highlighter.flashCopier;if(flashcopier==null)
-        {flashcopier=document.createElement('div');highlighter.flashCopier=flashcopier;highlighter.div.appendChild(flashcopier);}
-        flashcopier.innerHTML='<embed src="'+dp.sh.ClipboardSwf+'" FlashVars="clipboard='+encodeURIComponent(code)+'" width="0" height="0" type="application/x-shockwave-flash"></embed>';}
-        alert('The code is in your clipboard now');}},
+    ViewSource:{label:'<font title="View plain source code" style="display:block;float:left; padding-right:10px;">raw</font>',func:function(sender,highlighter){var code=dp.sh.Utils.FixForBlogger(highlighter.originalCode).replace(/</g,'&lt;');var wnd=window.open('','_blank','width=750, height=400, location=0, resizable=1, menubar=0, scrollbars=0');wnd.document.write('<textarea style="width:99%;height:99%">'+code+'\n// see ' + document.location.href.replace(/#$/, "") + '</textarea>');wnd.document.close();}},
+    CopyToClipboard:{label:'<div id="d_clip_container" style="position:relative;float:left; padding-right:10px;"><div id="d_clip_button">copy</div></div>',
+            check:function(){ return true; },
+        func:function(sender,highlighter) {
+            }
+        },
     Download:{label:'<font title="Download as .java file">download</font>',func:function(sender, highlighter){document.location.href=document.location.href.replace(/#$/, "")+"/download";}},
     //PrintSource:{label:'print',func:function(sender,highlighter){var iframe=document.createElement('IFRAME');var doc=null;iframe.style.cssText='position:absolute;width:0px;height:0px;left:-500px;top:-500px;';document.body.appendChild(iframe);doc=iframe.contentWindow.document;dp.sh.Utils.CopyStyles(doc,window.document);doc.write('<div class="'+highlighter.div.className.replace('collapsed','')+' printing">'+highlighter.div.innerHTML+'</div>');doc.close();iframe.contentWindow.focus();iframe.contentWindow.print();alert('Printing...');document.body.removeChild(iframe);}},
     //About:{label:'edit',func:function(highlighter){ toggle_ui_to_editor(); }}
     //About:{label:'edit',func:function(highlighter){var wnd=window.open('','_blank','dialog,width=300,height=150,scrollbars=0');var doc=wnd.document;dp.sh.Utils.CopyStyles(doc,window.document);doc.write(dp.sh.Strings.AboutDialog.replace('{V}',dp.sh.Version));doc.close();wnd.focus();}}
 };
 dp.sh.Toolbar.Create=function(highlighter)
-{var div=document.createElement('DIV');div.className='tools';for(var name in dp.sh.Toolbar.Commands)
-{var cmd=dp.sh.Toolbar.Commands[name];if(cmd.check!=null&&!cmd.check(highlighter))
-continue;div.innerHTML+='<a href="#" onclick="dp.sh.Toolbar.Command(\''+name+'\',this);return false;">'+cmd.label+'</a>';}
-return div;}
+{var div=document.createElement('DIV');div.className='tools';for(var name in dp.sh.Toolbar.Commands) {
+    var cmd=dp.sh.Toolbar.Commands[name];
+    if(cmd.check!=null&&!cmd.check(highlighter))continue;
+    if (cmd['noLink'])
+        div.innerHTML+=cmd.label;
+    else
+        div.innerHTML+='<a href="#" onclick="dp.sh.Toolbar.Command(\''+name+'\',this);return false;">'+cmd.label+'</a>';
+    }
+return div;
+}
 dp.sh.Toolbar.Command=function(name,sender)
 {var n=sender;while(n!=null&&n.className.indexOf('dp-highlighter')==-1)
 n=n.parentNode;if(n!=null)

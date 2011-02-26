@@ -23,6 +23,7 @@ Libraries used
 * [JS Syntax Highlighter] [8] (GNU LGPL)
 * * switch to [new version] [9] (MIT and GPL)?
 * * copy to clipboard ([zeroclipboard] [10] (MIT)?)
+* [ZeroClipboard] [12] (MIT)
 * [Akismet python module] [11] (BSD)
 
    [1]: https://github.com/paulirish/html5-boilerplate
@@ -36,3 +37,4 @@ Libraries used
    [9]: http://alexgorbatchev.com/SyntaxHighlighter
    [10]: http://code.google.com/p/zeroclipboard
    [11]: http://kemayo.wordpress.com/2005/12/02/akismet-py
+   [12]: http://code.google.com/p/zeroclipboard

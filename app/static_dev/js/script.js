@@ -5,7 +5,8 @@ $(document).ready(function() {
 
 */
 
-var is_editor = false;
+var is_editor = false; // toggled true <-> false
+var is_wmd = false;    // set to true only once
 
 function ui_to_editor() {
     $("#view_title").hide();
@@ -19,6 +20,15 @@ function ui_to_editor() {
     $("#subtitle").hide();
     $("#comments").hide();
 
+    if (!is_wmd) {
+	    $("#desc").wmd({
+	        "preview": true,
+	        "helpLink": "/about/markdown",
+	        "helpHoverTitle": "Markdown Help",
+	    });       
+	    is_wmd = true;
+    }     
+    
     $("#fdbk_tab").hide();    
     $("#btn_edit .ui-button-text").html("Cancel");
 }

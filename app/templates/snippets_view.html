@@ -31,6 +31,8 @@
     <script src="/js/libs/wmd.js"></script>
     <script src="/js/libs/jquery-wmd-plugin.js"></script>
 
+    <script src="/js/libs/ZeroClipboard.js"></script>
+
     <script>
     $(document).ready(function() {
         //prettyPrint(); 
@@ -64,13 +66,14 @@
 	        "helpLink": "http://stackoverflow.com/editing-help",
 	        "helpHoverTitle": "Markdown Help",
 	    });            
-
-	    $("#desc").wmd({
-	        "preview": true,
-	        "helpLink": "/about/markdown",
-	        "helpHoverTitle": "Markdown Help",
-	    });            
         
+        ZeroClipboard.setMoviePath( '/swf/ZeroClipboard10.swf' );
+        clip = new ZeroClipboard.Client();
+        clip.setText($("#code_pre").html() + "\n// see http://androidsnippets.com/{{ snippet.slug1 }}");
+        clip.setHandCursor( true );
+		clip.addEventListener('complete', function() { alert("The snippet is now in your clipboard."); });        
+        clip.glue( 'd_clip_button', 'd_clip_container' );
+        $("#ZeroClipboardMovie_1").focus();
     });
     
     var dialog_shown = false;
@@ -236,7 +239,7 @@
             </div>
 
             <div id="code">
-                <pre name="code" class="java">{{ snippet.code|escape }}</pre>
+                <pre name="code" id="code_pre" class="java">{{ snippet.code|escape }}</pre>
             </div>
             <div style="overflow:hidden; display:none;" id="edit_code">
                 <div><textarea style="width:98%; padding:4px;" rows="28" id="input_code" name="code">{{ snippet.code }}</textarea></div>
