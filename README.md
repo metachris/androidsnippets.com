@@ -1,10 +1,11 @@
-Rewrite of androidsnippets.com
+Rewrite of androidsnippets.com which runs on appengine.
 
 Currently in prototyping, models are not yet finalized.
 
 Libraries used
 --------------
 
+* Django 1.2
 * [html5-boilerplate] [1] (MIT,BSD,Public Domain)
 * [jquery] [2] (MIT and GPL2)
 * [jquery-ui] [3] (MIT and GPL)

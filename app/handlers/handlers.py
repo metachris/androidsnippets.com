@@ -1,12 +1,13 @@
 import os
 import logging
 
-from google.appengine.ext import db
 from google.appengine.api import users
+from google.appengine.api import memcache
+
+from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import login_required
-
 from google.appengine.ext.webapp import template
 
 import markdown
@@ -26,6 +27,7 @@ tdir = os.path.join(os.path.dirname(__file__), '../templates/')
 # OpenID Login
 class LogIn(webapp.RequestHandler):
     def get(self):
+        memcache.incr("pv_login", initial_value=1)
         #user = users.get_current_user()
         action = self.request.get('action')
         target_url = self.request.get('continue')
@@ -47,6 +49,7 @@ class LogOut(webapp.RequestHandler):
 # Custom sites
 class Main(webapp.RequestHandler):
     def get(self):
+        memcache.incr("pv_main", initial_value=1)
         user = users.get_current_user()
 
         """
@@ -73,6 +76,7 @@ class Main(webapp.RequestHandler):
 
 class Account(webapp.RequestHandler):
     def get(self):
+        memcache.incr("pv_account", initial_value=1)
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
@@ -81,6 +85,7 @@ class LegacySnippetView(webapp.RequestHandler):
     """Redirects for snippets of legacy androidsnippets.org, which have
     links such as http://androidsnippets.org/snippets/198"""
     def get(self, legacy_slug):
+        memcache.incr("pv_snippet_legacy", initial_value=1)
         q = Snippet.all()
         q.filter("slug2 =", legacy_slug)
         snippet = q.get()
@@ -100,6 +105,7 @@ class LegacySnippetView(webapp.RequestHandler):
 
 class SnippetView(webapp.RequestHandler):
     def get(self, snippet_slug):
+        memcache.incr("pv_snippet", initial_value=1)
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
@@ -163,6 +169,7 @@ class SnippetView(webapp.RequestHandler):
 
 class SnippetVote(webapp.RequestHandler):
     def get(self, snippet_slug):
+        memcache.incr("ua_vote_snippet", initial_value=1)
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
@@ -202,6 +209,7 @@ class SnippetVote(webapp.RequestHandler):
 class SnippetEdit(webapp.RequestHandler):
     """TODO: Check if all form input is here, if user is allowed, etc"""
     def post(self, snippet_slug):
+        memcache.incr("ua_edit_snippet", initial_value=1)
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
@@ -247,6 +255,7 @@ class SnippetEdit(webapp.RequestHandler):
 class SnippetEditView(webapp.RequestHandler):
     """Popup that shows an edit from another user"""
     def get(self, snippet_slug, rev_key):
+        memcache.incr("pv_snippet_edit", initial_value=1)
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
@@ -296,6 +305,7 @@ class SnippetEditView(webapp.RequestHandler):
 
 class TagView(webapp.RequestHandler):
     def get(self, tag):
+        memcache.incr("pv_tag", initial_value=1)
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
@@ -318,7 +328,9 @@ class TagView(webapp.RequestHandler):
 
 
 class SnippetCommentView(webapp.RequestHandler):
+    """Posting a comment, run through akismet to find spam"""
     def post(self, snippet_slug):
+        memcache.incr("ua_comment", initial_value=1)
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
@@ -351,10 +363,12 @@ class SnippetCommentView(webapp.RequestHandler):
                     self.request.headers["User-Agent"], \
                     comment_content=comment)
                 if is_spam:
+                    memcache.incr("ua_comment_spam", initial_value=1)
                     logging.warning("= comment: Yup, that's spam alright.")
                     c.flagged_as_spam = True
                     url_addon = "?c=m"
                 else:
+                    memcache.incr("ua_comment_ham", initial_value=1)
                     logging.info("= comment: Hooray, your users aren't scum!")
                     url_addon = ""
         except akismet.AkismetError, e:

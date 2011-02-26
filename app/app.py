@@ -30,6 +30,7 @@ urls = [
     (r'/admin/x/([-\w]+)', AdminX),
     (r'/admin/y/(.*)', AdminY),
     (r'/admin/del', AdminDel),
+    (r'/admin(.*)', AdminView),
 
     # snippet slug url's at the bottom
     (r'/snippets/([-\w]+)', LegacySnippetView),

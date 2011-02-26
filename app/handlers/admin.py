@@ -4,8 +4,10 @@ import time
 import datetime
 from urllib import unquote
 
-from google.appengine.ext import db
 from google.appengine.api import users
+from google.appengine.api import memcache
+
+from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import login_required
@@ -49,3 +51,25 @@ class AdminDel(webapp.RequestHandler):
         q = UserPrefs.all()
         for p in q:
             p.delete()
+
+
+class AdminView(webapp.RequestHandler):
+    def get(self, category=None):
+        user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
+        values = {'prefs': prefs, "stats": []}
+
+        if not category:
+            self.response.out.write( \
+                    template.render(tdir + "admin.html", values))
+
+        if category == "/stats":
+            mc_items = ["pv_login", "pv_main", "pv_account", "pv_snippet", \
+            "pv_snippet_legacy", "ua_vote_snippet", "ua_edit_snippet", \
+            "pv_snippet_edit", "pv_tag", "ua_comment", "ua_comment_spam", \
+            "ua_comment_ham"]
+            mc_items.sort()
+            for item in mc_items:
+                values["stats"].append((item, memcache.get(item)))
+            self.response.out.write( \
+                    template.render(tdir + "admin_stats.html", values))
