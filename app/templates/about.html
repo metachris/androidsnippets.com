@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <h2>About AndroidSnippets.com</h2>
+    
+    <div style="margin:10px 2px; width:500px;">
+        <p>AndroidSnippets is a website for finding, exploring, sharing and collaborating on
+        source code snippets for Android. 
+        </p>
+        <p><h3>Licenses</h3></p>
+        <p>Every user who submits a code snippet agrees to the <a href="/about/tos">terms
+        of service</a>, which allow everyone to reuse and modify the snippet without any 
+        current or future restrictions.</p>
+
+        <p>The source code of this website is hosted on 
+        <a href="https://github.com/metachris/androidsnippets.com">github</a> and released under the AGPL.</p>
+        <p><h3>Feedback</h3></p>
+
+        <p>Let us know if you have any feedback, ideas or comments! You can best reach us via the
+        getSatisfaction feedback tab (on the right of the screen), or via this feedback form:
+        (chris at metachris.org)</p>
+        
+        <p><form action="/about/feedback" method="post">
+        
+        </form></p>
+
+      
+    </div>
+{% endblock %}

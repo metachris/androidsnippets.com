@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="/css/admin.css" />     
+{% endblock %}
+
+{% block scripts %}
+	<script> 
+        $(document).ready(function() {
+        });
+	</script>
+{% endblock %}
+
+{% block main %}
+    <h1><a href="/admin">Admin Interface</a> - Statistics</h1>
+    
+    <div id="admin_stats">
+    <table>
+        {% for i,c in stats %}
+            <tr><td>{{ i }}</td><td>{{ c }}</td></li>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="/admin/stats/reset">reset</a>
+    </div>
+{% endblock %}

@@ -3,12 +3,16 @@
 {% block header %}
     <div id="header">
                 <div style="float:right; width:320px; text-align:right;">
-                    <form>
-                    <div class='search'><input type='text' name='q' title='enter a search term and press enter' /></div>
+                    <form action="/search">
+                    <div class='search'><input type='text' name='q' title='enter a search term and press enter' value="{{ q }}" /></div>
                     <div class='headinfos'>
-                        {% if prefs %}<a href="/profile" class='nick'>{{ prefs.nickname }}</a> <span class='rep'>{{ prefs.points }}</span> <span class='separator'>|</span>{% endif %} 
+                        {% if prefs %}
+                            <a href="/profile" class='nick'>{{ prefs.nickname }}</a> <span class='rep'>{{ prefs.points }}</span>
+                        {% else %}<b><a href='/login'>sign in</a></b> 
+                        {% endif %}
+                        <span class='separator'>|</span> 
                         <a href='/about'>about</a> 
-                        {% comment %}{% if prefs %}<a href='/logout'>Sign out</a>{% else %}<a href='/login'>Sign in</a>{% endif %}{% endcomment %}
+                        {% comment %}{% if prefs %}<a href='/logout'>Sign out</a>{% endcomment %}
                     </div>
                     </form>
                     <div style="clear:both;"></div>

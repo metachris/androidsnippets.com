@@ -32,6 +32,7 @@ urls = [
     (r'/admin(.*)', AdminView),
 
     (r'/about(.*)', AboutView),
+    (r'/search', SearchView),
 
     # snippet slug url's at the bottom
     (r'/snippets/([-\w]+)', LegacySnippetView),

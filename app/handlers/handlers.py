@@ -79,6 +79,7 @@ class LegacySnippetView(webapp.RequestHandler):
     links such as http://androidsnippets.org/snippets/198"""
     def get(self, legacy_slug):
         memcache.incr("pv_snippet_legacy", initial_value=0)
+        legacy_slug = legacy_slug.strip("index.html").strip("/")
         q = Snippet.all()
         q.filter("slug2 =", legacy_slug)
         snippet = q.get()
@@ -393,3 +394,14 @@ class AboutView(webapp.RequestHandler):
             for item in mc_items:
                 memcache.set(item, 0)
             self.redirect("/admin/stats")
+
+
+class SearchView(webapp.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
+        q = decode(self.request.get('q'))
+
+        values = {'prefs': prefs, 'q': q}
+        self.response.out.write( \
+                template.render(tdir + "search_results.html", values))

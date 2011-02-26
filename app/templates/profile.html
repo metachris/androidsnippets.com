@@ -20,7 +20,7 @@
 
 {% block main %}
     <h1>Account Settings</h1>
-    <small style="color:gray;">Member since {{ prefs.date_joined|timesince }}</small>
+    <small style="color:gray;">Member since {{ prefs.date_joined|timesince }} (<a href="/logout">sign out</a>)</small>
     
     <div id="tabs" style="margin:20px 10px;">
     	<ul>
