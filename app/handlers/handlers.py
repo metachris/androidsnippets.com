@@ -351,6 +351,7 @@ class TagView(webapp.RequestHandler):
             return
 
         # Find base tag
+        tag = tag.strip("index.html").strip("/")  # legacy system / google
         q = Tag.all()
         q.filter("name =", tag)
         tag = q.get()
