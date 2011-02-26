@@ -219,7 +219,7 @@
 <div>            
             
             <div class="envelope">            
-                <div id="view_description">{{ desc_md }}</div>            
+                <div id="view_description">{{ desc_md|safe }}</div>            
                 <div style=" display:none;" id="edit_description">
                     <div><textarea style="width:98%;" rows="14" id="desc" name="description">{{ snippet.description }}</textarea></div>
                     <div style="padding-left:4px; margin-bottom:4px; color:gray;"><small>markdown suppored</small></div>

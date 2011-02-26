@@ -17,7 +17,6 @@ urls = [
     (r'/login', LogIn),
     (r'/_ah/login_required', LogIn),
     (r'/logout', LogOut),
-    (r'/account', Account),
 
     (r'/add', SnippetsNew),
     (r'/preview', SnippetsNewPreview),

@@ -1,8 +1,10 @@
 import os
 import logging
 
-from google.appengine.ext import db
 from google.appengine.api import users
+from google.appengine.api import memcache
+
+from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import login_required
@@ -29,6 +31,7 @@ tdir = os.path.join(os.path.dirname(__file__), '../templates/')
 # Custom sites
 class UserProfileView(webapp.RequestHandler):
     def get(self, nickname):
+        memcache.incr("pv_otherprofile", initial_value=0)
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
@@ -43,6 +46,7 @@ class UserProfileView(webapp.RequestHandler):
 
 class ProfileView(webapp.RequestHandler):
     def get(self):
+        memcache.incr("pv_profile", initial_value=0)
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
