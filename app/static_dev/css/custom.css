@@ -61,6 +61,7 @@ td { padding:2px 6px; }
 #main { padding-top:20px; padding-left:20px; min-height:500px;/* width:800px; margin:auto; */ }
 
 #footer {
+    padding-top:100px;
 }
 
 #header {

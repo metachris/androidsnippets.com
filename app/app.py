@@ -46,7 +46,7 @@ urls = [
     (r'/([-\w]+)/edit/([-\w]+)', SnippetEditView),
     (r'/([-\w]+)/edit', SnippetEdit),
     (r'/([-\w]+)/comment', SnippetCommentView),
-    (r'/([-\w]+)/index.html', SnippetView),
+    (r'/([-\w]+)/download', SnippetDownloadView),
     (r'/([-\w]+)', SnippetView),
 ]
 

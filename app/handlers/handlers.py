@@ -127,6 +127,26 @@ class LegacySnippetView(webapp.RequestHandler):
         self.redirect("/%s" % snippet.slug1, permanent=True)
 
 
+class SnippetDownloadView(webapp.RequestHandler):
+    def get(self, snippet_slug):
+        q = Snippet.all()
+        q.filter("slug1 =", snippet_slug)
+        snippet = q.get()
+
+        if not snippet:
+            # Show snippet-not-found.html
+            values = {'prefs': prefs, "q": snippet_slug}
+            self.response.out.write(template.render(tdir + \
+                "snippets_notfound.html", values))
+            return
+
+        self.response.headers['Content-Type'] = "application/octet-stream"
+        self.response.headers['content-disposition'] = \
+                "attachment; filename=%s.java" % snippet.slug1
+        self.response.out.write("%s\n// see http://androidsnippets.com/%s" % \
+                (snippet.code, snippet.slug1))
+
+
 class SnippetView(webapp.RequestHandler):
     def get(self, snippet_slug):
         memcache.incr("pv_snippet", initial_value=0)
