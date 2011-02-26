@@ -146,6 +146,10 @@ class Snippet(db.Model):
     proposal_count = db.IntegerProperty(default=0)
     date_lastproposal = db.DateTimeProperty()
 
+    # comment_count
+    comment_count = db.IntegerProperty(default=0)
+    date_lastcomment = db.DateTimeProperty()
+
     # Vote information
     upvote_count = db.IntegerProperty(default=1)
     downvote_count = db.IntegerProperty(default=0)
@@ -250,6 +254,7 @@ class SnippetRevision(db.Model):
         self.snippet.categories = self.categories
         self.snippet.tags = self.tags
 
+        self.snippet.proposal_count -= 1
         self.snippet.update_count += 1
         self.snippet.date_lastupdate = datetime.datetime.now()
         self.snippet.date_lastactivity = datetime.datetime.now()

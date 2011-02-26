@@ -21,6 +21,7 @@ urls = [
     (r'/add', SnippetsNew),
     (r'/preview', SnippetsNewPreview),
 
+    (r'/tags', TagView),
     (r'/tags/([-\w]+)', TagView),
 
     (r'/profile', ProfileView),

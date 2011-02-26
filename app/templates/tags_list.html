@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block scripts %}
+	<script> 
+        $(document).ready(function() {
+        });
+	</script>
+{% endblock %}
+
+{% block main %}
+
+<h1>Tags</h1>
+
+<div class="tagcloud">
+    {% for tag,cnt in tags %}
+        {% if cnt > 1 %}
+        <span style="font-size:{{ cnt|mkSize:max_cnt }}px;" title="{{ cnt }} snippets"><a href="/tags/{{ tag }}">{{ tag }}</a></span>, 
+        {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

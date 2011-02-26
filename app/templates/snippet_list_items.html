@@ -1,0 +1,12 @@
+<table class="snippetlist">
+    {% for snippet in snippets %}
+        <tr class="{% cycle 'even' 'odd' %}">
+            <td><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></td>
+            <!--
+            <td>{{ snippet.upvote_count }}</td>
+            <td>{{ snippet.proposal_count }}</td>
+            
+            -->
+        </tr>
+    {% endfor %}
+</table>

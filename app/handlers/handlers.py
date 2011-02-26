@@ -1,5 +1,6 @@
 import os
 import logging
+import datetime
 
 from google.appengine.api import users
 from google.appengine.api import memcache
@@ -14,7 +15,7 @@ import markdown
 import akismet
 
 from time import sleep
-from tools import slugify, decode
+from tools import slugify, decode, get_tags_mostused
 from models import *
 
 import settings
@@ -76,8 +77,37 @@ class Main(webapp.RequestHandler):
 
 class LegacySnippetView(webapp.RequestHandler):
     """Redirects for snippets of legacy androidsnippets.org, which have
-    links such as http://androidsnippets.org/snippets/198"""
+    links such as http://androidsnippets.org/snippets/198
+
+    Also handles /snippets/new, /snippets/active, etc.
+    """
     def get(self, legacy_slug):
+        if legacy_slug in ["new", "active", "edits", "popular", "comments"]:
+            user = users.get_current_user()
+            prefs = UserPrefs.from_user(user)
+            q = Snippet.all()
+            if legacy_slug == "new":
+                q.order("-date_submitted")
+                title = "New Snippets"
+            elif legacy_slug == "active":
+                q.order("-date_lastactivity")
+                title = "Active Snippets"
+            elif legacy_slug == "popular":
+                q.order("-upvote_count")
+                title = "Popular Snippets"
+            elif legacy_slug == "comments":
+                q.order("-comment_count")
+                title = "Recently Commented Snippets"
+            elif legacy_slug == "edits":
+                q.filter("proposal_count >", 0)
+                q.order("proposal_count")
+                title = "Snippets with Edits"
+            snippets = q.fetch(20)
+            values = {'prefs': prefs, 'snippets': snippets, 'title': title}
+            self.response.out.write(template.render(tdir + \
+                    "snippet_list.html", values))
+            return
+
         memcache.incr("pv_snippet_legacy", initial_value=0)
         legacy_slug = legacy_slug.strip("index.html").strip("/")
         q = Snippet.all()
@@ -300,10 +330,25 @@ class SnippetEditView(webapp.RequestHandler):
 
 
 class TagView(webapp.RequestHandler):
-    def get(self, tag):
+    def get(self, tag=None):
         memcache.incr("pv_tag", initial_value=0)
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
+
+        if not tag:
+            # Show tag list
+            tags = get_tags_mostused()
+            tags.sort()
+            min_cnt = 0
+            max_cnt = 0
+            for tag, cnt in tags:
+                if cnt > max_cnt:
+                    max_cnt = cnt
+            logging.info("max cnt: %s" % max_cnt)
+            values = {'prefs': prefs, 'tags': tags, 'max_cnt': max_cnt}
+            self.response.out.write(template.render(tdir + "tags_list.html", \
+                    values))
+            return
 
         # Find base tag
         q = Tag.all()
@@ -367,6 +412,9 @@ class SnippetCommentView(webapp.RequestHandler):
                     memcache.incr("ua_comment_ham", initial_value=1)
                     logging.info("= comment: Hooray, your users aren't scum!")
                     url_addon = ""
+                    snippet.comment_count += 1
+                    snippet.date_lastcomment = datetime.datetime.now()
+                    snippet.save()
         except akismet.AkismetError, e:
             logging.error("%s, %s" % (e.response, e.statuscode))
 

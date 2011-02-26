@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block head %}
+{% endblock %}
+
+{% block scripts %}
+	<script> 
+        $(document).ready(function() {
+        });
+	</script>
+{% endblock %}
+
+{% block main %}
+
+<h1>Tag: <i>{{ tag.name }}</i></h1>
+
+<ul>
+    {% for t in tags %}
+        <li><a href="/{{ t.snippet.slug1 }}">{{ t.snippet.title }}</a></li>
+    {% endfor %}
+</ul>	
+{% endblock %}

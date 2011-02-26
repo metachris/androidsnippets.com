@@ -103,6 +103,69 @@ td { padding:2px 6px; }
 #header .rep { font-size:14px; color:lightgreen; color:#97C03D; }
 
 
+
+#subheader {
+    border-bottom:1px solid lightgray;    
+}
+
+#subheader ul {
+    display:block;
+    float:left;
+    font-size: 12px;
+font-style: normal;
+font-variant: normal;
+font-weight: normal;
+
+line-height: normal;
+list-style-image: none;
+list-style-position: outside;
+list-style-type: none;
+margin-bottom: 0px;
+margin-left: 10px;
+margin-right: 10px;
+margin-top: 0px;
+
+}
+#subheader li {
+    font-size:11px;
+    float:left;
+    height: 20px;
+
+    line-height: 20px;
+    list-style-image: none;
+    list-style-position: outside;
+    list-style-type: none;    
+    
+    width:74px;
+    text-align:center;
+    
+    border-right:1px solid lightgray;
+}
+
+#subheader li a {
+    display:block;
+    color:#666;
+}
+#subheader li a:hover {
+    color: #0073EA; 
+    text-decoration:none;    
+}
+
+
+.snippetlist {
+    margin:6px 10px;
+    color:gray;
+}
+
+.snippetlist .odd {
+    background:#fdf;
+}
+
+.snippetlist td a {
+    display:block;
+}
+
+
 #comments {
     margin-top:20px;
 }
@@ -392,4 +455,12 @@ margin-bottom:20px;
 #snippet_points .vote a.selected {
 background:#F4940C;
 color:#FFF;
+}
+
+
+
+
+.tagcloud {
+    max-width:740px;
+    margin:20px;
 }

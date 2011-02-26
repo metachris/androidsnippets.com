@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <title>{{ title }} - Android Snippets</title>
+{% endblock %}
+
+
+{% block main %}
+    <h2>{{ title }}</h2>
+    {% include "snippet_list_items.html" %}
+{% endblock %}

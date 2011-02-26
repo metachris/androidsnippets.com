@@ -30,6 +30,12 @@ def is_notification(bitfield, test_bit):
     return "checked='checked'" if bitfield & test_bit == test_bit else ""
 
 
+def mkSize(val, max):
+    """make tag cloud. min=11px, max=17px;"""
+    size_maxdelta = 10.0 / float(max)
+    return 13.0 + (size_maxdelta * float(val))
+
 register.filter(first)
 register.filter(android_sdk_to_name)
 register.filter(is_notification)
+register.filter(mkSize)

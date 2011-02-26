@@ -1,10 +1,6 @@
 {% extends "base.html" %}
 
 {% block main %}
-    <h2>Recent Snippets</h2>
-    <ul>
-        {% for snippet in snippets %}
-            <li><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></li>
-        {% endfor %}
-    </ul>
+    <h2>New Snippets</h2>
+    {% include "snippet_list_items.html" %}
 {% endblock %}
