@@ -12,9 +12,11 @@ from google.appengine.ext.webapp import template
 
 import markdown
 
+import mc
+
 from urllib import unquote
 from time import sleep
-from tools import slugify, decode, get_tags_mostused
+from tools import slugify, decode
 from models import *
 
 
@@ -28,7 +30,7 @@ class SnippetsNew(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
-        tags_mostused = get_tags_mostused()
+        tags_mostused = mc.cache.tags_mostused()
 
         self.response.out.write(template.render(tdir + \
             "snippets_new.html", {'prefs': prefs, 'tag_cnt': 0, \
@@ -69,7 +71,7 @@ class SnippetsNew(webapp.RequestHandler):
         if len(tags) < 2:
             errors.append("a few tags")
         if len(errors) > 0:
-            tags_mostused = get_tags_mostused()
+            tags_mostused = mc.cache.tags_mostused()
             values = {'prefs': prefs, 'errors': errors, 'title': title, \
                 'code': code, 'description': description, 'tags': tags, \
                 'version': version, 'tag_cnt': len(tags), \
@@ -136,10 +138,11 @@ class SnippetsNew(webapp.RequestHandler):
             st.put()
 
         prefs.points += 1
+        prefs.date_lastactivity = datetime.datetime.now()
         prefs.put()
 
         # Recalculate most used tags and store in memcache
-        get_tags_mostused(force_update=True)
+        mc.cache.tags_mostused(force_update=True)
 
         # Redirect to snippet view
         self.redirect("/%s" % s.slug1)

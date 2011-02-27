@@ -25,7 +25,8 @@ urls = [
     (r'/tags/([-\w]+)', TagView),
 
     (r'/profile', ProfileView),
-    (r'/authors/(.*)', UserProfileView),
+    (r'/users', UsersView),
+    (r'/users/(.*)', UserProfileView),
 
     (r'/admin/x/([-\w]+)', AdminX),
     (r'/admin/y/(.*)', AdminY),

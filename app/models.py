@@ -21,7 +21,8 @@ class UserPrefs(db.Model):
     email_md5 = db.StringProperty(default="")  # used for gravatar
 
     date_joined = db.DateTimeProperty(auto_now_add=True)
-    date_lastlogin = db.DateTimeProperty(auto_now=True)
+    date_lastlogin = db.DateTimeProperty(auto_now_add=True)  # TODO
+    date_lastactivity = db.DateTimeProperty()
 
     twitter = db.StringProperty(default="")  # twitter username
     about = db.TextProperty(default="")
@@ -164,13 +165,13 @@ class Snippet(db.Model):
 
     def upvote(self):
         """Adjust snippet properties after upvote"""
-        self.rating += 10
+        self.rating += 10  # unused
         self.upvote_count += 1
         self.date_lastvote = datetime.datetime.now()
         self.date_lastupvote = datetime.datetime.now()
         self.date_lastactivity = datetime.datetime.now()
 
-    def downvote(self):
+    def downvote(self):  # unused
         """Adjust snippet properties after downvote"""
         self.rating -= 10
         self.downvote_count += 1

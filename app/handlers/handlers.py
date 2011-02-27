@@ -14,8 +14,9 @@ from google.appengine.ext.webapp import template
 import markdown
 import akismet
 
+import mc
 from time import sleep
-from tools import slugify, decode, get_tags_mostused
+from tools import slugify, decode
 from models import *
 
 import settings
@@ -110,7 +111,7 @@ class LegacySnippetView(webapp.RequestHandler):
             return
 
         memcache.incr("pv_snippet_legacy", initial_value=0)
-        legacy_slug = legacy_slug.strip("index.html").strip("/")
+        legacy_slug = legacy_slug.replace("index.html", "").strip("/")
         q = Snippet.all()
         q.filter("slug2 =", legacy_slug)
         snippet = q.get()
@@ -249,6 +250,10 @@ class SnippetVote(webapp.RequestHandler):
                     logging.info("+1 rep for editor %s" % \
                             revision.userprefs.nickname)
                     revision.userprefs.points += 1
+                    if revision.userprefs.user == user:
+                        # Set last activity on voting user
+                        revision.userprefs.date_lastactivity = \
+                                datetime.datetime.now()
                     revision.userprefs.put()
 
             # self.response.out.write("1")
@@ -306,6 +311,10 @@ class SnippetEdit(webapp.RequestHandler):
             #prefs.points += 1
             #prefs.put()
 
+        # Set last activity on submitting user
+        prefs.date_lastactivity = datetime.datetime.now()
+        prefs.put()
+
         self.redirect("/%s" % snippet_slug)
 
 
@@ -349,8 +358,14 @@ class SnippetEditView(webapp.RequestHandler):
 
                     rev.userprefs.points += 3
                     rev.userprefs.put()
+
                     rev.date_lastactivity = datetime.datetime.now()
                     rev.put()
+
+                    # Set last activity on voting use0r
+                    prefs.date_lastactivity = datetime.datetime.now()
+                    prefs.put()
+
                 elif has_voted == "-1":
                     # user downvotes
                     v = SnippetRevisionDownvote(userprefs=prefs, \
@@ -359,8 +374,13 @@ class SnippetEditView(webapp.RequestHandler):
 
                     rev.userprefs.points -= 1
                     rev.userprefs.put()
+
                     rev.date_lastactivity = datetime.datetime.now()
                     rev.save()
+
+                    # Set last activity on voting use0r
+                    prefs.date_lastactivity = datetime.datetime.now()
+                    prefs.put()
 
         # TODO: memcache
         desc_md = markdown.markdown(rev.description)
@@ -378,21 +398,22 @@ class TagView(webapp.RequestHandler):
 
         if not tag:
             # Show tag list
-            tags = get_tags_mostused()
+            tags = mc.cache.tags_mostused()
             tags.sort()
             min_cnt = 0
             max_cnt = 0
             for tag, cnt in tags:
                 if cnt > max_cnt:
                     max_cnt = cnt
-            logging.info("max cnt: %s" % max_cnt)
+            #logging.info("max cnt: %s" % max_cnt)
             values = {'prefs': prefs, 'tags': tags, 'max_cnt': max_cnt}
             self.response.out.write(template.render(tdir + "tags_list.html", \
                     values))
             return
 
         # Find base tag
-        tag = tag.strip("index.html").strip("/")  # legacy system / google
+        tag = tag.replace("index.html", "").strip("/")  # legacy system / goog
+        logging.info("tag: %s" % tag)
         q = Tag.all()
         q.filter("name =", tag)
         tag = q.get()
@@ -402,10 +423,11 @@ class TagView(webapp.RequestHandler):
             return
 
         # Find all snippets with tag
-        tags = SnippetTag.all()
-        tags.filter("tag =", tag)
+        #tags = SnippetTag.all()
+        #tags.filter("tag =", tag)
+        snippettags = tag.snippettag_set
 
-        values = {'prefs': prefs, 'tag': tag, 'tags': tags}
+        values = {'prefs': prefs, 'tag': tag, 'tags': snippettags}
         self.response.out.write(template.render(tdir + "tags_index.html", \
                 values))
 
@@ -416,6 +438,10 @@ class SnippetCommentView(webapp.RequestHandler):
         memcache.incr("ua_comment", initial_value=0)
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
+
+        # Set last activity on commenting user
+        prefs.date_lastactivity = datetime.datetime.now()
+        prefs.put()
 
         q = Snippet.all()
         q.filter("slug1 =", snippet_slug)
@@ -431,9 +457,8 @@ class SnippetCommentView(webapp.RequestHandler):
             return
 
         # Add the comment now
-        comment_md = markdown.markdown(comment)
         c = SnippetComment(userprefs=prefs, snippet=snippet, comment=comment)
-        c.comment_md = comment_md
+        c.comment_md = markdown.markdown(comment)
 
         # Check if comment is spam
         try:
@@ -496,3 +521,22 @@ class SearchView(webapp.RequestHandler):
         values = {'prefs': prefs, 'q': q}
         self.response.out.write( \
                 template.render(tdir + "search_results.html", values))
+
+
+class UsersView(webapp.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
+
+        q = decode(self.request.get('q'))
+        _users = UserPrefs.all()
+        if q == "1" or not q:
+            _users.order("-points")
+        else:
+            _users.order("-date_lastactivity")
+        _users1 = _users.fetch(25)
+        _users2 = _users.fetch(25, 25)
+
+        values = {'prefs': prefs, 'users1': _users1, 'users2': _users2}
+        self.response.out.write( \
+                template.render(tdir + "users.html", values))

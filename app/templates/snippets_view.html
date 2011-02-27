@@ -201,7 +201,7 @@
                 <p><b>Edits</b></p>
                 <p>
                     {% for rev in accepted_revisions %}
-                        <a href="/authors/{{ rev.userprefs.nickname }}" title="{{ rev.userprefs.nickname }}"><img src="http://www.gravatar.com/avatar/{{ rev.userprefs.email_md5 }}?s=20" /></a>
+                        <a href="/users/{{ rev.userprefs.nickname }}" title="{{ rev.userprefs.nickname }}"><img src="http://www.gravatar.com/avatar/{{ rev.userprefs.email_md5 }}?s=20" /></a>
                     {% endfor %}
                 </p>
                 

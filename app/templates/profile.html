@@ -27,7 +27,7 @@
 
 {% block main %}
     <h1>Account Settings</h1>
-    <small style="color:gray;">You are a member since {{ prefs.date_joined|timesince }}<br> (<a href="/authors/{{ prefs.nickname }}">public profile</a> | <a href="/logout">sign out</a>)</small>
+    <small style="color:gray;">You are a member since {{ prefs.date_joined|timesince }}<br> (<a href="/users/{{ prefs.nickname }}">public profile</a> | <a href="/logout">sign out</a>)</small>
     
     <div id="tabs" style="margin:20px 10px;">
     	<ul>
