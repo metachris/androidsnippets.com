@@ -36,6 +36,8 @@ urls = [
     (r'/admin/del', AdminDel),
     (r'/admin(.*)', AdminView),
 
+    (r'/feeds/(.*)', FeedView),
+
     (r'/about(.*)', AboutView),
     (r'/search', SearchView),
 
