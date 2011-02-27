@@ -52,9 +52,9 @@ class FeedView(webapp.RequestHandler):
             rss = PyRSS2Gen.RSS2(
                 title="Android Snippets - Latest Snippets",
                 link="http://www.androidsnippets.com",
-                description="AndroidSnippets is a community driven website \
-                    for finding, exploring, sharing and improving source code \
-                    snippets for Android.",
+                description="Feed with new snippets on AndroidSnippets.com, \
+                    a community driven website for finding, exploring, sharing\
+                    and improving source code snippets for Android.",
                 lastBuildDate=datetime.datetime.utcnow(),
                 items=items)
 

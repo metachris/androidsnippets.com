@@ -139,7 +139,7 @@ class ProfileView(webapp.RequestHandler):
                         prefs.nickname = nickname
                         url_addon += "&u=1"
 
-            if email and email.strip() != prefs.email:
+            if email and email.strip() not in [prefs.email, prefs.email_new]:
                 # send verification mail
                 prefs.email_new = email.strip()
                 prefs.email_new_code = hashlib.sha1(os.urandom(64)).hexdigest()

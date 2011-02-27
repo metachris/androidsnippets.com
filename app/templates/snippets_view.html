@@ -154,7 +154,7 @@
                             {% if prefs %}
                             <a class="teaser" href="javascript:vote()" title="Give this snippet a point!">vote</a>
                             {% else %}                            
-                            <a class="teaser" href="javascript:show_dialog_signin('{{ snippet.slug1 }}/vote')" title="Give this snippet a point!">vote</a>
+                            <a class="teaser" href="javascript:show_dialog_signin('/{{ snippet.slug1 }}/vote')" title="Give this snippet a point!">vote</a>
                             {% endif %}
                         {% endif %}
                         <!--<div class="teaser">
