@@ -37,6 +37,7 @@ urls = [
     (r'/admin(.*)', AdminView),
 
     (r'/feeds/(.*)', FeedView),
+    (r'/sitemap.xml', SitemapView),
 
     (r'/about(.*)', AboutView),
     (r'/search', SearchView),

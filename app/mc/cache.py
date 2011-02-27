@@ -1,9 +1,14 @@
+import os
 import re
+import logging
 from operator import itemgetter
 
 from google.appengine.api import memcache
+from google.appengine.ext.webapp import template
 
 from models import *
+
+tdir = os.path.join(os.path.dirname(__file__), '../templates/')
 
 
 def tags_mostused(force_update=False):
@@ -24,3 +29,47 @@ def tags_mostused(force_update=False):
 
     memcache.set("tags_mostused", sorted_tags)
     return sorted_tags
+
+
+def sitemap(force_update=False):
+    sitemap = memcache.get("sitemap")
+    if sitemap and not force_update:
+        logging.info("returning cached sitemap")
+        return sitemap
+
+    logging.info("recreating sitemap")
+
+    snippets = Snippet.all()
+    snippets.order("-date_submitted")
+    urls = []
+    for snippet in snippets:
+        urls.append({
+            "loc": "http://www.androidsnippets.com/%s" % snippet.slug1,
+            "lastmod": snippet.date_lastactivity,
+            'priority': 1.0
+        })
+    logging.info("urls: %s" % len(urls))
+
+    tags = Tag.all()
+    tags.order("-date_added")
+    for tag in tags:
+        urls.append({
+            "loc": "http://www.androidsnippets.com/tags/%s" % tag.name,
+            "lastmod": tag.date_added,
+            'priority': 0.7
+        })
+    logging.info("urls: %s" % len(urls))
+
+    _users = UserPrefs.all()
+    #_users.order("-date_lastactivity")
+    for user in _users:
+        urls.append({
+            "loc": "http://www.androidsnippets.com/users/%s" % user.nickname,
+            "lastmod": user.date_lastactivity,
+            'priority': 0.7
+        })
+    logging.info("urls: %s" % len(urls))
+
+    out = template.render(tdir + "sitemap.xml", {"urls": urls})
+    memcache.set("sitemap", out)
+    return out

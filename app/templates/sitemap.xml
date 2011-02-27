@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url>
+    <loc>http://www.androidsnippets.com</loc>
+    <lastmod>{{ d|date:"Y-m-d" }}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+</url>
+<url>
+    <loc>http://www.androidsnippets.com/new</loc>
+    <lastmod>{{ d|date:"Y-m-d" }}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+</url>
+<url>
+    <loc>http://www.androidsnippets.com/active</loc>
+    <lastmod>{{ d|date:"Y-m-d" }}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+</url>
+<url>
+    <loc>http://www.androidsnippets.com/popular</loc>
+    <lastmod>{{ d|date:"Y-m-d" }}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+</url>
+<url>
+    <loc>http://www.androidsnippets.com/comments</loc>
+    <lastmod>{{ d|date:"Y-m-d" }}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+</url>
+<url>
+    <loc>http://www.androidsnippets.com/tags</loc>
+    <lastmod>{{ d|date:"Y-m-d" }}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+</url>
+<url>
+    <loc>http://www.androidsnippets.com/users</loc>
+    <lastmod>{{ d|date:"Y-m-d" }}</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+</url>
+{% for url in urls %}<url>
+    <loc>{{ url.loc }}</loc>
+    <lastmod>{{ url.lastmod|date:"Y-m-d" }}</lastmod>{% if url.changefreq %}
+    <changefreq>{{ url.changefreq }}</changefreq>{% endif %}{% if url.priority %}
+    <priority>{{ url.priority }}</priority>{% endif %}
+</url>
+{% endfor %}
+</urlset>
