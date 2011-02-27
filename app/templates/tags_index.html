@@ -20,7 +20,6 @@
         <tr class="{% cycle 'even' 'odd' %}">
             <td><a href="/{{ tag.snippet.slug1 }}">{{ tag.snippet.title }}</a></td>
             <td>{{ tag.snippet.upvote_count }}</td>
-            <td>{% if tag.snippet.proposal_count %}{{ tag.snippet.proposal_count }}{% endif %}</td>
             <td>{{ tag.snippet.date_lastactivity|timesince }} ago</td>
         </tr>
     {% endfor %}

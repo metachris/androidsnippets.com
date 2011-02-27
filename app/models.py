@@ -272,7 +272,9 @@ class SnippetRevision(db.Model):
         self.snippet.categories = self.categories
         self.snippet.tags = self.tags
 
-        self.snippet.proposal_count -= 1
+        # if edit from author, proposal count was never increased, else decr
+        if self.userprefs.user != self.snippet.userprefs.user:
+            self.snippet.proposal_count -= 1
         self.snippet.update_count += 1
         self.snippet.date_lastupdate = datetime.datetime.now()
         self.snippet.date_lastactivity = datetime.datetime.now()
@@ -284,9 +286,10 @@ class SnippetRevision(db.Model):
         self.merged_date = datetime.datetime.now()
         self.put()
 
-        # Submitter of edit gets reputation points
-        self.userprefs.points += 2
-        self.userprefs.put()
+        # Submitter of edit gets reputation points, if not original author
+        if self.userprefs.user != self.snippet.userprefs.user:
+            self.userprefs.points += 2
+            self.userprefs.put()
 
     @staticmethod
     def create_first_revision(userprefs, snippet):
