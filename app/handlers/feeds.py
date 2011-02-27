@@ -34,6 +34,7 @@ class StringFile:
 
 class FeedView(webapp.RequestHandler):
     def get(self, category):
+        logging.info("cat: %s" % category)
         if category.strip("/") == "latest":
             items = []
             s = Snippet.all()
@@ -61,7 +62,7 @@ class FeedView(webapp.RequestHandler):
             rss.write_xml(o)
             self.response.out.write(o.get())
 
-        if category.strip("/") == "comments":
+        elif category.strip("/") == "comments":
             items = []
             q = SnippetComment.all()
             q.filter("flagged_as_spam =", False)
@@ -93,3 +94,4 @@ class FeedView(webapp.RequestHandler):
 
         else:
             self.error(404)
+            logging.info("cat 404: %s" % category)
