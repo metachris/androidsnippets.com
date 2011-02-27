@@ -500,6 +500,7 @@ class AboutView(webapp.RequestHandler):
 
 class SearchView(webapp.RequestHandler):
     def get(self):
+        memcache.incr("pv_search", initial_value=0)
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
         q = decode(self.request.get('q'))
@@ -511,6 +512,7 @@ class SearchView(webapp.RequestHandler):
 
 class UsersView(webapp.RequestHandler):
     def get(self):
+        memcache.incr("pv_userlist", initial_value=0)
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
@@ -525,11 +527,12 @@ class UsersView(webapp.RequestHandler):
 
         page = int(p) if p else 1
         items_per_page = 40
-
-        _users1 = _users.fetch(25, (items_per_page / 2) * (page - 1))
-        _users2 = _users.fetch(25, (items_per_page / 2) * (page))
+        n = items_per_page / 2
+        offset = (page - 1) * items_per_page
+        _users1 = _users.fetch(n, offset)
+        _users2 = _users.fetch(n, (offset + (items_per_page / 2)))
 
         values = {'prefs': prefs, 'users1': _users1, 'users2': _users2,
-                'page': page, 'pages': range(1, page)}
+                'page': page, 'pages': range(1, page), 'prefix': q}
         self.response.out.write( \
                 template.render(tdir + "users.html", values))
