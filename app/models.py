@@ -284,6 +284,10 @@ class SnippetRevision(db.Model):
         self.merged_date = datetime.datetime.now()
         self.put()
 
+        # Submitter of edit gets reputation points
+        self.userprefs.points += 2
+        self.userprefs.put()
+
     @staticmethod
     def create_first_revision(userprefs, snippet):
         """When a snippet is created, this creates the first revision"""

@@ -229,19 +229,22 @@ class SnippetVote(webapp.RequestHandler):
             snippet.upvote()
             snippet.save()
 
-            # +1 rep point for author and  all accepted editors
+            # +1 rep point for author and all authors of merged edits
             for revision in snippet.snippetrevision_set:
                 if revision.merged:
                     logging.info("+1 rep for editor %s" % \
                             revision.userprefs.nickname)
-                    revision.userprefs.points += 1
+                    # if voting user is author, don't save, because activity is
+                    # saved later and it would create database congestion
                     if revision.userprefs.user == user:
-                        # Set last activity on voting user
-                        revision.userprefs.date_lastactivity = \
-                                datetime.datetime.now()
-                    revision.userprefs.put()
+                        prefs.points += 1
+                    else:
+                        revision.userprefs.points += 1
+                        revision.userprefs.put()
 
-            # self.response.out.write("1")
+            # Set last activity on voting user
+            prefs.date_lastactivity = datetime.datetime.now()
+            prefs.put()
 
         self.redirect("/%s" % snippet_slug)
 
@@ -341,7 +344,7 @@ class SnippetEditView(webapp.RequestHandler):
                             snippetrevision=rev)
                     v.save()
 
-                    rev.userprefs.points += 3
+                    rev.userprefs.points += 1
                     rev.userprefs.put()
 
                     rev.date_lastactivity = datetime.datetime.now()
