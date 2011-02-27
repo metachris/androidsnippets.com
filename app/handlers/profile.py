@@ -18,7 +18,7 @@ import akismet
 
 from urllib import unquote
 from time import sleep
-from tools import slugify, decode, is_valid_email
+from tools import slugify, decode, is_valid_email, send_message
 from models import *
 
 import settings
@@ -54,18 +54,29 @@ class ProfileView(webapp.RequestHandler):
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
-        a = decode(self.request.get('a'))  # email verification link
-        e = decode(self.request.get('e'))  # 1=email verification sent
-        u = self.request.get('u')  # nickname updated
-        error = ""
+        send_message(prefs, 10, "test", "body")
+
         info = ""
+        error = ""
+        a = self.request.get('a')  # email verification link
+        e = self.request.get('e')  # 1=email verification sent
+        u = self.request.get('u')  # nickname updated
         if a:
             if a == prefs.email_new_code:
+                # Email verification successful
+                if not prefs.email:
+                    # initial email verification gets rep points
+                    prefs.points += 3
                 prefs.email = prefs.email_new
                 prefs.email_new = None
                 prefs.email_new_code = None
                 prefs.put()
                 info = "Email address verified!"
+
+                # Check if email matches orphaned legacy prefs
+                if UserPrefs.all().filter("email =", prefs.email).count():
+                    send_message(prefs, 10, "Email change matches orphaned \
+                        prefs", "user prefs: %s" % prefs.key())
             else:
                 error = "Not a valid activation code"
         elif e == "1":
@@ -128,9 +139,9 @@ class ProfileView(webapp.RequestHandler):
                         prefs.nickname = nickname
                         url_addon += "&u=1"
 
-            if email and email != prefs.email:
+            if email and email.strip() != prefs.email:
                 # send verification mail
-                prefs.email_new = email
+                prefs.email_new = email.strip()
                 prefs.email_new_code = hashlib.sha1(os.urandom(64)).hexdigest()
 
                 body_text = template.render(tdir + "/email/verify_text.html", \

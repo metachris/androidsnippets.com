@@ -1,4 +1,5 @@
 import re
+import logging
 import unicodedata
 from operator import itemgetter
 
@@ -40,3 +41,38 @@ def is_valid_email(email):
         email):
         return True
     return False
+
+
+def send_message(sender, to, subject, message):
+    """Build a new message which shows up when the recipient gets online.
+
+    'to' can be a UserPrefs or an int for a group (10=all admins)
+    """
+    if type(to) in [int, long]:
+        groupmembers = UserPrefs.all().filter("level >=", to)
+        for prefs in groupmembers:
+            msg = Message()
+            msg.sender = sender
+            msg.recipient = prefs
+            msg.recipient_group = to
+            msg.subject = subject
+            msg.message = message
+            msg.put()
+
+            prefs.messages_unread += 1
+            prefs.put()
+
+            logging.info("message '%s' sent to %s" % (subject, prefs.nickname))
+
+    elif type(to) == type(UserPrefs):
+        msg = Message()
+        msg.sender = sender
+        mss.recipient = to
+        msg.subject = subject
+        msg.message = message
+        msg.put()
+
+        to.messages_unread += 1
+        to.put()
+
+        logging.info("message '%s' sent to %s" % (subject, to.username))

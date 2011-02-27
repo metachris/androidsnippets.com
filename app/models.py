@@ -39,7 +39,7 @@ class UserPrefs(db.Model):
     # notifications are a bitfield. default: lower 8 bits set to 1 (all on)
     notifications = db.IntegerProperty(default=255)
 
-    # user level. 0=default, 1=editor, 2=admin
+    # user level. 0=default, 1=editor, 10=admin
     level = db.IntegerProperty(default=0)
 
     # reputation
@@ -50,6 +50,9 @@ class UserPrefs(db.Model):
 
     # How to submit guidelines
     has_accepted_terms0 = db.BooleanProperty(default=False)
+
+    # Has this user unread messages in his inbox
+    messages_unread = db.IntegerProperty(default=0)
 
     # legacy openid is used to find users of the old system
     # because eg. myopenid does not provide an email, this can work
@@ -359,3 +362,16 @@ class SnippetTag(db.Model):
     tag = db.ReferenceProperty(Tag, required=True)
 
     date_added = db.DateTimeProperty(auto_now_add=True)
+
+
+class Message(db.Model):
+    """Message from a user to a user or a group"""
+    sender = db.ReferenceProperty(UserPrefs, collection_name="messagesent_set")
+    recipient = db.ReferenceProperty(UserPrefs)
+    recipient_group = db.IntegerProperty()
+
+    subject = db.StringProperty()
+    message = db.TextProperty()
+
+    read = db.BooleanProperty(default=False)
+    date = db.DateTimeProperty(auto_now_add=True)
