@@ -15,7 +15,7 @@ handlers:
   script: services.py
   login: admin
 
-- url: /admin/.*
+- url: /admin.*
   script: app.py
   login: admin
 

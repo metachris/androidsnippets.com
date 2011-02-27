@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="/css/admin.css" />     
+{% endblock %}
+
+{% block scripts %}
+	<script> 
+        $(document).ready(function() {
+        });
+	</script>
+{% endblock %}
+
+{% block main %}
+    <h1><a href="/admin">Admin Interface</a> - Revision View</h1>
+    
+    <div id="admin_stats">
+    <p><b>Merged:</b> {{ rev.merged }}</p>
+    <p><b>Upvotes:</b> {{ rev.snippetrevisionupvote_set.count }}, <b>Downvotes:</b> {{ rev.snippetrevisiondownvote_set.count }}</p>
+    <p><b>Snippet:</b> <a href="/{{ rev.snippet.slug1 }}" target="_blank">{{ rev.snippet.title }}</a></p>
+    <hr>
+    <p><b>Rev Comment:</b> {{ rev.comment }}</p>
+    <p><b>New Title:</b> {{ rev.title }}</p>
+    <p><b>New Description:</b><br>{{ rev.description_md|safe }}</p>
+    <p><b>New Code</b>: <pre>{{ rev.code }}</pre></p>
+    
+    <hr> 
+    
+    <p><a href="/admin/revision?k={{ rev.key }}&a=1">use as default</a></p>
+    <p><a href="/admin/revision?k={{ rev.key }}&a=2">delete</a></p>
+    </div>
+{% endblock %}

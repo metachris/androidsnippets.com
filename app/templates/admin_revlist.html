@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="/css/admin.css" />     
+{% endblock %}
+
+{% block scripts %}
+	<script> 
+        $(document).ready(function() {
+        });
+	</script>
+{% endblock %}
+
+{% block main %}
+    <h1><a href="/admin">Admin Interface</a> - Revision List</h1>
+    
+    <div id="admin_stats">
+    <table>
+        {% for rev in revs %}
+            <tr><td><a href="/admin/revision?k={{ rev.key }}">{{ rev.title }}</a></td><td>+{{ rev.snippetrevisionupvote_set.count }}</td><td>-{{ rev.snippetrevisiondownvote_set.count }}</td><td>{{ rev.userprefs.user }}<td>{{ rev.date_submitted|timesince }}</td></li>
+        {% endfor %}
+    </table>
+    </div>
+{% endblock %}

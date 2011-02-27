@@ -13,7 +13,7 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import login_required
 
 from models import *
-from tools import slugify
+from tools import slugify, decode
 from django.utils import simplejson as json
 import markdown
 
@@ -162,3 +162,36 @@ class AdminView(webapp.RequestHandler):
             for item in mc_items:
                 memcache.set(item, 0)
             self.redirect("/admin/stats")
+
+        if category == "/revision":
+            key = decode(self.request.get('k'))
+            action = decode(self.request.get('a'))
+            if key:
+                rev = SnippetRevision.get(db.Key(key))
+                if rev:
+                    if action == "1":
+                        # use as default
+                        rev.merge(prefs)
+                    elif action == "2":
+                        # delete revision
+                        for v in rev.snippetrevisionupvote_set:
+                            v.delete()
+                        for v in rev.snippetrevisiondownvote_set:
+                            v.delete()
+                        rev.snippet.proposal_count -= 1
+                        rev.snippet.put()
+                        rev.delete()
+
+                        self.redirect("/admin/revision")
+                        return
+
+                values["rev"] = rev
+                self.response.out.write( \
+                    template.render(tdir + "admin_rev.html", values))
+            else:
+                revs = SnippetRevision.all()
+                revs.filter("merged =", False)
+                revs.order("-date_submitted")
+                values["revs"] = revs.fetch(40)
+                self.response.out.write( \
+                    template.render(tdir + "admin_revlist.html", values))
