@@ -64,6 +64,8 @@ class SnippetsNew(webapp.RequestHandler):
         errors = []
         if not title:
             errors.append("title")
+        elif len(title) < 16:
+            errors.append("longer title")
         if not code:
             errors.append("snippet")
         if not description:

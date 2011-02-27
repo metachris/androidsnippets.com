@@ -1,8 +1,10 @@
 import os
 import logging
+import hashlib
 
 from google.appengine.api import users
 from google.appengine.api import memcache
+from google.appengine.api import mail
 
 from google.appengine.ext import db
 from google.appengine.ext import webapp
@@ -52,6 +54,28 @@ class ProfileView(webapp.RequestHandler):
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
+        a = decode(self.request.get('a'))  # email verification link
+        e = decode(self.request.get('e'))  # 1=email verification sent
+        u = self.request.get('u')  # nickname updated
+        error = ""
+        info = ""
+        if a:
+            if a == prefs.email_new_code:
+                prefs.email = prefs.email_new
+                prefs.email_new = None
+                prefs.email_new_code = None
+                prefs.put()
+                info = "Email address verified!"
+            else:
+                error = "Not a valid activation code"
+        elif e == "1":
+            info = "Verification email sent"
+        else:
+            if u == "-1":
+                error = "Username already taken"
+            elif u == "1":
+                info = "Username changed"
+
         # This user's edits on other snippets
         edits = prefs.snippetrevision_set
         edits.filter("initial_revision =", False)
@@ -64,7 +88,9 @@ class ProfileView(webapp.RequestHandler):
         values = {
             'prefs': prefs,
             'tab2': self.request.get('n') == '1',
-            'error2': self.request.get('u') == '2',
+            'error2': u == '2',
+            'error': error,
+            'info': info,
             'snippets': snippets,
             'edits': edits,
         }
@@ -103,7 +129,24 @@ class ProfileView(webapp.RequestHandler):
                         url_addon += "&u=1"
 
             if email and email != prefs.email:
-                # verify email
+                # send verification mail
+                prefs.email_new = email
+                prefs.email_new_code = hashlib.sha1(os.urandom(64)).hexdigest()
+
+                body_text = template.render(tdir + "/email/verify_text.html", \
+                        {'code': prefs.email_new_code, 'email': email})
+
+                #print "x"
+                #print body_text
+                #return
+                message = mail.EmailMessage()
+                message.sender = "Android Snippets <chris@androidsnippets.com>"
+                message.to = email
+                message.subject = "Android snippets email verification"
+                message.body = body_text
+                #message.html = email_body_html
+                message.send()
+
                 url_addon += "&e=1"
 
             if twitter and twitter != prefs.twitter:

@@ -32,7 +32,7 @@ handlers:
   script: app.py
   login: required
 
-- url: /profile
+- url: /profile.*
   script: app.py
   login: required
 

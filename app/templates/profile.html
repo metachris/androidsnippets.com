@@ -26,8 +26,23 @@
 {% endblock %}
 
 {% block main %}
+    <div style="float:left;">
     <h1>Account Settings</h1>
     <small style="color:gray;">You are a member since {{ prefs.date_joined|timesince }}<br> (<a href="/users/{{ prefs.nickname }}">public profile</a> | <a href="/logout">sign out</a>)</small>
+    </div>
+    {% if error %}
+    	<div class="ui-state-error ui-corner-all" style="padding: 8px 0px 0px .7em; margin-left:40px; margin-top:10px; width:200px; float:left;" id="error1">
+    		<div class="ui-alert-dismiss"><a href="javascript:$('#error1').slideUp();" title="Dismiss this alert">x</a></div>    		 
+    		<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .4em;"></span>{{ error }}</p>
+    	</div>
+    {% endif %}
+    {% if info %}
+    	<div class="ui-state-highlight ui-corner-all" style="padding: 8px 0px 0px .7em; margin-left:40px; margin-top:10px; width:200px; float:left;" id="error1">
+    		<div class="ui-alert-dismiss"><a href="javascript:$('#error1').slideUp();" title="Dismiss this alert">x</a></div>    		 
+    		<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .4em;"></span>{{ info }}</p>
+    	</div>
+    {% endif %}
+    <div style="clear:both;"></div>
     
     <div id="tabs" style="margin:20px 10px;">
     	<ul>
@@ -47,13 +62,15 @@
                     {% if error2 %}<small style="color:gray;">Only your own email is permitted as username</small>{% endif %}                    
                 </td></tr>
                 <tr><td>Email</td><td>
-                    <input type="text" name="email" value="{{ prefs.email }}" />
-                    {% if prefs.email %}
-					   <span class="ui-icon ui-icon-check" title="Email address is verified" style="margin-right: .3em; display:inline; padding-right:16px;"></span>
-				    {% else %} 
-                        {% if prefs.email_new %}
-					        <span class="ui-icon ui-icon-info" title="Verification email was sent to {{ prefs.email_new }}" style="margin-right: .3em; display:inline; padding-right:16px;"></span> 
-    				    {% else %}
+                    {% if prefs.email_new %}
+                       <input type="text" name="email" value="{{ prefs.email_new }}" />
+				        <span class="ui-icon ui-icon-info" title="Verification email was sent to {{ prefs.email_new }}" style="margin-right: .3em; display:inline; padding-right:16px;"></span> 
+				    {% else %}
+                        {% if prefs.email %}
+                           <input type="text" name="email" value="{{ prefs.email }}" />
+    					   <span class="ui-icon ui-icon-check" title="Email address is verified" style="margin-right: .3em; display:inline; padding-right:16px;"></span>
+    				    {% else %} 
+                           <input type="text" name="email" value="" />
 					        <span class="ui-icon ui-icon-alert" title="Please add and confirm your email address" style="margin-right: .3em; display:inline; padding-right:16px;"></span> 
                         {% endif %}         				     
                     {% endif %}     

@@ -14,6 +14,7 @@ from handlers import *
 
 urls = [
     (r'(/|/new|/active|/popular|/edits|/comments)', Main),
+
     (r'/login', LogIn),
     (r'/_ah/login_required', LogIn),
     (r'/logout', LogOut),
@@ -25,6 +26,8 @@ urls = [
     (r'/tags/([-\w]+)', TagView),
 
     (r'/profile', ProfileView),
+    (r'/profile/v', ProfileView),
+
     (r'/users', UsersView),
     (r'/users/(.*)', UserProfileView),
 
