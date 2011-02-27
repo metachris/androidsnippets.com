@@ -515,14 +515,21 @@ class UsersView(webapp.RequestHandler):
         prefs = UserPrefs.from_user(user)
 
         q = decode(self.request.get('q'))
+        p = decode(self.request.get('p'))
+
         _users = UserPrefs.all()
         if q == "1" or not q:
             _users.order("-points")
         else:
             _users.order("-date_lastactivity")
-        _users1 = _users.fetch(25)
-        _users2 = _users.fetch(25, 25)
 
-        values = {'prefs': prefs, 'users1': _users1, 'users2': _users2}
+        page = int(p) if p else 1
+        items_per_page = 40
+
+        _users1 = _users.fetch(25, (items_per_page / 2) * (page - 1))
+        _users2 = _users.fetch(25, (items_per_page / 2) * (page))
+
+        values = {'prefs': prefs, 'users1': _users1, 'users2': _users2,
+                'page': page, 'pages': range(1, page)}
         self.response.out.write( \
                 template.render(tdir + "users.html", values))

@@ -13,38 +13,49 @@
 {% block main %}
 
 <h1>Users</i></h1>
-<div style="margin:10px 4px;">
-<div style="margin:0px 0px 10px 20px;">
-by: <a href="/users?q=1">reputation</a>, <a href="/users?q=2">activity</a>
-</div>  
-<table>
-    <tr>
-        <td style="vertical-align:top;">
-<table class="snippetlist" style="width:240px;">
-       {% for user in users1 %}
-        <tr class="{% cycle 'even' 'odd' %}">
-            <td><a href="/users/{{ user.nickname }}">
-                <img src="http://www.gravatar.com/avatar/{{ user.email_md5 }}?s=12" /> &nbsp;{{ user.nickname }}
-            </a></td>
-            <td>{{ user.points }}</td>
+<div style="margin:10px 4px; float:left;">
+    <div style="margin:0px 6px 10px 10px; text-align:right; padding-right:6px; float:right;">
+    <small>
+        {% for p in pages %}
+            <a href="?p={{ p }}">{{ p }}</a> 
+        {% endfor %}
+        {{ page }}
+        <a href="?p={{ page|add:1 }}">next page</a>
+    </small>    
+    </div>
+
+    <div style="margin:0px 0px 10px 20px;">
+    by: <a href="/users?q=1">reputation</a>, <a href="/users?q=2">activity</a>
+    </div>  
+
+    <table>
+        <tr>
+            <td style="vertical-align:top;">
+    <table class="snippetlist" style="width:240px;">
+           {% for user in users1 %}
+            <tr class="{% cycle 'even' 'odd' %}">
+                <td><a href="/users/{{ user.nickname }}">
+                    <img src="http://www.gravatar.com/avatar/{{ user.email_md5 }}?s=12" /> &nbsp;{{ user.nickname }}
+                </a></td>
+                <td>{{ user.points }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+            </td>
+            <td style="vertical-align:top; padding-left:40px;">
+    <table class="snippetlist" style="width:240px;">
         </tr>
-    {% endfor %}
-</table>
-        </td>
-        <td style="vertical-align:top; padding-left:40px;">
-<table class="snippetlist" style="width:240px;">
-    </tr>
-       {% for user in users2 %}
-        <tr class="{% cycle 'even' 'odd' %}">
-            <td><a href="/users/{{ user.nickname }}">
-                <img src="http://www.gravatar.com/avatar/{{ user.email_md5 }}?s=12" /> &nbsp;{{ user.nickname }}
-            </a></td>
-            <td>{{ user.points }}</td>
-        </tr>
-    {% endfor %}
-</table>
-        </td>
-</table>
+           {% for user in users2 %}
+            <tr class="{% cycle 'even' 'odd' %}">
+                <td><a href="/users/{{ user.nickname }}">
+                    <img src="http://www.gravatar.com/avatar/{{ user.email_md5 }}?s=12" /> &nbsp;{{ user.nickname }}
+                </a></td>
+                <td>{{ user.points }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+            </td>
+    </table>
 </div>
 
 
