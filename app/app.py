@@ -24,6 +24,7 @@ urls = [
 
     (r'/tags', TagView),
     (r'/tags/([-\w]+)', TagView),
+    (r'/snippets/tags/(.*)', TagView),
 
     (r'/profile', ProfileView),
     (r'/profile/v', ProfileView),

@@ -38,9 +38,14 @@ class UserProfileView(webapp.RequestHandler):
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
+        nick = nickname.replace("index.html", "").strip("/")
         q = UserPrefs.all()
-        q.filter("nickname =", unquote(nickname))  # @ is %40
+        q.filter("nickname =", unquote(nick))  # @ is %40
         profile = q.get()
+
+        if not profile:
+            self.error(404)
+            return
 
         values = {'prefs': prefs, 'profile': profile}
         self.response.out.write(template.render(tdir + "user_profile.html", \
