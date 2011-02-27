@@ -34,7 +34,7 @@ class StringFile:
 
 class FeedView(webapp.RequestHandler):
     def get(self, category):
-        logging.info("cat: %s" % category)
+        #logging.info("cat: %s" % category)
         if category.strip("/") == "latest":
             items = []
             s = Snippet.all()
@@ -60,7 +60,7 @@ class FeedView(webapp.RequestHandler):
 
             o = StringFile()  # instead of writing to file, we use this str
             rss.write_xml(o)
-            self.response.out.write(o.get())
+            self.response.out.write(unicode(o.get(), errors='replace'))
 
         elif category.strip("/") == "comments":
             items = []
