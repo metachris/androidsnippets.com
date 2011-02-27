@@ -14,11 +14,15 @@
 
 <h1>Tag: <i>{{ tag.name }}</i></h1>
 
-{{ tags|renderTagList }}
-
-<ul>
-    {% for t in tags %}
-        <li><a href="/{{ t.snippet.slug1 }}">{{ t.snippet.title }}</a></li>
+<table class="snippetlist">
+       <tr><th>snippet</th><th><big style="color:green;">+</big></th><th>edits</th><th>last activity</th></tr>    
+       {% for tag in tags %}
+        <tr class="{% cycle 'even' 'odd' %}">
+            <td><a href="/{{ tag.snippet.slug1 }}">{{ tag.snippet.title }}</a></td>
+            <td>{{ tag.snippet.upvote_count }}</td>
+            <td>{% if tag.snippet.proposal_count %}{{ tag.snippet.proposal_count }}{% endif %}</td>
+            <td>{{ tag.snippet.date_lastactivity|timesince }} ago</td>
+        </tr>
     {% endfor %}
-</ul>	
+</table>
 {% endblock %}

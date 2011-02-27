@@ -427,7 +427,8 @@ class TagView(webapp.RequestHandler):
         #tags.filter("tag =", tag)
         snippettags = tag.snippettag_set
 
-        values = {'prefs': prefs, 'tag': tag, 'tags': snippettags}
+        values = {'prefs': prefs, 'tag': tag, 'tags': \
+                snippettags.order("-date_added")}
         self.response.out.write(template.render(tdir + "tags_index.html", \
                 values))
 
