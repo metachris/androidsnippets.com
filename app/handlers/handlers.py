@@ -48,32 +48,44 @@ class LogOut(webapp.RequestHandler):
         self.redirect(url)
 
 
-# Custom sites
+# Main snippet view sites
 class Main(webapp.RequestHandler):
-    def get(self):
+    def get(self, category=None):
+        if not category or category == "/":
+            category = "/active"
+
         memcache.incr("pv_main", initial_value=0)
         user = users.get_current_user()
-
-        """
-        if user:
-            logging.info("== user email: %s" % user.email())
-            logging.info("== user nickname: %s" % user.nickname())
-            logging.info("== user id: %s" % user.user_id())
-            logging.info("== fed id: %s" % user.federated_identity())
-            logging.info("== fed provider: %s" % user.federated_provider())
-        """
         prefs = UserPrefs.from_user(user)
 
-        #logging.info("== %s" % self.request.cookies)
-        #logging.info("== %s" % self.request.headers)
-        #logging.info("== %s" % self.request.remote_addr)
+        p = decode(self.request.get('p'))
+        page = int(p) if p else 1
+        items_per_page = 20
 
         q = Snippet.all()
-        q.order("-date_submitted")
-        snippets = q.fetch(20)
-
-        values = {'prefs': prefs, 'snippets': snippets}
-        self.response.out.write(template.render(tdir + "index.html", values))
+        if category == "/new":
+            q.order("-date_submitted")
+            title = "New Snippets"
+        elif category == "/active":
+            q.order("-date_lastactivity")
+            title = "Active Snippets"
+        elif category == "/popular":
+            q.order("-upvote_count")
+            title = "Popular Snippets"
+        elif category == "/comments":
+            q.filter("comment_count >", 0)
+            q.order("-comment_count")
+            title = "Recently Commented Snippets"
+        elif category == "/edits":
+            q.filter("proposal_count >", 0)
+            q.order("proposal_count")
+            title = "Snippets with Edits"
+        snippets = q.fetch(items_per_page, items_per_page * (page - 1))
+        values = {'prefs': prefs, 'snippets': snippets, 'title': title, \
+                'page': page, 'pages': range(1, page)}
+        self.response.out.write(template.render(tdir + \
+                "snippet_list.html", values))
+        return
 
 
 class LegacySnippetView(webapp.RequestHandler):
@@ -83,33 +95,6 @@ class LegacySnippetView(webapp.RequestHandler):
     Also handles /snippets/new, /snippets/active, etc.
     """
     def get(self, legacy_slug):
-        if legacy_slug in ["new", "active", "edits", "popular", "comments"]:
-            user = users.get_current_user()
-            prefs = UserPrefs.from_user(user)
-            q = Snippet.all()
-            if legacy_slug == "new":
-                q.order("-date_submitted")
-                title = "New Snippets"
-            elif legacy_slug == "active":
-                q.order("-date_lastactivity")
-                title = "Active Snippets"
-            elif legacy_slug == "popular":
-                q.order("-upvote_count")
-                title = "Popular Snippets"
-            elif legacy_slug == "comments":
-                q.filter("comment_count >", 0)
-                q.order("-comment_count")
-                title = "Recently Commented Snippets"
-            elif legacy_slug == "edits":
-                q.filter("proposal_count >", 0)
-                q.order("proposal_count")
-                title = "Snippets with Edits"
-            snippets = q.fetch(20)
-            values = {'prefs': prefs, 'snippets': snippets, 'title': title}
-            self.response.out.write(template.render(tdir + \
-                    "snippet_list.html", values))
-            return
-
         memcache.incr("pv_snippet_legacy", initial_value=0)
         legacy_slug = legacy_slug.replace("index.html", "").strip("/")
         q = Snippet.all()

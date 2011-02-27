@@ -160,8 +160,12 @@ margin-top: 0px;
 
 
 .snippetlist {
-    margin:6px 10px;
+    margin:6px 0px 6px 10px;
     color:gray;
+}
+
+#snippetlist .snippetlist {
+    width:700px;
 }
 
 .snippetlist .even {

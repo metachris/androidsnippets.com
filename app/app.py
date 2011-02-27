@@ -13,7 +13,7 @@ from models import *
 from handlers import *
 
 urls = [
-    (r'/', Main),
+    (r'(/|/new|/active|/popular|/edits|/comments)', Main),
     (r'/login', LogIn),
     (r'/_ah/login_required', LogIn),
     (r'/logout', LogOut),
