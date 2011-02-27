@@ -15,8 +15,9 @@
 {% endblock %}
 
 {% block main %}
-    <h1>{{ profile.nickname }}</h1>
-    <small style="color:gray;">Member since {{ profile.date_joined|timesince }}</small>
+    <h1><img src="http://www.gravatar.com/avatar/{{ profile.email_md5 }}?s=14" width="14" height="14" /> {{ profile.nickname }}</h1>
+    <div style="padding-left:21px; color:gray; font-size:11px;">Member since {{ profile.date_joined|timesince }}<br>{{ profile.points }} reputation points 
+    </div>
     
     <div style="padding:20px 10px;">
     <div id="tabs" style="margin-right:20px;">

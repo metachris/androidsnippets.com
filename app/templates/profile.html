@@ -41,14 +41,22 @@
             <form action="/profile" method="post">
             <input type="hidden" name="update" value="about" />
             <table class="padX">
-                <tr><td>Avatar</td><td><img src="http://www.gravatar.com/avatar/{{ prefs.email_md5 }}?s=20" /> <small style="color:gray; padding-left:10px;">(from <a href="http://gravatar.com">gravatar.com</a>)</small></td></tr>
+                <tr><td><a href="http://gravatar.com">Gravatar</a></td><td><a href="http://gravatar.com"><img src="http://www.gravatar.com/avatar/{{ prefs.email_md5 }}?s=20" /></a></td></tr>
                 <tr><td>Nickname</td><td>
                     <input type="text" name="nickname" value="{{ prefs.nickname }}" />
                     {% if error2 %}<small style="color:gray;">Only your own email is permitted as username</small>{% endif %}                    
                 </td></tr>
                 <tr><td>Email</td><td>
-                    <input type="text" name="email" value="{{ prefs.email }}" disabled=true />
-                    <small style="color:gray;">We are working on email verification, <a href="/about/contact">contact us</a> in the meantime.</small>                    
+                    <input type="text" name="email" value="{{ prefs.email }}" />
+                    {% if prefs.email %}
+					   <span class="ui-icon ui-icon-check" title="Email address is verified" style="margin-right: .3em; display:inline; padding-right:16px;"></span>
+				    {% else %} 
+                        {% if prefs.email_new %}
+					        <span class="ui-icon ui-icon-info" title="Verification email was sent to {{ prefs.email_new }}" style="margin-right: .3em; display:inline; padding-right:16px;"></span> 
+    				    {% else %}
+					        <span class="ui-icon ui-icon-alert" title="Please add and confirm your email address" style="margin-right: .3em; display:inline; padding-right:16px;"></span> 
+                        {% endif %}         				     
+                    {% endif %}     
                 </td></tr>
                 <!--<tr><td>Twitter</td><td><input type="text" name="twitter" value="{{ prefs.twitter }}"/></td></tr>-->
                 <tr><td>About you</td><td><textarea name="about" id="about" rows="12" cols="65">{{ prefs.about }}</textarea></td></tr>

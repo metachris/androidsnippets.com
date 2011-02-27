@@ -14,11 +14,19 @@ reference UserPrefs instead of directly the user property.
 
 
 class UserPrefs(db.Model):
-    """Extended user preferences"""
+    """Extended user preferences
+
+    If email is provided by openid, is is marked as verified,
+    else a user has to verify the email address.
+    """
     user = db.UserProperty(required=False)
     nickname = db.StringProperty(required=False)
     email = db.StringProperty(default="")
     email_md5 = db.StringProperty(default="")  # used for gravatar
+
+    # Unverified email and verification code
+    email_new = db.StringProperty()
+    email_new_code = db.StringProperty()
 
     date_joined = db.DateTimeProperty(auto_now_add=True)
     date_lastlogin = db.DateTimeProperty(auto_now_add=True)  # TODO
@@ -79,6 +87,7 @@ class UserPrefs(db.Model):
                 # prefs imported from legacy system
                 # Associate this prefs with the new user
                 prefs.user = user
+                prefs.points = 3  # verified user account from legacy system
                 prefs.put()
 
             else:
