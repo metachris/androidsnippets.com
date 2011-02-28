@@ -49,7 +49,8 @@ class AdminView(webapp.RequestHandler):
         mc_items = ["pv_login", "pv_main", "pv_profile", "pv_snippet", \
         "pv_snippet_legacy", "ua_vote_snippet", "ua_edit_snippet", \
         "pv_snippet_edit", "pv_tag", "ua_comment", "ua_comment_spam", \
-        "ua_comment_ham", "pv_otherprofile", "pv_search", "pv_userlist"]
+        "ua_comment_ham", "pv_otherprofile", "pv_search", "pv_userlist", \
+        "pv_snippet_404"]
         mc_items.sort()
 
         if not category:

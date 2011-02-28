@@ -1,10 +1,26 @@
 {% extends "base.html" %}
 
 {% block main %}
-<h1>Snippet not found</h1> 
+<h1>Not found</h1> 
 
-<p>Search: </p>
+    <div style="margin:10px 2px; width:500px;">
+        <div id="cse" style="width: 100%;">Loading</div>
 
-<p>Recommendations: </p>
+<script src="http://www.google.com/jsapi" type="text/javascript"></script>
+<script type="text/javascript">
+  google.load('search', '1', {language : 'en'});
+  google.setOnLoadCallback(function() {
+    var customSearchControl = new google.search.CustomSearchControl('015566486540826364412:wals5oosofq');
+    customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
+    customSearchControl.draw('cse');
+
+    {% if q %}
+        customSearchControl.execute("{{ q }}");
+    {% endif %}
+
+  }, true);
+</script>
+<link rel="stylesheet" href="http://www.google.com/cse/style/look/default.css" type="text/css" />
+    </div>
 
 {% endblock %}
