@@ -216,3 +216,14 @@ class ProfileView(webapp.RequestHandler):
 
             self.redirect("/profile%s" % url_addon)
             return
+
+
+class AccountRecoveryView(webapp.RequestHandler):
+    def get(self):
+        memcache.incr("pv_accoutrecovery", initial_value=0)
+        user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
+
+        values = {'prefs': prefs}
+        self.response.out.write(template.render(tdir + \
+                "account_recovery.html", values))

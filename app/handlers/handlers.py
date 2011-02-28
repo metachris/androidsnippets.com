@@ -148,6 +148,7 @@ class SnippetView(webapp.RequestHandler):
 
         if not snippet:
             memcache.incr("pv_snippet_404", initial_value=0)
+            logging.info("404: %s" % snippet_slug)
             # Show snippet-not-found.html
             values = {'prefs': prefs, "q": snippet_slug}
             self.response.out.write(template.render(tdir + \

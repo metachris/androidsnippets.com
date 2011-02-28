@@ -28,6 +28,7 @@ urls = [
 
     (r'/profile', ProfileView),
     (r'/profile/v', ProfileView),
+    (r'/account-recovery', AccountRecoveryView),
 
     (r'/users', UsersView),
     (r'/users/(.*)', UserProfileView),
