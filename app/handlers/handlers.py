@@ -537,6 +537,7 @@ class UsersView(webapp.RequestHandler):
         if q == "1" or not q:
             _users.order("-points")
         else:
+            #_users.filter("date_lastactivity !=", None)
             _users.order("-date_lastactivity")
 
         page = int(p) if p else 1

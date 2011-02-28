@@ -144,26 +144,38 @@ class ProfileView(webapp.RequestHandler):
                         prefs.nickname = nickname
                         url_addon += "&u=1"
 
-            if email and email.strip() not in [prefs.email, prefs.email_new]:
-                # send verification mail
-                prefs.email_new = email.strip()
-                prefs.email_new_code = hashlib.sha1(os.urandom(64)).hexdigest()
+            if email and email.strip() != prefs.email_new:
+                # updating email address
+                if prefs.email_new and email.strip() == prefs.email:
+                    # switching back to already verified mail is ok
+                    prefs.email = email.strip()
+                    prefs.email_new = None
+                    prefs.email_new_code = None
+                    url_addon += "&e=2"
 
-                body_text = template.render(tdir + "/email/verify_text.html", \
-                        {'code': prefs.email_new_code, 'email': email})
+                else:
+                    # send verification mail
+                    prefs.email_new = email.strip()
+                    prefs.email_new_code = hashlib.sha1(\
+                            os.urandom(64)).hexdigest()
 
-                #print "x"
-                #print body_text
-                #return
-                message = mail.EmailMessage()
-                message.sender = "Android Snippets <chris@androidsnippets.com>"
-                message.to = email
-                message.subject = "Android snippets email verification"
-                message.body = body_text
-                #message.html = email_body_html
-                message.send()
+                    body_text = template.render(tdir + \
+                            "/email/verify_text.html", \
+                            {'code': prefs.email_new_code, 'email': email})
 
-                url_addon += "&e=1"
+                    #print "x"
+                    #print body_text
+                    #return
+                    message = mail.EmailMessage()
+                    message.sender = \
+                        "Android Snippets <chris@androidsnippets.com>"
+                    message.to = email
+                    message.subject = "Android snippets email verification"
+                    message.body = body_text
+                    #message.html = email_body_html
+                    message.send()
+
+                    url_addon += "&e=1"
 
             if twitter and twitter != prefs.twitter:
                 prefs.twitter = twitter
