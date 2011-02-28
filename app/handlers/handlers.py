@@ -4,6 +4,7 @@ import datetime
 
 from google.appengine.api import users
 from google.appengine.api import memcache
+from google.appengine.api import mail
 
 from google.appengine.ext import db
 from google.appengine.ext import webapp
@@ -108,10 +109,11 @@ class LegacySnippetView(webapp.RequestHandler):
 
             values = {'prefs': prefs}
             self.response.out.write(template.render(tdir + \
-                "snippets_notfound.html", values))
+                    "snippets_notfound.html", values))
             return
 
-        self.redirect("/%s" % snippet.slug1, permanent=True)
+        self.redirect("http://www.androidsnippets.com/%s" % \
+                snippet.slug1, permanent=True)
 
 
 class SnippetDownloadView(webapp.RequestHandler):
@@ -184,9 +186,6 @@ class SnippetView(webapp.RequestHandler):
                 False)
         comments_html = template.render(tdir + "comments.html", \
                 {"comments": comments})
-
-        # markdown the description
-        # desc_md = markdown.markdown(snippet.description)
 
         values = {"prefs": prefs, "snippet": snippet, "revisions": revisions, \
                 'voted': has_voted, 'accepted_revisions': accepted_revisions, \
@@ -279,7 +278,7 @@ class SnippetEdit(webapp.RequestHandler):
         r.title = title
         r.description = description
         r.description_md = markdown.markdown(description).replace( \
-                "<a ", "<a target='_blank' ")
+                "<a ", "<a target='_blank' rel='nofollow' ")
         r.code = code
         r.comment = comment
         r.put()
@@ -370,10 +369,8 @@ class SnippetEditView(webapp.RequestHandler):
                     prefs.date_lastactivity = datetime.datetime.now()
                     prefs.put()
 
-        # TODO: memcache
-        desc_md = markdown.markdown(rev.description)
         values = {"prefs": prefs, "rev": rev, 'voted': str(has_voted), \
-                'desc_md': desc_md}
+                'desc_md': rev.description_md}
         self.response.out.write(template.render(tdir + \
             "snippets_edit_view.html", values))
 
@@ -447,7 +444,8 @@ class SnippetCommentView(webapp.RequestHandler):
 
         # Add the comment now
         c = SnippetComment(userprefs=prefs, snippet=snippet, comment=comment)
-        c.comment_md = markdown.markdown(comment)
+        c.comment_md = markdown.markdown(comment).replace( \
+                "<a ", "<a target='_blank' rel='nofollow' ")
 
         # Check if comment is spam
         try:
@@ -489,16 +487,29 @@ class AboutView(webapp.RequestHandler):
             self.response.out.write( \
                     template.render(tdir + "about.html", values))
 
-        if category == "/stats":
-            for item in mc_items:
-                values["stats"].append((item, memcache.get(item)))
-            self.response.out.write( \
-                    template.render(tdir + "admin_stats.html", values))
+    def post(self, category=None):
+        """Feedback form post"""
+        user = users.get_current_user()
+        prefs = UserPrefs.from_user(user)
+        values = {'prefs': prefs}
 
-        if category == "/stats/reset":
-            for item in mc_items:
-                memcache.set(item, 0)
-            self.redirect("/admin/stats")
+        msg = decode(self.request.get('msg'))
+        if msg:
+            if prefs:
+                sender = "%s (%s)" % (prefs.nickname, prefs.email)
+            else:
+                sender = decode(self.request.get('email'))
+            message = mail.EmailMessage()
+            message.sender = "Android Snippets <chris@androidsnippets.com>"
+            message.to = "chris@metachris.org"
+            message.subject = "Android snippets feedback form"
+            message.body = "Feedback from: %s:\n\n%s" % (sender, msg)
+            message.send()
+
+            values["info"] = "Thank you, we have received your feedback."
+
+        self.response.out.write( \
+                template.render(tdir + "about.html", values))
 
 
 class SearchView(webapp.RequestHandler):

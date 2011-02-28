@@ -4,6 +4,13 @@
     <h2>About AndroidSnippets.com</h2>
     
     <div style="margin:10px 2px; width:500px;">
+    {% if info %}
+    	<div class="ui-state-highlight ui-corner-all" style="padding: 8px 0px 0px .7em; margin-left:40px; margin-top:10px; width:200px; margin-bottom:20px;" id="error1">
+    		<div class="ui-alert-dismiss"><a href="javascript:$('#error1').slideUp();" title="Dismiss this alert">x</a></div>    		 
+    		<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: .4em;"></span>{{ info }}</p>
+    	</div>
+    {% endif %}
+
         <p>AndroidSnippets is a community driven website for finding, exploring, sharing and improving
         source code snippets for Android. 
         </p>
@@ -39,10 +46,17 @@
 
         <p>Let us know if you have any feedback, ideas or comments! You can best reach us via the
         getSatisfaction feedback tab (on the right of the screen), or via this feedback form:
-        (chris at metachris.org)</p>
+        </p>
         
-        <p><form action="/about/feedback" method="post">
-        
+        <p><form action="/about" method="post">
+        <p>Message:<br>
+            <textarea name="msg" rows="10" cols="60"></textarea>
+        </p>
+        {% if not prefs %}Email:<br>
+        <input type="text" name="email" />
+        {% endif %}
+        </p>
+        <input type="submit" />
         </form></p>
 
       
