@@ -1,14 +1,13 @@
 import os
 import logging
 
-from google.appengine.ext import db
 from google.appengine.api import users
+from google.appengine.api import taskqueue
+
+from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import login_required
-
-#from jinja2 import Environment, FileSystemLoader, TemplateNotFound
-from google.appengine.ext.webapp import template
 
 import markdown
 
@@ -143,8 +142,8 @@ class SnippetsNew(webapp.RequestHandler):
         prefs.date_lastactivity = datetime.datetime.now()
         prefs.put()
 
-        # Recalculate most used tags and store in memcache
-        mc.cache.tags_mostused(force_update=True)
+        # Recalculate most used tags and store in memcache in asynchronously
+        taskqueue.add(url='/services/update_tags')
 
         # Redirect to snippet view
         self.redirect("/%s" % s.slug1)
