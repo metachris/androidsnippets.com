@@ -5,6 +5,10 @@ $(document).ready(function() {
 
 */
 
+function init() {
+    $("#q").click(function(){ if (this.value == "search") this.value=""; });
+}
+
 var is_editor = false; // toggled true <-> false
 var is_wmd = false;    // set to true only once
 

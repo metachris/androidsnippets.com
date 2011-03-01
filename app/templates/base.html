@@ -3,22 +3,25 @@
 {% block header %}
     <div id="header">
                 <div style="float:right; text-align:right;">
-                    <form action="/search">
-                    <div class='search'><input type='text' name='q' title='enter a search term and press enter' value="{{ q }}" /></div>
                     <div class='headinfos'>
+                    <form action="/search">
                         {% if prefs %}
                             <a href="/profile" class='nick'>{{ prefs.nickname }}</a> <span class='rep'>{{ prefs.points }}</span>
                         {% else %}<b><a href='/login'>sign in</a></b> 
                         {% endif %}
                         <span class='separator'>|</span> 
                         <a href='/about'>about</a> 
+                        <span class='separator'>|</span> 
                         {% comment %}{% if prefs %}<a href='/logout'>Sign out</a>{% endcomment %}
-                    </div>
+
+                        <input type='text' name='q' id="q" title='enter a search term and press enter' value="{{ q }}" />
+                        {% if not q %}<script>document.getElementById("q").value = "search";</script>{% endif %}
                     </form>
+                    </div>
                     <div style="clear:both;"></div>
                     <br />
                     
-                    <p><b><a href="/add">Add Snippet</a></b></p>
+                    <p><b><a href="/add">Add new Snippet</a></b></p>
                 </div>
                 <div>
                     <a href="/"><img src="/images/logo.png" border="0" height="56" width="243" /></a>
