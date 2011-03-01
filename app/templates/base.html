@@ -14,18 +14,21 @@
                         <span class='separator'>|</span> 
                         {% comment %}{% if prefs %}<a href='/logout'>Sign out</a>{% endcomment %}
 
-                        <input type='text' name='q' id="q" title='enter a search term and press enter' value="{{ q }}" />
-                        {% if not q %}<script>document.getElementById("q").value = "search";</script>{% endif %}
+                        <a href="http://twitter.com/#!/androidsnippets" target="_blank" /><img src="/images/twitter.png" width="16" height="16" style="margin-bottom:-4px;" /></a> 
+                        <span class='separator'></span> 
+                        <a href="http://www.facebook.com/sharer.php?u=http://www.androidsnippets.com" target="_blank"><img src="/images/fb.png" width="16" height="16" style="margin-bottom:-4px;" /></a> 
+                        <span class='separator'></span> 
+                        <a href="/feeds/latest" target="_blank"><img src="/images/feed.png" width="16" height="16" style="margin-bottom:-4px;" /></a> 
                     </form>
                     </div>
                     <div style="clear:both;"></div>
                     <br />
                     
-                    <p><span style=""><b><a href="/add">Add new Snippet</a></b>
+                    <p><span style=""><b><a href="/add"><small>Add Snippet</small></a></b>
                         <span class='separator'> | </span></span> 
-                        <a href="http://twitter.com/#!/androidsnippets" target="_blank" /><img src="/images/twitter.png" width="16" height="16" style="margin-bottom:-4px;" /></a> 
-                        <span class='separator'></span> 
-                        <a href="/feeds/latest" target="_blank"><img src="/images/feed.png" width="16" height="16" style="margin-bottom:-4px;" /></a> 
+
+                        <input type='text' name='q' id="q" title='enter a search term and press enter' value="{{ q }}" />
+                        {% if not q %}<script>document.getElementById("q").value = "search";</script>{% endif %}
                     </p>
                 </div>
                 <div>
