@@ -142,8 +142,10 @@ class SnippetsNew(webapp.RequestHandler):
         prefs.date_lastactivity = datetime.datetime.now()
         prefs.put()
 
-        # Recalculate most used tags and store in memcache in asynchronously
+        # Trigger an most used tags update asynchronously
         taskqueue.add(url='/services/update_tags')
+        # Trigger an sitemap update asynchronously
+        taskqueue.add(url='/services/update_sitemap')
 
         # Redirect to snippet view
         self.redirect("/%s" % s.slug1)

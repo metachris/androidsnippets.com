@@ -18,10 +18,23 @@ from handlers import *
 class UpdateTags(webapp.RequestHandler):
     def get(self):
         """Updates tags for mc after adding a snippet (db intensive)"""
-        logging.info("mc tag update service started")
+        logging.info("service: tag update started")
         t1 = time.time()
         mc.cache.tags_mostused(force_update=True)
-        logging.info("mc tag update took %s s" % (time.time() - t1))
+        logging.info("service: tag update took %s s" % (time.time() - t1))
+        return
+
+    def post(self):
+        self.get()
+
+
+class UpdateSitemap(webapp.RequestHandler):
+    def get(self):
+        """Updates tags for mc after adding a snippet (db intensive)"""
+        logging.info("service: sitemap update started")
+        t1 = time.time()
+        mc.cache.sitemap(force_update=True)
+        logging.info("service: sitemap update took %s s" % (time.time() - t1))
         return
 
     def post(self):
@@ -29,6 +42,7 @@ class UpdateTags(webapp.RequestHandler):
 
 urls = [
     (r'/services/update_tags', UpdateTags),
+    (r'/services/update_sitemap', UpdateTags),
 ]
 
 application = webapp.WSGIApplication(urls, debug=True)
