@@ -69,6 +69,7 @@ class UserPrefs(db.Model):
         # most of the time we will return an already saved prefs
         if not prefs:
             # 1st check for legacy prefs is by email
+            logging.info("_ no userprefs found for %s" % user)
             if user.email():
                 logging.info("_ searching for orphaned prefs by email")
                 # if no matching pref is found, check if legacy prefs exist
