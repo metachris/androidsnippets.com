@@ -49,7 +49,9 @@ td, th { padding:2px 10px; text-align:left; }
 .padX input[type=text], .padX textarea { 
     padding:3px 6px;
     border:1px solid lightgray;
-    border-radius:2px; 
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
 }
 
 #fdbk_tab { margin-top:160px; }
@@ -109,6 +111,9 @@ td, th { padding:2px 10px; text-align:left; }
     background: #30587C;
     color:#84a3c1;
     width:140px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
 }
 #header .nick { font-size:15px; padding-right:3px; font-weight:bold; }
 #header .rep { font-size:14px; color:lightgreen; color:#97C03D; }
@@ -322,7 +327,9 @@ margin-top: 0px;
 
 #snippet_view #comment_thread .comment {
     border:1px solid lightgray;
-    border-radius:4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
     width:500px;
     margin-bottom:10px; 
 }
@@ -349,7 +356,9 @@ margin-top: 0px;
 
 #edit_title input {
   border:1px solid #DDD;
-  border-radius:2px;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
   padding:2px;
 }
 
@@ -447,8 +456,8 @@ margin-bottom:20px;
 }
 
 #snippet_points .vote .teaser {
-    -moz-border-radius-bottomleft:2pxem;
-    -moz-border-radius-bottomright:2pxem;
+    -moz-border-radius-bottomleft:2px;
+    -moz-border-radius-bottomright:2px;
     border-bottom-left-radius:2px;
     border-bottom-right-radius:2px;
     background-color:#F6F6F6;
