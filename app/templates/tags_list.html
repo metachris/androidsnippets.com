@@ -18,7 +18,7 @@
 <div class="tagcloud">
     {% for tag,cnt in tags %}
         {% if cnt > 1 %}
-        <span style="font-size:{{ cnt|mkSize:max_cnt }}px;" title="{{ cnt }} snippets"><a href="/tags/{{ tag }}">{{ tag }}</a></span>, 
+        <span style="padding-right:4px; font-size:{{ cnt|mkSize:max_cnt }}px;" title="{{ cnt }} snippets"><a href="/tags/{{ tag }}">{{ tag }}</a></span>
         {% endif %}
     {% endfor %}
 </div>
