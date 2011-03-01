@@ -206,7 +206,7 @@ class SnippetVote(webapp.RequestHandler):
         prefs = UserPrefs.from_user(user)
 
         if not user:
-            self.response.out.write("-1")
+            self.redirect("/%s" % snippet_slug)
             return
 
         q = Snippet.all()
@@ -233,13 +233,11 @@ class SnippetVote(webapp.RequestHandler):
             # +1 rep point for author and all authors of merged edits
             for revision in snippet.snippetrevision_set:
                 if revision.merged:
-                    logging.info("+1 rep for editor %s" % \
-                            revision.userprefs.nickname)
-                    # if voting user is author, don't save, because activity is
-                    # saved later and it would create database congestion
-                    if revision.userprefs.user == user:
-                        prefs.points += 1
-                    else:
+                    # if the user which votes is an author of an edit,
+                    # he doesn't get any rep points.
+                    if revision.userprefs.user != user:
+                        logging.info("+1 rep for editor %s" % \
+                                revision.userprefs.nickname)
                         revision.userprefs.points += 1
                         revision.userprefs.put()
 
@@ -400,7 +398,7 @@ class TagView(webapp.RequestHandler):
 
         # Find base tag
         tag = tag.replace("index.html", "").strip("/")  # legacy system / goog
-        logging.info("tag: %s" % tag)
+        #logging.info("tag: %s" % tag)
         q = Tag.all()
         q.filter("name =", tag)
         tag = q.get()
