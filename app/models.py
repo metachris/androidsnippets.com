@@ -1,5 +1,4 @@
 from google.appengine.ext import db
-from google.appengine.ext.db import polymodel
 
 from google.appengine.api import users
 
@@ -15,7 +14,7 @@ reference UserPrefs instead of directly the user property.
 """
 
 
-class InternalUser(polymodel.PolyModel):
+class InternalUser(db.Model):
     """Extended user preferences
 
     If email is provided by openid, is is marked as verified,
@@ -24,6 +23,9 @@ class InternalUser(polymodel.PolyModel):
     nickname = db.StringProperty()
     email = db.StringProperty(default="")
     email_md5 = db.StringProperty(default="")  # used for gravatar
+
+    federated_identity = db.StringProperty()
+    federated_provider = db.StringProperty()
 
     # Unverified email and verification code
     email_new = db.StringProperty()
@@ -55,31 +57,59 @@ class InternalUser(polymodel.PolyModel):
     # Has this user unread messages in his inbox
     messages_unread = db.IntegerProperty(default=0)
 
-    # legacy openid is used to find users of the old system
-    # because eg. myopenid does not provide an email, this can work
-    legacy_federated_id = db.StringProperty()
+    # legacy system infos
     legacy_user_id = db.IntegerProperty(default=0)  # to re-associate snippets
+    legacy_email = db.StringProperty()
+    legacy_federated_identity = db.StringProperty()
 
     @staticmethod
     def from_user(user):
         if not user:
             return None
 
-        if user.federated_identity():
-            logging.info("_ looking for userprefs [fid: %s]" % \
+        if not user.federated_identity():
+            logging.warning("_ user has no fed id [%s]" % user)
+            return
+
+        logging.info("_ looking for userprefs [fed: %s]" % \
                 user.federated_identity())
-            q = db.GqlQuery("SELECT * FROM InternalUser WHERE \
-                federated_identity = :1 AND federated_provider = :2", \
-                user.federated_identity(), user.federated_provider())
-            prefs = q.get()
-        else:
-            logging.info("_ looking for userprefs [gid: %s]" % \
-                user.user_id())
-            q = db.GqlQuery("SELECT * FROM InternalUser WHERE \
-                google_user = :1", user)
-            prefs = q.get()
+        q = db.GqlQuery("SELECT * FROM InternalUser WHERE \
+            federated_identity = :1 AND federated_provider = :2", \
+            user.federated_identity(), user.federated_provider())
+        prefs = q.get()
 
         # most of the time we will return an already saved prefs
+        # if not, check if user has legacy prefs stored
+        if not prefs:
+            if user.email():
+                logging.info("_ looking for legacy prefs by email [%s]" % \
+                    user.email())
+                q = db.GqlQuery("SELECT * FROM InternalUser WHERE \
+                    legacy_email = :1", user.email())
+                prefs = q.get()
+
+            # if not legacy prefs by email, check if user has legacy prefs
+            if not prefs and user.federated_identity():
+                logging.info("_ looking for legacy prefs by fedid [%s]" % \
+                    user.federated_identity())
+                q = db.GqlQuery("SELECT * FROM InternalUser WHERE \
+                    legacy_federated_identity = :1", user.federated_identity())
+                prefs = q.get()
+
+            # if legacy prefs found, add new information
+            if prefs:
+                logging.info("_ legacy prefs found. updating")
+                if user.email():
+                    prefs.email = user.email()
+                elif prefs.legacy_email:
+                    prefs.email = prefs.legacy_email
+                prefs.legacy_email = None
+                if user.federated_identity():
+                    prefs.federated_identity = user.federated_identity()
+                    prefs.federated_provider = user.federated_provider()
+                    prefs.legacy_federated_identity = None
+                prefs.put()
+
         if not prefs:
             # create regular new userpref object now
             nick = user.nickname()
@@ -89,33 +119,34 @@ class InternalUser(polymodel.PolyModel):
 
             m = md5(user.email().strip().lower()).hexdigest()
 
-            if user.federated_identity():
-                logging.info("_ create new openid prefs")
-                prefs = OpenIDUser(federated_identity=\
-                    user.federated_identity(), federated_provider=\
-                    user.federated_provider(), nickname=nick, \
-                    email=user.email(), email_md5=m)
-
-            else:
-                logging.info("_ create new google prefs")
-                prefs = GoogleUser(google_user=user, nickname=nick, \
-                    email=user.email(), email_md5=m)
-
-            #if user.email():
-            #    prefs.points = 3  # verified email
-
+            logging.info("_ create new openid prefs")
+            prefs = InternalUser(federated_identity=\
+                user.federated_identity(), federated_provider=\
+                user.federated_provider(), nickname=nick, \
+                email=user.email(), email_md5=m)
             prefs.put()
 
         return prefs
 
+    @staticmethod
+    def from_data(nickname, email, datetime_joined, fed_id, legacy_id):
+        """Creates an orphaned prefs object (one without user).
+        Used for imports from the legacy database. Once a user
+        with matching email registers, it will be assigned."""
+        if not email or not nickname or not datetime_joined:
+            return
 
-class GoogleUser(InternalUser):
-    google_user = db.UserProperty(required=True)
-
-
-class OpenIDUser(InternalUser):
-    federated_identity = db.StringProperty(required=True)
-    federated_provider = db.StringProperty(required=True)
+        # Valid data
+        m = md5(email.strip().lower()).hexdigest()
+        prefs = InternalUser(nickname=nickname, email=email, \
+            legacy_email=email, email_md5=m)
+        prefs.date_joined = datetime_joined
+        if fed_id:
+            prefs.legacy_federated_identity = fed_id
+        if legacy_id:
+            prefs.legacy_user_id = legacy_id
+        prefs.put()
+        return prefs
 
 
 class Achievement(db.Model):
