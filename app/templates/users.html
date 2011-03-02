@@ -39,7 +39,7 @@
                     <img src="http://www.gravatar.com/avatar/{{ user.email_md5 }}?s=12" width="12" height="12" /> &nbsp;{{ user.nickname }}
                 </a></td>
                 <td>{{ user.points }}</td>
-                {% if prefs.level > 90 %}<td><a href="https://appengine.google.com/datastore/edit?app_id=android-snippets&namespace=&key={{ user.key }}"><small><b>i</b></small></a></td>{% endif %}                
+                {% if prefs.level > 90 %}<td><a href="https://appengine.google.com/datastore/explorer?submitted=1&app_id=android-snippets&viewby=gql&query=SELECT+*+FROM+UserPrefs+WHERE+__key__+%3D+KEY('{{ user.key }}')&namespace=&options=Run+Query" target="_blank"><small><b>i</b></small></a></td>{% endif %}                
             </tr>
         {% endfor %}
     </table>
@@ -53,7 +53,7 @@
                     <img src="http://www.gravatar.com/avatar/{{ user.email_md5 }}?s=12" width="12" height="12" /> &nbsp;{{ user.nickname }}
                 </a></td>
                 <td>{{ user.points }}</td>
-                {% if prefs.level > 90 %}<td><a href="https://appengine.google.com/datastore/edit?app_id=android-snippets&namespace=&key={{ user.key }}"><small><b>i</b></small></a></td>{% endif %}                
+                {% if prefs.level > 90 %}<td><a href="https://appengine.google.com/datastore/explorer?submitted=1&app_id=android-snippets&viewby=gql&query=SELECT+*+FROM+UserPrefs+WHERE+__key__+%3D+KEY('{{ user.key }}')&namespace=&options=Run+Query" target="_blank"><small><b>i</b></small></a></td>{% endif %}                
             </tr>
         {% endfor %}
     </table>

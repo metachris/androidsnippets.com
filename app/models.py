@@ -68,13 +68,13 @@ class UserPrefs(db.Model):
         prefs = q.get()
         # most of the time we will return an already saved prefs
         if not prefs:
-            # 1st check for legacy prefs is by email
+            # 1st check for prefs is by email (legacy prefs, chinese spammer)
             logging.info("_ no userprefs found for %s" % user)
             if user.email():
-                logging.info("_ searching for orphaned prefs by email")
+                logging.info("_ searching for prefs with this email")
                 # if no matching pref is found, check if legacy prefs exist
-                q = db.GqlQuery("SELECT * FROM UserPrefs WHERE user = :1 AND \
-                        email = :2", None, user.email())
+                q = db.GqlQuery("SELECT * FROM UserPrefs WHERE email = :1", \
+                    user.email())
                 prefs = q.get()
 
             # 2nd check for legacy prefs is by federated_id
@@ -87,7 +87,7 @@ class UserPrefs(db.Model):
                 prefs = q.get()
 
             if prefs:
-                logging.info("_ orphaned user prefs found, attaching to user")
+                logging.info("_ user prefs found, attaching to user")
                 # prefs imported from legacy system
                 # Associate this prefs with the new user
                 prefs.user = user
