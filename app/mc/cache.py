@@ -56,7 +56,7 @@ def sitemap(force_update=False):
         urls.append({
             "loc": "http://www.androidsnippets.com/tags/%s" % tag.name,
             "lastmod": tag.date_added,
-            'priority': 0.8
+            'priority': 0.7
         })
     logging.info("urls: %s" % len(urls))
 
