@@ -283,20 +283,15 @@ class SnippetEdit(webapp.RequestHandler):
         r.comment = comment
         r.put()
 
-        if user == snippet.userprefs.user:
-            # Auto-merge new revision if edit by author
+        if user == snippet.userprefs.user and not snippet.has_editors:
+            # Auto-merge new revision if edits only by author
             r.merge(merged_by=prefs)
-            # self.response.out.write("0")
         else:
             # Add proposal info if from another editor
             snippet.proposal_count += 1
             snippet.date_lastproposal = datetime.datetime.now()
             snippet.date_lastactivity = datetime.datetime.now()
             snippet.save()
-            # self.response.out.write("1")
-
-            #prefs.points += 1
-            #prefs.put()
 
         # Set last activity on submitting user
         prefs.date_lastactivity = datetime.datetime.now()

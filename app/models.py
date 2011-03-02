@@ -169,6 +169,10 @@ class Snippet(db.Model):
     update_count = db.IntegerProperty(default=0)
     date_lastupdate = db.DateTimeProperty(auto_now_add=True)
 
+    # if this snippet has been edited by other users than author,
+    # the author cannot override them anymore without review
+    has_editors = db.BooleanProperty(default=False)
+
     # proposal_count: how many proposals are currently in review queue
     proposal_count = db.IntegerProperty(default=0)
     date_lastproposal = db.DateTimeProperty()
