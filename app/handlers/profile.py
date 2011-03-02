@@ -59,14 +59,15 @@ class ProfileView(webapp.RequestHandler):
         user = users.get_current_user()
         prefs = UserPrefs.from_user(user)
 
-        send_message(prefs, 10, "test", "body")
+        # send_message(prefs, 10, "test", "body")
 
         info = ""
         error = ""
         a = self.request.get('a')  # email verification link
         e = self.request.get('e')  # 1=email verification sent
         u = self.request.get('u')  # nickname updated
-        if a:
+        if a and prefs.email_new_code:
+            logging.info("try new email code: %s" % prefs.email_new_code)
             if a == prefs.email_new_code:
                 # Email verification successful
                 if not prefs.email:
@@ -86,6 +87,8 @@ class ProfileView(webapp.RequestHandler):
                 error = "Not a valid activation code"
         elif e == "1":
             info = "Verification email sent"
+        elif e == "-1":
+            error = "Invalid email address."
         else:
             if u == "-1":
                 error = "Username already taken"
@@ -144,7 +147,13 @@ class ProfileView(webapp.RequestHandler):
                         prefs.nickname = nickname
                         url_addon += "&u=1"
 
-            if email and email.strip() != prefs.email_new:
+            if email and \
+                ((not prefs.email_new and email != prefs.email) or \
+                (prefs.email_new and email != prefs.email_new)):
+                if not is_valid_email(email):
+                    self.redirect("/profile?e=-1")
+                    return
+
                 # updating email address
                 if prefs.email_new and email.strip() == prefs.email:
                     # switching back to already verified mail is ok
@@ -185,7 +194,7 @@ class ProfileView(webapp.RequestHandler):
                 prefs.about = about
                 prefs.about_md = markdown.markdown(about).replace( \
                         "<a ", "<a target='_blank' ")
-                url_addon += "&a=1"
+                url_addon += "&ab=1"
 
             if url_addon:
                 prefs.put()

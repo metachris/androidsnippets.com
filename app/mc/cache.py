@@ -46,7 +46,7 @@ def sitemap(force_update=False):
         urls.append({
             "loc": "http://www.androidsnippets.com/%s" % snippet.slug1,
             "lastmod": snippet.date_lastactivity,
-            'priority': 1.0
+            'priority': 0.9
         })
     logging.info("urls: %s" % len(urls))
 
@@ -56,7 +56,7 @@ def sitemap(force_update=False):
         urls.append({
             "loc": "http://www.androidsnippets.com/tags/%s" % tag.name,
             "lastmod": tag.date_added,
-            'priority': 0.7
+            'priority': 0.8
         })
     logging.info("urls: %s" % len(urls))
 
@@ -66,7 +66,7 @@ def sitemap(force_update=False):
         urls.append({
             "loc": "http://www.androidsnippets.com/users/%s" % user.nickname,
             "lastmod": user.date_lastactivity,
-            'priority': 0.7
+            'priority': 0.4
         })
     logging.info("urls: %s" % len(urls))
 

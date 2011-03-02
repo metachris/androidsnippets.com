@@ -30,7 +30,7 @@ class UserPrefs(db.Model):
 
     date_joined = db.DateTimeProperty(auto_now_add=True)
     date_lastlogin = db.DateTimeProperty(auto_now_add=True)  # TODO
-    date_lastactivity = db.DateTimeProperty()
+    date_lastactivity = db.DateTimeProperty(auto_now_add=True)
 
     twitter = db.StringProperty(default="")  # twitter username
     about = db.TextProperty(default="")
@@ -97,9 +97,19 @@ class UserPrefs(db.Model):
             else:
                 logging.info("_ create new prefs")
                 # create regular new userpref object now
+                # if nick is openid-link, then set email as initial nick
+                nick = user.nickname()
+                if user.email():
+                    if not nick or "http://" in nick:
+                        nick = user.email()
+
                 m = md5(user.email().strip().lower()).hexdigest()
-                prefs = UserPrefs(user=user, nickname=user.nickname(), \
+                prefs = UserPrefs(user=user, nickname=nick, \
                             email=user.email(), email_md5=m)
+
+                if user.email():
+                    prefs.points = 3  # verified email
+
                 prefs.put()
 
         return prefs
