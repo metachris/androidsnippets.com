@@ -107,8 +107,8 @@ class UserPrefs(db.Model):
                 prefs = UserPrefs(user=user, nickname=nick, \
                             email=user.email(), email_md5=m)
 
-                if user.email():
-                    prefs.points = 3  # verified email
+                #if user.email():
+                #    prefs.points = 3  # verified email
 
                 prefs.put()
 

@@ -70,9 +70,9 @@ class ProfileView(webapp.RequestHandler):
             logging.info("try new email code: %s" % prefs.email_new_code)
             if a == prefs.email_new_code:
                 # Email verification successful
-                if not prefs.email:
-                    # initial email verification gets rep points
-                    prefs.points += 3
+                #if not prefs.email:
+                #    # initial email verification gets rep points
+                #    prefs.points += 3
                 prefs.email = prefs.email_new
                 prefs.email_new = None
                 prefs.email_new_code = None
