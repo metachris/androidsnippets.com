@@ -25,6 +25,7 @@ Libraries used
 * * copy to clipboard ([zeroclipboard] [10] (MIT)?)
 * [ZeroClipboard] [12] (MIT)
 * [Akismet python module] [11] (BSD)
+* [Tweepy] [13] (MIT)
 
    [1]: https://github.com/paulirish/html5-boilerplate
    [2]: http://jquery.com/
@@ -38,3 +39,4 @@ Libraries used
    [10]: http://code.google.com/p/zeroclipboard
    [11]: http://kemayo.wordpress.com/2005/12/02/akismet-py
    [12]: http://code.google.com/p/zeroclipboard
+   [13]: https://github.com/joshthecoder/tweepy

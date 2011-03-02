@@ -5,7 +5,10 @@ from operator import itemgetter
 
 from google.appengine.api import memcache
 
+from libs import tweepy
+
 from models import *
+from settings import *
 
 _slugify_strip_re = re.compile(r'[^\w\s-]')
 _slugify_hyphenate_re = re.compile(r'[-\s]+')
@@ -76,3 +79,16 @@ def send_message(sender, to, subject, message):
         to.put()
 
         logging.info("message '%s' sent to %s" % (subject, to.username))
+
+
+def tweet(status):
+    if not status or not status.strip() or len(status) < 5:
+        return
+
+    auth = tweepy.OAuthHandler(TWITTER_OAUTH_CONSUMER_TOKEN, \
+            TWITTER_OAUTH_CONSUMER_SECRET)
+    auth.set_access_token(TWITTER_OAUTH_ACCESS_KEY, \
+            TWITTER_OAUTH_ACCESS_SECRET)
+    api = tweepy.API(auth)
+    api.update_status(status)
+    logging.info("tweeted")

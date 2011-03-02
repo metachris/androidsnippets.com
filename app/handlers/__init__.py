@@ -4,3 +4,4 @@ from profile import *
 from admin import *
 from feeds import *
 from sitemap import *
+from oauth import *

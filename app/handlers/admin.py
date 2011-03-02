@@ -17,6 +17,10 @@ from tools import slugify, decode
 from django.utils import simplejson as json
 import markdown
 
+from libs import tweepy
+from settings import *
+from tools import tweet
+
 tdir = os.path.join(os.path.dirname(__file__), '../templates/')
 
 
@@ -25,6 +29,16 @@ class AdminX(webapp.RequestHandler):
     def get(self, n):
         # each page adds 10 snippets
         page = int(n)
+        if page == 0:
+            auth = tweepy.OAuthHandler(TWITTER_OAUTH_CONSUMER_TOKEN, \
+                    TWITTER_OAUTH_CONSUMER_SECRET)
+            try:
+                redirect_url = auth.get_authorization_url()
+                memcache.set('request_token_key', auth.request_token.key)
+                memcache.set('request_token_secret', auth.request_token.secret)
+                self.redirect(redirect_url)
+            except tweepy.TweepError:
+                print 'Error! Failed to get request token.'
 
 
 class AdminY(webapp.RequestHandler):

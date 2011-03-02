@@ -19,6 +19,8 @@ urls = [
     (r'/_ah/login_required', LogIn),
     (r'/logout', LogOut),
 
+    (r'/oauth/return/twitter', TwitterReturnView),
+
     (r'/add', SnippetsNew),
     (r'/preview', SnippetsNewPreview),
 
