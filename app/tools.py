@@ -4,11 +4,14 @@ import unicodedata
 from operator import itemgetter
 
 from google.appengine.api import memcache
+from django.utils import simplejson as json
 
 from libs import tweepy
 
 from models import *
 from settings import *
+
+from urllib import urlopen
 
 _slugify_strip_re = re.compile(r'[^\w\s-]')
 _slugify_hyphenate_re = re.compile(r'[-\s]+')
@@ -92,3 +95,11 @@ def tweet(status):
     api = tweepy.API(auth)
     api.update_status(status)
     logging.info("tweeted")
+
+
+def shorturl(long_url):
+    json_result = urlopen("http://api.bitly.com/v3/shorten?login=%s&apiKey=%s&longUrl=%s&format=json" % \
+        (BITLY_LOGIN, BITLY_APIKEY, long_url)).read()
+    r = json.loads(json_result)
+    logging.info("bitly result: %s" % str(r))
+    return r["data"]["url"]

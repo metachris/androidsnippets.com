@@ -15,7 +15,7 @@ import mc
 
 from urllib import unquote
 from time import sleep
-from tools import slugify, decode
+from tools import slugify, decode, tweet, shorturl
 from models import *
 
 
@@ -146,6 +146,16 @@ class SnippetsNew(webapp.RequestHandler):
         taskqueue.add(url='/services/update_tags')
         # Trigger an sitemap update asynchronously
         taskqueue.add(url='/services/update_sitemap')
+
+        # Prepare Tweet
+        url = shorturl("http://www.androidsnippets.com/%s" % slug)
+        max_status_len = 140 - len(url) - 10  # 10 = 2 spaces and #android
+        status = s.title
+        if len(status) > max_status_len:
+            status = "%s..." % status[:max_status_len - 3]
+        status = "%s %s #android" % (status, url)
+        #logging.info("tweet: '%s' (%s)" % (status, len(status)))
+        tweet(status)
 
         # Redirect to snippet view
         self.redirect("/%s" % s.slug1)
