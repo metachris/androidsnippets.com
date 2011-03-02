@@ -63,7 +63,7 @@ class AdminY(webapp.RequestHandler):
             prefs = q.get()
 
             if prefs:
-                continue()
+                continue
 
             logging.info("prefs for id %s: %s" % (_s[5], prefs))
             if not prefs:

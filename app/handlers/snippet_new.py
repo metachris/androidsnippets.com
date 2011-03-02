@@ -114,7 +114,6 @@ class SnippetsNew(webapp.RequestHandler):
 
         # Create the first revision
         r = SnippetRevision.create_first_revision(userprefs=prefs, snippet=s)
-        r.initial_revision = True
         r.put()
 
         # Create the first upvote
@@ -154,8 +153,8 @@ class SnippetsNew(webapp.RequestHandler):
         if len(status) > max_status_len:
             status = "%s..." % status[:max_status_len - 3]
         status = "%s %s #android" % (status, url)
-        #logging.info("tweet: '%s' (%s)" % (status, len(status)))
-        #tweet(status)
+        logging.info("tweet: '%s' (%s)" % (status, len(status)))
+        tweet(status)
 
         # Redirect to snippet view
         self.redirect("/%s" % s.slug1)

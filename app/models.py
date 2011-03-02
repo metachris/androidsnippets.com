@@ -120,9 +120,8 @@ class InternalUser(db.Model):
             m = md5(user.email().strip().lower()).hexdigest()
 
             logging.info("_ create new openid prefs")
-            prefs = InternalUser(federated_identity=\
-                user.federated_identity(), federated_provider=\
-                user.federated_provider(), nickname=nick, \
+            prefs = InternalUser(federated_identity=user.federated_identity(),\
+                federated_provider=user.federated_provider(), nickname=nick, \
                 email=user.email(), email_md5=m)
             prefs.put()
 
@@ -333,6 +332,7 @@ class SnippetRevision(db.Model):
         r.android_minsdk = snippet.android_minsdk
         r.categories = snippet.categories
         r.tags = snippet.tags
+        r.initial_revision = True
 
         # Auto-approve the initial revision.
         # snippet was already updated at creation
