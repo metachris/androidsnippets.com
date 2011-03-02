@@ -39,7 +39,7 @@ class UserPrefs(db.Model):
     # notifications are a bitfield. default: lower 8 bits set to 1 (all on)
     notifications = db.IntegerProperty(default=255)
 
-    # user level. 0=default, 1=editor, 10=admin
+    # user level. 0=default, 1=editor, 100=admin
     level = db.IntegerProperty(default=0)
 
     # reputation

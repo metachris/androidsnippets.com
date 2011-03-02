@@ -6,6 +6,7 @@
             <td>{{ snippet.upvote_count }}</td>
             <td>{% if snippet.proposal_count %}{{ snippet.proposal_count }}{% endif %}</td>
             <td>{{ snippet.date_lastactivity|timesince }} ago</td>
+            {% if prefs.level > 90 %}<td><a href="https://appengine.google.com/datastore/edit?app_id=android-snippets&namespace=&key={{ snippet.key }}"><small><b>i</b></small></a></td>{% endif %}
         </tr>
     {% endfor %}
 </table>
