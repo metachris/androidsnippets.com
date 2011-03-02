@@ -28,7 +28,7 @@ webapp.template.register_template_library('common.templateaddons')
 class SnippetsNew(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
         tags_mostused = mc.cache.tags_mostused()
 
         self.response.out.write(template.render(tdir + \
@@ -38,7 +38,7 @@ class SnippetsNew(webapp.RequestHandler):
     def post(self):
         """Check and add new snippet to db"""
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
 
         # Validate input
         title = self.request.get('title')
@@ -155,7 +155,7 @@ class SnippetsNew(webapp.RequestHandler):
             status = "%s..." % status[:max_status_len - 3]
         status = "%s %s #android" % (status, url)
         #logging.info("tweet: '%s' (%s)" % (status, len(status)))
-        tweet(status)
+        #tweet(status)
 
         # Redirect to snippet view
         self.redirect("/%s" % s.slug1)
@@ -165,7 +165,7 @@ class SnippetsNewPreview(webapp.RequestHandler):
     """Popup that shows an edit from another user"""
     def get(self):
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
 
         title = unquote(decode(self.request.get('title')))
         code = unquote(decode(self.request.get('code')))

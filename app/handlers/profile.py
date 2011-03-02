@@ -36,10 +36,10 @@ class UserProfileView(webapp.RequestHandler):
     def get(self, nickname):
         memcache.incr("pv_otherprofile", initial_value=0)
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
 
         nick = nickname.replace("index.html", "").strip("/")
-        q = UserPrefs.all()
+        q = InternalUser.all()
         q.filter("nickname =", unquote(nick))  # @ is %40
         profile = q.get()
 
@@ -57,7 +57,7 @@ class ProfileView(webapp.RequestHandler):
     def get(self):
         memcache.incr("pv_profile", initial_value=0)
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
 
         # send_message(prefs, 10, "test", "body")
 
@@ -80,7 +80,7 @@ class ProfileView(webapp.RequestHandler):
                 info = "Email address verified!"
 
                 # Check if email matches orphaned legacy prefs
-                if UserPrefs.all().filter("email =", prefs.email).count():
+                if InternalUser.all().filter("email =", prefs.email).count():
                     send_message(prefs, 10, "Email change matches orphaned \
                         prefs", "user prefs: %s" % prefs.key())
             else:
@@ -117,7 +117,7 @@ class ProfileView(webapp.RequestHandler):
 
     def post(self):
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
 
         update = decode(self.request.get('update'))
         if update == "about":
@@ -129,7 +129,7 @@ class ProfileView(webapp.RequestHandler):
             url_addon = ""
             if nickname and nickname != prefs.nickname and len(nickname) > 3:
                 # check if nick is still available, if so then update
-                q = UserPrefs.all()
+                q = InternalUser.all()
                 q.filter("nickname =", nickname)
                 if q.count():
                     # already taken
@@ -231,7 +231,7 @@ class AccountRecoveryView(webapp.RequestHandler):
     def get(self):
         memcache.incr("pv_accoutrecovery", initial_value=0)
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
 
         values = {'prefs': prefs}
         self.response.out.write(template.render(tdir + \

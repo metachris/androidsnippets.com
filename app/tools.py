@@ -55,7 +55,7 @@ def send_message(sender, to, subject, message):
     'to' can be a UserPrefs or an int for a group (10=all admins)
     """
     if type(to) in [int, long]:
-        groupmembers = UserPrefs.all().filter("level >=", to)
+        groupmembers = InternalUser.all().filter("level >=", to)
         for prefs in groupmembers:
             msg = Message()
             msg.sender = sender
@@ -70,7 +70,7 @@ def send_message(sender, to, subject, message):
 
             logging.info("message '%s' sent to %s" % (subject, prefs.nickname))
 
-    elif type(to) == type(UserPrefs):
+    elif type(to) == type(InternalUser):
         msg = Message()
         msg.sender = sender
         mss.recipient = to

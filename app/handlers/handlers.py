@@ -57,7 +57,7 @@ class Main(webapp.RequestHandler):
 
         memcache.incr("pv_main", initial_value=0)
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
 
         p = decode(self.request.get('p'))
         page = int(p) if p else 1
@@ -105,7 +105,7 @@ class LegacySnippetView(webapp.RequestHandler):
         if not snippet:
             # Show snippet-not-found.html
             user = users.get_current_user()
-            prefs = UserPrefs.from_user(user)
+            prefs = InternalUser.from_user(user)
 
             values = {'prefs': prefs}
             self.response.out.write(template.render(tdir + \
@@ -140,7 +140,7 @@ class SnippetView(webapp.RequestHandler):
     def get(self, snippet_slug):
         memcache.incr("pv_snippet", initial_value=0)
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
 
         q = Snippet.all()
         q.filter("slug1 =", snippet_slug)
@@ -203,7 +203,7 @@ class SnippetVote(webapp.RequestHandler):
     def get(self, snippet_slug):
         memcache.incr("ua_vote_snippet", initial_value=0)
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
 
         if not user:
             self.redirect("/%s" % snippet_slug)
@@ -253,7 +253,7 @@ class SnippetEdit(webapp.RequestHandler):
     def post(self, snippet_slug):
         memcache.incr("ua_edit_snippet", initial_value=0)
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
 
         title = decode(self.request.get('title'))
         code = decode(self.request.get('code'))
@@ -283,7 +283,7 @@ class SnippetEdit(webapp.RequestHandler):
         r.comment = comment
         r.put()
 
-        if user == snippet.userprefs.user and not snippet.has_editors:
+        if prefs.key() == snippet.userprefs.key() and not snippet.has_editors:
             # Auto-merge new revision if edits only by author
             r.merge(merged_by=prefs)
         else:
@@ -305,7 +305,7 @@ class SnippetEditView(webapp.RequestHandler):
     def get(self, snippet_slug, rev_key):
         memcache.incr("pv_snippet_edit", initial_value=0)
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
 
         rev = SnippetRevision.get(rev_key)
         #q = db.GqlQuery("SELECT * FROM SnippetRevision WHERE __key__ = :1", \
@@ -374,7 +374,7 @@ class TagView(webapp.RequestHandler):
     def get(self, tag=None):
         memcache.incr("pv_tag", initial_value=0)
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
 
         if not tag:
             # Show tag list
@@ -418,7 +418,7 @@ class SnippetCommentView(webapp.RequestHandler):
     def post(self, snippet_slug):
         memcache.incr("ua_comment", initial_value=0)
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
 
         # Set last activity on commenting user
         prefs.date_lastactivity = datetime.datetime.now()
@@ -475,7 +475,7 @@ class SnippetCommentView(webapp.RequestHandler):
 class AboutView(webapp.RequestHandler):
     def get(self, category=None):
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
         values = {'prefs': prefs}
 
         if not category:
@@ -485,7 +485,7 @@ class AboutView(webapp.RequestHandler):
     def post(self, category=None):
         """Feedback form post"""
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
         values = {'prefs': prefs}
 
         msg = decode(self.request.get('msg'))
@@ -511,7 +511,7 @@ class SearchView(webapp.RequestHandler):
     def get(self):
         memcache.incr("pv_search", initial_value=0)
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
         q = decode(self.request.get('q'))
 
         values = {'prefs': prefs, 'q': q}
@@ -523,12 +523,12 @@ class UsersView(webapp.RequestHandler):
     def get(self):
         memcache.incr("pv_userlist", initial_value=0)
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
 
         q = decode(self.request.get('q'))
         p = decode(self.request.get('p'))
 
-        _users = UserPrefs.all()
+        _users = InternalUser.all()
         if q == "1" or not q:
             _users.order("-points")
         else:

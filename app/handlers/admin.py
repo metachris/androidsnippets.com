@@ -44,7 +44,7 @@ class AdminX(webapp.RequestHandler):
 class AdminY(webapp.RequestHandler):
     def get(self, email=None):
         if email:
-            q = UserPrefs.all()
+            q = InternalUser.all()
             q.filter("email =", unquote(email))
             self.response.out.write(", %s: %s" % (email, q.count()))
 
@@ -57,7 +57,7 @@ class AdminDel(webapp.RequestHandler):
 class AdminView(webapp.RequestHandler):
     def get(self, category=None):
         user = users.get_current_user()
-        prefs = UserPrefs.from_user(user)
+        prefs = InternalUser.from_user(user)
         values = {'prefs': prefs, "stats": []}
 
         mc_items = ["pv_login", "pv_main", "pv_profile", "pv_snippet", \

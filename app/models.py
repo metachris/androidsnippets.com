@@ -1,4 +1,6 @@
 from google.appengine.ext import db
+from google.appengine.ext.db import polymodel
+
 from google.appengine.api import users
 
 import logging
@@ -13,14 +15,13 @@ reference UserPrefs instead of directly the user property.
 """
 
 
-class UserPrefs(db.Model):
+class InternalUser(polymodel.PolyModel):
     """Extended user preferences
 
     If email is provided by openid, is is marked as verified,
     else a user has to verify the email address.
     """
-    user = db.UserProperty(required=False)
-    nickname = db.StringProperty(required=False)
+    nickname = db.StringProperty()
     email = db.StringProperty(default="")
     email_md5 = db.StringProperty(default="")  # used for gravatar
 
@@ -64,79 +65,62 @@ class UserPrefs(db.Model):
         if not user:
             return None
 
-        q = db.GqlQuery("SELECT * FROM UserPrefs WHERE user = :1", user)
-        prefs = q.get()
+        if user.federated_identity():
+            logging.info("_ looking for userprefs [fid: %s]" % \
+                user.federated_identity())
+            q = db.GqlQuery("SELECT * FROM InternalUser WHERE \
+                federated_identity = :1 AND federated_provider = :2", \
+                user.federated_identity(), user.federated_provider())
+            prefs = q.get()
+        else:
+            logging.info("_ looking for userprefs [gid: %s]" % \
+                user.user_id())
+            q = db.GqlQuery("SELECT * FROM InternalUser WHERE \
+                google_user = :1", user)
+            prefs = q.get()
+
         # most of the time we will return an already saved prefs
         if not prefs:
-            # 1st check for legacy prefs is by email
-            logging.info("_ no userprefs found for %s" % user)
+            # create regular new userpref object now
+            nick = user.nickname()
             if user.email():
-                logging.info("_ searching for orphaned prefs by email")
-                # if no matching pref is found, check if legacy prefs exist
-                q = db.GqlQuery("SELECT * FROM UserPrefs WHERE user = :1 AND \
-                        email = :2", None, user.email())
-                prefs = q.get()
+                if not nick or "http://" in nick:
+                    nick = user.email()
 
-            # 2nd check for legacy prefs is by federated_id
-            if not prefs and user.federated_identity():
-                logging.info("_ searching for orphaned prefs by fed-id")
-                # if no matching pref is found, check if legacy prefs exist
-                q = UserPrefs.all()
-                q.filter("user =", None)
-                q.filter("legacy_federated_id =", user.federated_identity())
-                prefs = q.get()
+            m = md5(user.email().strip().lower()).hexdigest()
 
-            if prefs:
-                logging.info("_ orphaned user prefs found, attaching to user")
-                # prefs imported from legacy system
-                # Associate this prefs with the new user
-                prefs.user = user
-                prefs.points = 3  # verified user account from legacy system
-                prefs.put()
+            if user.federated_identity():
+                logging.info("_ create new openid prefs")
+                prefs = OpenIDUser(federated_identity=\
+                    user.federated_identity(), federated_provider=\
+                    user.federated_provider(), nickname=nick, \
+                    email=user.email(), email_md5=m)
 
             else:
-                logging.info("_ create new prefs")
-                # create regular new userpref object now
-                # if nick is openid-link, then set email as initial nick
-                nick = user.nickname()
-                if user.email():
-                    if not nick or "http://" in nick:
-                        nick = user.email()
+                logging.info("_ create new google prefs")
+                prefs = GoogleUser(google_user=user, nickname=nick, \
+                    email=user.email(), email_md5=m)
 
-                m = md5(user.email().strip().lower()).hexdigest()
-                prefs = UserPrefs(user=user, nickname=nick, \
-                            email=user.email(), email_md5=m)
+            #if user.email():
+            #    prefs.points = 3  # verified email
 
-                #if user.email():
-                #    prefs.points = 3  # verified email
-
-                prefs.put()
+            prefs.put()
 
         return prefs
 
-    @staticmethod
-    def from_data(nickname, email, datetime_joined, fed_id, legacy_id):
-        """Creates an orphaned prefs object (one without user).
-        Used for imports from the legacy database. Once a user
-        with matching email registers, it will be assigned."""
-        if not email or not nickname or not datetime_joined:
-            return
 
-        # Valid data
-        m = md5(email.strip().lower()).hexdigest()
-        prefs = UserPrefs(nickname=nickname, email=email, email_md5=m)
-        prefs.date_joined = datetime_joined
-        if fed_id:
-            prefs.legacy_federated_id = fed_id
-        if legacy_id:
-            prefs.legacy_user_id = legacy_id
-        prefs.put()
-        return prefs
+class GoogleUser(InternalUser):
+    google_user = db.UserProperty(required=True)
+
+
+class OpenIDUser(InternalUser):
+    federated_identity = db.StringProperty(required=True)
+    federated_provider = db.StringProperty(required=True)
 
 
 class Achievement(db.Model):
     """Achievement of a user"""
-    userprefs = db.ReferenceProperty(UserPrefs, required=True)
+    userprefs = db.ReferenceProperty(InternalUser, required=True)
     achievement_id = db.IntegerProperty(default=0)
     achievement_title = db.StringProperty()
     date_earned = db.DateTimeProperty(auto_now_add=True)
@@ -152,7 +136,7 @@ class Snippet(db.Model):
     If a revision gets enough upvotes it will be automatically merged, if it
     gets enough downvotes it will be deleted.
     """
-    userprefs = db.ReferenceProperty(UserPrefs, required=True)
+    userprefs = db.ReferenceProperty(InternalUser, required=True)
     date_submitted = db.DateTimeProperty(auto_now_add=True)
 
     # infos for building the urls to this snippet
@@ -218,21 +202,21 @@ class Snippet(db.Model):
 
 class SnippetUpvote(db.Model):
     """Upvote on a snippet"""
-    userprefs = db.ReferenceProperty(UserPrefs, required=True)
+    userprefs = db.ReferenceProperty(InternalUser, required=True)
     snippet = db.ReferenceProperty(Snippet, required=True)
     date = db.DateTimeProperty(auto_now_add=True)
 
 
 class SnippetDownvote(db.Model):
     """Upvote on a snippet"""
-    userprefs = db.ReferenceProperty(UserPrefs, required=True)
+    userprefs = db.ReferenceProperty(InternalUser, required=True)
     snippet = db.ReferenceProperty(Snippet, required=True)
     date = db.DateTimeProperty(auto_now_add=True)
 
 
 class SnippetFollow(db.Model):
     """Follower on a snippet"""
-    userprefs = db.ReferenceProperty(UserPrefs, required=True)
+    userprefs = db.ReferenceProperty(InternalUser, required=True)
     snippet = db.ReferenceProperty(Snippet, required=True)
     date = db.DateTimeProperty(auto_now_add=True)
 
@@ -243,7 +227,7 @@ class SnippetRevision(db.Model):
     how this snippet could be better). held in  moderation until approved
     or rejected (by upvotes and downvotes).
     """
-    userprefs = db.ReferenceProperty(UserPrefs, required=True)
+    userprefs = db.ReferenceProperty(InternalUser, required=True)
     snippet = db.ReferenceProperty(Snippet, required=True)
     date_submitted = db.DateTimeProperty(auto_now_add=True)
     comment = db.TextProperty()  # author's comment
@@ -257,13 +241,13 @@ class SnippetRevision(db.Model):
 
     # has been merged?
     merged = db.BooleanProperty(default=False)
-    merged_by = db.ReferenceProperty(UserPrefs, \
+    merged_by = db.ReferenceProperty(InternalUser, \
             collection_name="mergedrevision_set")
     merged_date = db.DateTimeProperty()
 
     # has been rejected?
     rejected = db.BooleanProperty(default=False)
-    rejected_by = db.ReferenceProperty(UserPrefs, \
+    rejected_by = db.ReferenceProperty(InternalUser, \
             collection_name="rejectedrevision_set")
     rejected_date = db.DateTimeProperty()
 
@@ -288,7 +272,7 @@ class SnippetRevision(db.Model):
         self.snippet.tags = self.tags
 
         # if edit from author, proposal count was never increased, else decr
-        if self.userprefs.user != self.snippet.userprefs.user:
+        if self.userprefs.key() != self.snippet.userprefs.key():
             self.snippet.proposal_count -= 1
         self.snippet.update_count += 1
         self.snippet.date_lastupdate = datetime.datetime.now()
@@ -302,7 +286,7 @@ class SnippetRevision(db.Model):
         self.put()
 
         # Submitter of edit gets reputation points, if not original author
-        if self.userprefs.user != self.snippet.userprefs.user:
+        if self.userprefs.key() != self.snippet.userprefs.key():
             self.userprefs.points += 2
             self.userprefs.put()
 
@@ -330,19 +314,19 @@ class SnippetRevision(db.Model):
 
 class SnippetRevisionUpvote(db.Model):
     """Vote on a snippet revision held in moderation"""
-    userprefs = db.ReferenceProperty(UserPrefs, required=True)
+    userprefs = db.ReferenceProperty(InternalUser, required=True)
     snippetrevision = db.ReferenceProperty(SnippetRevision, required=True)
 
 
 class SnippetRevisionDownvote(db.Model):
     """Downvote on a snippet revision held in moderation"""
-    userprefs = db.ReferenceProperty(UserPrefs, required=True)
+    userprefs = db.ReferenceProperty(InternalUser, required=True)
     snippetrevision = db.ReferenceProperty(SnippetRevision, required=True)
 
 
 class SnippetComment(db.Model):
     """Comment on a snippet"""
-    userprefs = db.ReferenceProperty(UserPrefs, required=True)
+    userprefs = db.ReferenceProperty(InternalUser, required=True)
     snippet = db.ReferenceProperty(Snippet, required=True)
     parent_comment = db.SelfReferenceProperty()
 
@@ -358,7 +342,7 @@ class SnippetComment(db.Model):
 
 class SnippetRevisionComment(db.Model):
     """Comment on a snippet revision which may be held in moderation"""
-    userprefs = db.ReferenceProperty(UserPrefs, required=True)
+    userprefs = db.ReferenceProperty(InternalUser, required=True)
     snippetrevision = db.ReferenceProperty(SnippetRevision, required=True)
     parent_comment = db.SelfReferenceProperty()
 
@@ -388,8 +372,9 @@ class SnippetTag(db.Model):
 
 class Message(db.Model):
     """Message from a user to a user or a group"""
-    sender = db.ReferenceProperty(UserPrefs, collection_name="messagesent_set")
-    recipient = db.ReferenceProperty(UserPrefs)
+    sender = db.ReferenceProperty(InternalUser, \
+        collection_name="messagesent_set")
+    recipient = db.ReferenceProperty(InternalUser)
     recipient_group = db.IntegerProperty()
 
     subject = db.StringProperty()

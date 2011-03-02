@@ -60,7 +60,7 @@ def sitemap(force_update=False):
         })
     logging.info("urls: %s" % len(urls))
 
-    _users = UserPrefs.all()
+    _users = InternalUser.all()
     #_users.order("-date_lastactivity")
     for user in _users:
         urls.append({

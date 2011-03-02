@@ -300,14 +300,14 @@
        </thead>
        <tbody>
 	       {% for rev in revisions %}
-	           <tr onclick='javascript:show_edit("{{ rev.key }}");'><td><!--{{ forloop.counter }}--></td><td>{% ifequal prefs.user rev.userprefs.user %}you{% else %}{{ rev.userprefs.nickname }}{% endifequal %}</td><td>{{ rev.date_submitted|timesince }} ago</td><td>{{ rev.snippetrevisionupvote_set.count }}</td><td>{{ rev.snippetrevisiondownvote_set.count }}</td></tr>
+	           <tr onclick='javascript:show_edit("{{ rev.key }}");'><td><!--{{ forloop.counter }}--></td><td>{% ifequal prefs.key rev.userprefs.key %}you{% else %}{{ rev.userprefs.nickname }}{% endifequal %}</td><td>{{ rev.date_submitted|timesince }} ago</td><td>{{ rev.snippetrevisionupvote_set.count }}</td><td>{{ rev.snippetrevisiondownvote_set.count }}</td></tr>
 	       {% endfor %}
        </tbody>
 	   </table>
 	</p>
 </div>
 
-{% if not userprefs %}
+{% if not prefs %}
 <div id="dialog_signin" title="Sign In" style="display:none; padding:20px;">
 	<!-- Simple OpenID Selector --> 
 	<form action="/login" method="get" id="openid_form"> 

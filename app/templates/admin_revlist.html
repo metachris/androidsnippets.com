@@ -17,7 +17,7 @@
     <div id="admin_stats">
     <table>
         {% for rev in revs %}
-            <tr><td><a href="/admin/revision?k={{ rev.key }}">{{ rev.title }}</a></td><td>+{{ rev.snippetrevisionupvote_set.count }}</td><td>-{{ rev.snippetrevisiondownvote_set.count }}</td><td>{{ rev.userprefs.user }}<td>{{ rev.date_submitted|timesince }}</td></li>
+            <tr><td><a href="/admin/revision?k={{ rev.key }}">{{ rev.title }}</a></td><td>+{{ rev.snippetrevisionupvote_set.count }}</td><td>-{{ rev.snippetrevisiondownvote_set.count }}</td><td>{{ rev.userprefs.nickname }}<td>{{ rev.date_submitted|timesince }}</td></li>
         {% endfor %}
     </table>
     </div>

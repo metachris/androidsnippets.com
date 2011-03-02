@@ -27,7 +27,7 @@
 {% if not preview %}
     <div style="border:0px solid gray; width:300px; padding:20px 0px 0px 0px; margin:auto;">
     {% if prefs %}
-        {% ifequal rev.userprefs.user prefs.user %}
+        {% ifequal rev.userprefs.key prefs.key %}
             <center>This is your edit</center>
         {% else %} 
             {% if voted %}
