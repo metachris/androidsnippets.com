@@ -6,7 +6,7 @@
             <td>{{ snippet.upvote_count }}</td>
             <td>{% if snippet.proposal_count %}{{ snippet.proposal_count }}{% endif %}</td>
             <td>{{ snippet.date_lastactivity|timesince }} ago</td>
-            {% if prefs.level > 90 %}<td><a href="https://appengine.google.com/datastore/explorer?submitted=1&app_id=android-snippets&viewby=gql&query=SELECT+*+FROM+Snippet+WHERE+__key__+%3D+KEY('{{ snippet.key }}')&namespace=&options=Run+Query" target="_blank"><small><b>i</b></small></a></td>{% endif %}
+            {% if prefs.level > 90 %}<td><a href="/admin/snippet/{{ snippet.key }}" target="_blank"><small><b>i</b></small></a></td>{% endif %}
         </tr>
     {% endfor %}
 </table>

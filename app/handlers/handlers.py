@@ -235,7 +235,7 @@ class SnippetVote(webapp.RequestHandler):
                 if revision.merged:
                     # if the user which votes is an author of an edit,
                     # he doesn't get any rep points.
-                    if revision.userprefs.user != user:
+                    if revision.userprefs.key() != prefs.key():
                         logging.info("+1 rep for editor %s" % \
                                 revision.userprefs.nickname)
                         revision.userprefs.points += 1

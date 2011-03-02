@@ -16,6 +16,7 @@ from google.appengine.ext.webapp import template
 import markdown
 import akismet
 
+from hashlib import md5
 from urllib import unquote
 from time import sleep
 from tools import slugify, decode, is_valid_email, send_message
@@ -74,6 +75,7 @@ class ProfileView(webapp.RequestHandler):
                 #    # initial email verification gets rep points
                 #    prefs.points += 3
                 prefs.email = prefs.email_new
+                prefs.email_md5 = md5(user.email().strip().lower()).hexdigest()
                 prefs.email_new = None
                 prefs.email_new_code = None
                 prefs.put()
