@@ -489,11 +489,13 @@ class AboutView(webapp.RequestHandler):
         values = {'prefs': prefs}
 
         msg = decode(self.request.get('msg'))
+        #logging.info("msg: %s" % msg)
         if msg:
             if prefs:
                 sender = "%s (%s)" % (prefs.nickname, prefs.email)
             else:
                 sender = decode(self.request.get('email'))
+            logging.info("feedback '%s' from %s" % (msg, sender))
             message = mail.EmailMessage()
             message.sender = "Android Snippets <chris@androidsnippets.com>"
             message.to = "chris@metachris.org"

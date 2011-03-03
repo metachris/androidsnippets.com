@@ -7,6 +7,9 @@ $(document).ready(function() {
 
 function init() {
     $("#q").click(function(){ if (this.value == "search") this.value=""; });
+
+	$(".btn").button();
+	$(".btn_small").button();
 }
 
 var is_editor = false; // toggled true <-> false
@@ -101,4 +104,42 @@ function preview() {
 
 function _follow() {
     alert("follow");
+}
+
+
+function feedback() {
+	// a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!
+	$( "#dialog:ui-dialog" ).dialog( "destroy" );
+
+    $("#feedback-dialog-content").show();
+    $("#feedback-dialog-content-wait").hide();
+    $("#feedback-dialog-content-postsubmit").hide();        
+
+	$( "#feedback-dialog" ).dialog({
+		modal: true,
+        position:["center", 160], 
+        width:500, 
+	});
+}
+
+function feedback_submit() {
+    $("#feedback-dialog-content").hide();
+    $("#feedback-dialog-content-wait").show();
+    $("#feedback-dialog-content-postsubmit").hide();        
+
+    msg = { 
+        "msg": $("#feedback_text").val(),
+        "email": $("#feedback_email").val()
+    }
+    $.ajax({
+        type: 'POST',
+        url: "/about",
+        data: msg,
+        success: function(){
+            $("#feedback-dialog-content-wait").hide();
+            $("#feedback-dialog-content-postsubmit").show();        
+        }
+    });
+    
+    return false;
 }

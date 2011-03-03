@@ -12,6 +12,8 @@
                         <span class='separator'>|</span> 
                         <a href='/about'>about</a> 
                         <span class='separator'>|</span> 
+                        <a href='javascript:feedback()'>feedback</a> 
+                        <span class='separator'>|</span> 
                         {% comment %}{% if prefs %}<a href='/logout'>Sign out</a>{% endcomment %}
 
                         <a href="http://twitter.com/#!/androidsnippets" target="_blank" /><img src="/images/twitter.png" width="16" height="16" style="margin-bottom:-4px;" /></a> 
@@ -57,5 +59,29 @@
     {% include "footer.html"%}
 </div>
 
+
+
+<div id="feedback-dialog" title="Share your Feedback" style="display:none;">
+	<div id='feedback-dialog-content'>
+		<span class="ui-icon ui-icon-comment" style="float:left; margin:0 7px 240px 0;"></span>
+            <textarea name="msg" rows="10" cols="50" name="feedback_text" id="feedback_text"></textarea>
+        </p>
+        <p>
+        {% if not prefs %}Your Email:<br>
+        <input type="text" name="feedback_email" id='feedback_email' />
+        {% endif %}
+        </p>
+        <p style='margin-top:14px;'><input type="button" class='btn' value='submit' onclick='feedback_submit()' />
+        </p>
+	</div>
+    <div style='padding:40px 0px 40px 90px;' id='feedback-dialog-content-wait'>
+        <img src='/images/ajax-loader.gif' />
+    </div>
+	<div style='padding:40px 0px 40px 30px; display:none;' id='feedback-dialog-content-postsubmit'>
+	   <span class='ui-icon ui-icon-star' style='float:left; margin:0 7px 20px 0;'></span>
+	   Thank you for sharing!
+	   <p style='margin-top:30px; padding-left:30px;'><input type='button' class='btn' value='close' onclick="$('#feedback-dialog').dialog('close');"/></p>
+   </div>
+</div>
 {% endblock %}
 
