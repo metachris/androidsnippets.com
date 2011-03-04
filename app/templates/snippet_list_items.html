@@ -1,9 +1,10 @@
 <table class="snippetlist">
-       <tr><th>snippet</th><th><big style="color:green;">+</big></th><th>edits</th><th>last activity</th></tr>    
+       <tr><th>snippet</th><th><big style="color:green;">+</big></th><th><img src="/images/comment.png" /></th><th>edits</th><th>last activity</th></tr>    
        {% for snippet in snippets %}
         <tr class="{% cycle 'even' 'odd' %}">
             <td><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></td>
             <td>{{ snippet.upvote_count }}</td>
+            <td>{{ snippet.comment_count }}</td>
             <td>{% if snippet.proposal_count %}{{ snippet.proposal_count }}{% endif %}</td>
             <td>{{ snippet.date_lastactivity|timesince }} ago</td>
             {% if prefs.level > 90 %}<td><a href="/admin/snippet/{{ snippet.key }}" target="_blank"><small><b>i</b></small></a></td>{% endif %}
