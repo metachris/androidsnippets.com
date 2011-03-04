@@ -130,7 +130,8 @@ class InternalUser(db.Model):
         return prefs
 
     @staticmethod
-    def from_data(nickname, email, datetime_joined, fed_id, legacy_id):
+    def from_data(nickname, email, datetime_joined, fed_id=None, \
+            legacy_id=None):
         """Creates an orphaned prefs object (one without user).
         Used for imports from the legacy database. Once a user
         with matching email registers, it will be assigned."""

@@ -30,6 +30,46 @@ class AdminX(webapp.RequestHandler):
         # each page adds 10 users
         page = int(n)
 
+        f = open("comments.json")
+        s = f.read()
+        f.close()
+
+        comments = json.loads(s)
+        for cols in comments[page * 50:(page + 1) * 50]:
+            # see if user is registered
+            #cols = ["id", "snippet_legacy_id", "user_legacy_id", "user_name",
+            #        "user_email", "user_url", "comment", "submit_date"]
+            snippet = Snippet.all().filter("slug2 =", str(cols[1])).get()
+            if not snippet:
+                logging.error("snippet %s not found" % cols[1])
+                continue
+
+            prefs = None
+            if cols[2]:
+                # see if we have legacy user
+                prefs = InternalUser.all().filter("legacy_user_id =", \
+                        cols[2]).get()
+
+            if not prefs:
+                #logging.info("create orphaned prefs entity")
+                prefs = InternalUser.from_data(cols[3], cols[4], \
+                        datetime.datetime.now())
+
+            c = SnippetComment(userprefs=prefs, snippet=snippet, \
+                comment=cols[6], \
+                date_submitted=datetime.datetime.fromtimestamp(cols[7]),
+                date_lastupdate=datetime.datetime.fromtimestamp(cols[7])
+            )
+
+            #logging.info(c.date_lastupdate)
+            c.comment_md = markdown.markdown(cols[6]).replace( \
+                "<a ", "<a target='_blank' rel='nofollow' ")
+            c.save()
+
+            snippet.comment_count += 1
+            snippet.put()
+            #logging.info("comment saved")
+
 
 class AdminY(webapp.RequestHandler):
     def get(self, n):
