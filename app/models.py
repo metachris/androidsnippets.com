@@ -69,7 +69,7 @@ class InternalUser(db.Model):
 
         if not user.federated_identity():
             logging.warning("_ user has no fed id [%s]" % user)
-            return
+            #return
 
         logging.info("_ looking for userprefs [fed: %s]" % \
                 user.federated_identity())
@@ -120,8 +120,10 @@ class InternalUser(db.Model):
             m = md5(user.email().strip().lower()).hexdigest()
 
             logging.info("_ create new openid prefs")
-            prefs = InternalUser(federated_identity=user.federated_identity(),\
-                federated_provider=user.federated_provider(), nickname=nick, \
+            fed_id = user.federated_identity() or user.user_id()
+            fed_prov = user.federated_provider() or None
+            prefs = InternalUser(federated_identity=fed_id,\
+                federated_provider=fed_prov, nickname=nick, \
                 email=user.email(), email_md5=m)
             prefs.put()
 
