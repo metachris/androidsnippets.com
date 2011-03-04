@@ -8,6 +8,12 @@
     </div>
     <div class="body">
         {{ comment.comment_md|safe }}
+        
+        {% if prefs.level > 60 %}
+        <br><p>
+                <a href="https://appengine.google.com/datastore/explorer?submitted=1&app_id=android-snippets&viewby=gql&query=SELECT+*+FROM+SnippetComment+WHERE+__key__+%3D+KEY('{{ comment.key }}')&namespace=&options=Run+Query" target="_blank">                
+        delete</a></p>
+        {% endif %}
     </div>
 </div>
 {% endfor %}

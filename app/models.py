@@ -57,6 +57,9 @@ class InternalUser(db.Model):
     # Has this user unread messages in his inbox
     messages_unread = db.IntegerProperty(default=0)
 
+    # google user id is only used on the dev server
+    google_user_id = db.StringProperty()
+
     # legacy system infos
     legacy_user_id = db.IntegerProperty(default=0)  # to re-associate snippets
     legacy_email = db.StringProperty()
@@ -71,11 +74,13 @@ class InternalUser(db.Model):
             logging.warning("_ user has no fed id [%s]" % user)
             #return
 
-        logging.info("_ looking for userprefs [fed: %s]" % \
-                user.federated_identity())
-        q = db.GqlQuery("SELECT * FROM InternalUser WHERE \
-            federated_identity = :1 AND federated_provider = :2", \
-            user.federated_identity(), user.federated_provider())
+        if user.federated_identity():
+            q = db.GqlQuery("SELECT * FROM InternalUser WHERE \
+                federated_identity = :1 AND federated_provider = :2", \
+                user.federated_identity(), user.federated_provider())
+        else:
+            q = db.GqlQuery("SELECT * FROM InternalUser WHERE \
+                google_user_id = :1", user.user_id())
         prefs = q.get()
 
         # most of the time we will return an already saved prefs
@@ -120,11 +125,12 @@ class InternalUser(db.Model):
             m = md5(user.email().strip().lower()).hexdigest()
 
             logging.info("_ create new openid prefs")
-            fed_id = user.federated_identity() or user.user_id()
-            fed_prov = user.federated_provider() or None
+            fed_id = user.federated_identity()
+            fed_prov = user.federated_provider()
             prefs = InternalUser(federated_identity=fed_id,\
                 federated_provider=fed_prov, nickname=nick, \
                 email=user.email(), email_md5=m)
+            prefs.google_user_id = user.user_id()
             prefs.put()
 
         return prefs

@@ -187,7 +187,7 @@ class SnippetView(webapp.RequestHandler):
         comments = snippet.snippetcomment_set.filter("flagged_as_spam =", \
                 False)
         comments_html = template.render(tdir + "comments.html", \
-                {"comments": comments})
+                {"comments": comments, 'prefs': prefs})
 
         values = {"prefs": prefs, "snippet": snippet, "revisions": revisions, \
                 'voted': has_voted, 'accepted_revisions': accepted_revisions, \
