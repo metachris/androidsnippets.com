@@ -1,12 +1,18 @@
 <table class="snippetlist">
-       <tr><th>snippet</th><th><big style="color:green;">+</big></th><th><img src="/images/comment.png" /></th><th>edits</th><th style="width:120px">last activity</th></tr>    
+        <tr>
+            <th></th>
+            <th style='text-align:center;width:34px;'><img src="/images/star.png" title="upvotes" /></th>
+            <th style='text-align:center;width:34px;'><img src="/images/comment.png" title="comments" /></th>
+            <th style='text-align:center;width:34px;'><img src="/images/lightbulb.png" title="improvement suggestions" /></th>
+            <th style="width:140px; padding-left:20px;">last activity</th>
+        </tr>    
        {% for snippet in snippets %}
         <tr class="{% cycle 'even' 'odd' %}">
             <td><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></td>
-            <td>{{ snippet.upvote_count }}</td>
-            <td>{{ snippet.comment_count }}</td>
-            <td>{% if snippet.proposal_count %}{{ snippet.proposal_count }}{% endif %}</td>
-            <td>{{ snippet.date_lastactivity|timesince }} ago</td>
+            <td style='text-align:center;'>{{ snippet.upvote_count }}</td>
+            <td style='text-align:center;'>{{ snippet.comment_count }}</td>
+            <td style='text-align:center;'>{% if snippet.proposal_count %}{{ snippet.proposal_count }}{% endif %}</td>
+            <td style='padding-left:20px;'>{{ snippet.date_lastactivity|timesince }} ago</td>
             {% if prefs.level > 90 %}<td><a href="/admin/snippet/{{ snippet.key }}" target="_blank"><small><b>i</b></small></a></td>{% endif %}
         </tr>
     {% endfor %}
