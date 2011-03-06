@@ -17,7 +17,7 @@ import akismet
 
 import mc
 from time import sleep
-from tools import slugify, decode
+from tools import slugify, decode, akismet_spamcheck
 from models import *
 
 import settings
@@ -186,6 +186,7 @@ class SnippetView(webapp.RequestHandler):
 
         comments = snippet.snippetcomment_set.filter("flagged_as_spam =", \
                 False)
+        comments.order("date_submitted")
         comments_html = template.render(tdir + "comments.html", \
                 {"comments": comments, 'prefs': prefs})
 
@@ -443,33 +444,30 @@ class SnippetCommentView(webapp.RequestHandler):
                 "<a ", "<a target='_blank' rel='nofollow' ")
 
         # Check if comment is spam
-        try:
-            real_key = akismet.verify_key(settings.AKISMET_APIKEY, \
-                settings.AKISMET_URL)
-            if real_key:
-                is_spam = akismet.comment_check(settings.AKISMET_APIKEY, \
-                    settings.AKISMET_URL, \
-                    self.request.remote_addr, \
-                    self.request.headers["User-Agent"], \
-                    comment_content=comment)
-                if is_spam:
-                    memcache.incr("ua_comment_spam", initial_value=1)
-                    logging.warning("= comment: Yup, that's spam alright.")
-                    c.flagged_as_spam = True
-                    url_addon = "?c=m"
-                else:
-                    memcache.incr("ua_comment_ham", initial_value=1)
-                    logging.info("= comment: Hooray, your users aren't scum!")
-                    url_addon = ""
-                    snippet.comment_count += 1
-                    snippet.date_lastcomment = datetime.datetime.now()
-                    snippet.save()
-        except akismet.AkismetError, e:
-            logging.error("%s, %s" % (e.response, e.statuscode))
+        is_spam = akismet_spamcheck(comment, self.request.remote_addr, \
+                self.request.headers["User-Agent"])
 
+        if is_spam:
+            memcache.incr("ua_comment_spam", initial_value=1)
+            logging.warning("= comment: Yup, that's spam alright.")
+            c.flagged_as_spam = True
+            url_addon = "?c=m#comments"
+        else:
+            memcache.incr("ua_comment_ham", initial_value=1)
+            url_addon = ""
+            snippet.comment_count += 1
+            snippet.date_lastcomment = datetime.datetime.now()
+            snippet.save()
+            url_addon = ""
+
+        # Save comment now
         c.save()
 
-        self.redirect("/%s%s#comments" % (snippet_slug, url_addon))
+        # if not spam, redirect user to see comment
+        if not url_addon:
+            url_addon = "#%s" % c.key()
+
+        self.redirect("/%s%s" % (snippet_slug, url_addon))
 
 
 class AboutView(webapp.RequestHandler):

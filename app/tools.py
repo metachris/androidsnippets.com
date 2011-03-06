@@ -2,22 +2,27 @@ import re
 import logging
 import unicodedata
 from operator import itemgetter
+from urllib import urlopen
 
 from google.appengine.api import memcache
 from django.utils import simplejson as json
 
+import akismet
 from libs import tweepy
 
 from models import *
-from settings import *
 
-from urllib import urlopen
+import mc
+import settings
 
 _slugify_strip_re = re.compile(r'[^\w\s-]')
 _slugify_hyphenate_re = re.compile(r'[-\s]+')
 
 
-"""Some common tools. All BSD licensed"""
+"""
+This file contains common tools.
+All BSD licensed.
+"""
 
 
 def slugify(value):
@@ -88,10 +93,10 @@ def tweet(status):
     if not status or not status.strip() or len(status) < 5:
         return
 
-    auth = tweepy.OAuthHandler(TWITTER_OAUTH_CONSUMER_TOKEN, \
-            TWITTER_OAUTH_CONSUMER_SECRET)
-    auth.set_access_token(TWITTER_OAUTH_ACCESS_KEY, \
-            TWITTER_OAUTH_ACCESS_SECRET)
+    auth = tweepy.OAuthHandler(settings.TWITTER_OAUTH_CONSUMER_TOKEN, \
+            settings.TWITTER_OAUTH_CONSUMER_SECRET)
+    auth.set_access_token(settings.TWITTER_OAUTH_ACCESS_KEY, \
+            settings.TWITTER_OAUTH_ACCESS_SECRET)
     api = tweepy.API(auth)
     api.update_status(status)
     logging.info("tweeted")
@@ -99,7 +104,26 @@ def tweet(status):
 
 def shorturl(long_url):
     json_result = urlopen("http://api.bitly.com/v3/shorten?login=%s&apiKey=%s&longUrl=%s&format=json" % \
-        (BITLY_LOGIN, BITLY_APIKEY, long_url)).read()
+        (settings.BITLY_LOGIN, settings.BITLY_APIKEY, long_url)).read()
     r = json.loads(json_result)
     logging.info("bitly result: %s" % str(r))
     return r["data"]["url"]
+
+
+def akismet_spamcheck(content, remote_addr, user_agent):
+    """Returns True if spam, False if not spam"""
+    try:
+        real_key = akismet.verify_key(settings.AKISMET_APIKEY, \
+            settings.AKISMET_URL)
+
+        is_spam = akismet.comment_check(settings.AKISMET_APIKEY, \
+            settings.AKISMET_URL, remote_addr, user_agent, \
+            comment_content=content)
+
+        if is_spam:
+            return True
+        else:
+            return False
+
+    except akismet.AkismetError, e:
+        logging.error("%s, %s" % (e.response, e.statuscode))

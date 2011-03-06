@@ -12,6 +12,7 @@ from google.appengine.ext.webapp.util import login_required
 import markdown
 
 import mc
+import settings
 
 from urllib import unquote
 from time import sleep
@@ -154,7 +155,8 @@ class SnippetsNew(webapp.RequestHandler):
             status = "%s..." % status[:max_status_len - 3]
         status = "%s %s #android" % (status, url)
         logging.info("tweet: '%s' (%s)" % (status, len(status)))
-        tweet(status)
+        if not settings.IS_TESTENV:
+            tweet(status)
 
         # Redirect to snippet view
         self.redirect("/%s" % s.slug1)
