@@ -187,6 +187,10 @@ class AdminSnippetView(webapp.RequestHandler):
                 # after deleting votes, delete revision
                 c.delete()
 
+            # Reduce the reputation points from the user by number of votes
+            snippet.userprefs.points -= snippet.upvote_count
+            snippet.userprefs.put()
+
             # finally delete the snippet
             snippet.delete()
 

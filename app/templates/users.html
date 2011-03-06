@@ -36,7 +36,7 @@
            {% for user in users1 %}
             <tr class="{% cycle 'even' 'odd' %}">
                 <td><a href="/users/{{ user.nickname }}">
-                    <img src="http://www.gravatar.com/avatar/{{ user.email_md5 }}?s=12" width="12" height="12" /> &nbsp;{{ user.nickname }}
+                    <img src="http://www.gravatar.com/avatar/{{ user.email_md5 }}?s=12" width="12" height="12" /> &nbsp;{{ user.nickname|truncate_chars:20 }}
                 </a></td>
                 <td>{{ user.points }}</td>
                 {% if prefs.level > 90 %}<td><a href="https://appengine.google.com/datastore/explorer?submitted=1&app_id=android-snippets&viewby=gql&query=SELECT+*+FROM+UserPrefs+WHERE+__key__+%3D+KEY('{{ user.key }}')&namespace=&options=Run+Query" target="_blank"><small><b>i</b></small></a></td>{% endif %}                
@@ -50,7 +50,7 @@
            {% for user in users2 %}
             <tr class="{% cycle 'even' 'odd' %}">
                 <td><a href="/users/{{ user.nickname }}">
-                    <img src="http://www.gravatar.com/avatar/{{ user.email_md5 }}?s=12" width="12" height="12" /> &nbsp;{{ user.nickname }}
+                    <img src="http://www.gravatar.com/avatar/{{ user.email_md5 }}?s=12" width="12" height="12" /> &nbsp;{{ user.nickname|truncate_chars:20 }}
                 </a></td>
                 <td>{{ user.points }}</td>
                 {% if prefs.level > 90 %}<td><a href="https://appengine.google.com/datastore/explorer?submitted=1&app_id=android-snippets&viewby=gql&query=SELECT+*+FROM+UserPrefs+WHERE+__key__+%3D+KEY('{{ user.key }}')&namespace=&options=Run+Query" target="_blank"><small><b>i</b></small></a></td>{% endif %}                

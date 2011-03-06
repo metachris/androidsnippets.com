@@ -35,7 +35,16 @@ def mkSize(val, max):
     size_maxdelta = 10.0 / float(max)
     return 13.0 + (size_maxdelta * float(val))
 
+
+def truncate_chars(value, maxlen):
+    if len(value) < maxlen:
+        return value
+    else:
+        return value[:maxlen - 3] + '...'
+
+
 register.filter(first)
 register.filter(android_sdk_to_name)
 register.filter(is_notification)
 register.filter(mkSize)
+register.filter(truncate_chars)
