@@ -39,6 +39,7 @@ urls = [
     (r'/admin/y/(.*)', AdminY),
     (r'/admin/del', AdminDel),
     (r'/admin/snippet/([-\w]+)', AdminSnippetView),
+    (r'/admin/comment/([-\w]+)', AdminCommentView),
     (r'/admin(.*)', AdminView),
 
     (r'/feeds/(.*)', FeedView),

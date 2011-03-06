@@ -4,15 +4,15 @@
 <div class="comment">
     <div class="header">
         <div class="date">{{ comment.date_submitted|timesince }} ago</div>
-        <div class="author"><a href="/users/{{ comment.userprefs.nickname }}" title="{{ comment.userprefs.nickname }}"><img src="http://www.gravatar.com/avatar/{{ comment.userprefs.email_md5 }}?s=12" width="12" height="12" /> {{ comment.userprefs.nickname }}</a></div>
+        <div class="author"><a href="/users/{{ comment.userprefs.nickname }}" title="{{ comment.userprefs.nickname }}"><img src="http://www.gravatar.com/avatar/{{ comment.userprefs.email_md5 }}?s=12" width="12" height="12" /> {{ comment.userprefs.nickname|truncate_chars:20 }}</a></div>
     </div>
     <div class="body">
         {{ comment.comment_md|safe }}
         
         {% if prefs.level > 60 %}
         <br><p>
-                <a href="https://appengine.google.com/datastore/explorer?submitted=1&app_id=android-snippets&viewby=gql&query=SELECT+*+FROM+SnippetComment+WHERE+__key__+%3D+KEY('{{ comment.key }}')&namespace=&options=Run+Query" target="_blank">                
-        delete</a></p>
+                <a href="/admin/comment/{{ comment.key }}">                
+        admin</a></p>
         {% endif %}
     </div>
 </div>
