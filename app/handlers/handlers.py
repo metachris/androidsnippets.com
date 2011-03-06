@@ -150,7 +150,7 @@ class SnippetView(webapp.RequestHandler):
             memcache.incr("pv_snippet_404", initial_value=0)
             logging.info("404: %s" % snippet_slug)
             # Show snippet-not-found.html
-            values = {'prefs': prefs, "q": snippet_slug}
+            values = {'prefs': prefs, "q": snippet_slug.replace("-", " ")}
             self.response.out.write(template.render(tdir + \
                 "snippets_notfound.html", values))
             return
