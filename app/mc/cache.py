@@ -73,3 +73,40 @@ def sitemap(force_update=False):
     out = template.render(tdir + "sitemap.xml", {"urls": urls})
     memcache.set("sitemap", out)
     return out
+
+
+def snippet_comment_recursive(comment, depth=0):
+    """Starts with one parent comment and recursively
+    builds the html for all children"""
+    if not comment:
+        return ""
+
+    logging.info("adding comment, depth %s" % depth)
+    html = template.render(tdir + "comment.html", {"comment": comment, \
+            'depth': depth * 4})
+
+    for c in comment.snippetcomment_set.order("date_submitted"):
+        d = depth + 1
+        html += snippet_comment_recursive(c, d)
+
+    return html
+
+
+def snippet_comments(snippet, force_update=False):
+    html = memcache.get("comments_%s" % snippet.key())
+    if html and not force_update:
+        logging.info("returning cached comments")
+        return html
+
+    # Recalculate comment tree. Start with parent comments only
+    q = db.GqlQuery("SELECT * FROM SnippetComment WHERE snippet = :1 AND \
+            parent_comment < '' AND flagged_as_spam = :2 \
+            ORDER BY parent_comment ASC, flagged_as_spam ASC, \
+            date_submitted ASC", snippet, False)
+
+    html = u""
+    for comment in q:
+        html += snippet_comment_recursive(comment)
+
+    memcache.set("comments_%s" % snippet.key(), html)
+    return html

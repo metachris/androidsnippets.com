@@ -118,6 +118,12 @@
     function follow_snippet() {
         {% if prefs %}_follow(){% else %}show_dialog_signin("/{{ snippet.slug1 }}/follow");{% endif %}
     }
+    
+    function comment_reply(key) {
+        $("#reply" + key).html($("#comment_compose").html())
+        $("#reply" + key + " #comment_compose_parent_key").val(key);    
+        $("#reply" + key + " .btn_cancel").click(function(){ $("#reply" + key).html(""); });
+    }
     </script>
 {% endblock %}
 
@@ -208,7 +214,7 @@
                 
                 <hr>
                 
-                <p><a href="#comments">{{ comments.count }} comment{{ comments.count|pluralize }}</a></p>
+                <p><a href="#comments">{{ snippet.snippetcomment_set.count }} comment{{ snippet.snippetcomment_set.count|pluralize }}</a></p>
 
                 <hr>            
 
@@ -255,7 +261,7 @@
 
 <div id="comments">
 <a name="comments"></a>
-    <h2>{% if comments.count %}{{ comments.count }} Comment{{ comments.count|pluralize }}{% else %}Be the first to comment{% endif %}</h2>
+    <h2>{% if snippet.snippetcomment_set.count %}{{ snippet.snippetcomment_set.count }} Comment{{ snippet.snippetcomment_set.count|pluralize }}{% else %}Be the first to comment{% endif %}</h2>
 
     {% if commentspam %}
 		<div class="ui-state-error ui-corner-all" style="padding: 8px 0px 0px .7em; margin:14px 0px 24px 10px; width:470px;">			 
@@ -265,14 +271,17 @@
 		</div>        
     {% else %}
         {% if prefs %}
+        <div id="comment_compose">
         <div style="width:500px; margin-top:20px; margin-bottom:20px;">
             <form action="/{{ snippet.slug1 }}/comment" method="post">
             <textarea id="wmd" name="comment" style="width:500px; border:1px solid lightgray;" rows="6"></textarea>
             <div style="text-align:right; padding-top:6px;">
-                <input type="button" class="btn_small" value="Cancel" onclick="javascript:$('#wmd').val('')" />
+                <input type="hidden" name="parent_key" value="" id="comment_compose_parent_key" />
+                <input type="button" class="btn_small btn_cancel" value="Cancel" onclick="javascript:$('#wmd').val('')" />
                 <input type="submit" class="btn_small" value="Submit" />
             </div>
             </form>
+        </div>
         </div>
         {% else %}
             <div style="margin:10px;">
@@ -281,7 +290,7 @@
         {% endif %}
     {% endif %}
     <div id="comment_thread">    
-        {{ comments_html }}
+        {{ comments_html|safe }}
     </div>
 </div>
 

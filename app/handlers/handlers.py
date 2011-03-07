@@ -184,16 +184,12 @@ class SnippetView(webapp.RequestHandler):
                     userprefs = :1 and snippet = :2", prefs, snippet)
             has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
 
-        comments = snippet.snippetcomment_set.filter("flagged_as_spam =", \
-                False)
-        comments.order("date_submitted")
-        comments_html = template.render(tdir + "comments.html", \
-                {"comments": comments, 'prefs': prefs})
+        comments_html = mc.cache.snippet_comments(snippet, True)
 
         values = {"prefs": prefs, "snippet": snippet, "revisions": revisions, \
                 'voted': has_voted, 'accepted_revisions': accepted_revisions, \
                 "openedit": self.request.get('edit'), \
-                "comments": comments, "comments_html": comments_html, \
+                "comments_html": comments_html, \
                 'commentspam': commentspam}
 
         self.response.out.write(template.render(tdir + \
@@ -434,20 +430,33 @@ class SnippetCommentView(webapp.RequestHandler):
             return
 
         comment = decode(self.request.get('comment'))
+        parent_key = decode(self.request.get('parent_key'))
+
         if not comment or len(comment.strip()) == 0:
             self.redirect("/%s" % snippet_slug)
             return
+
+        if parent_key:
+            parent = SnippetComment.get(db.Key(parent_key))
+            logging.info("pk: %s" % parent)
+            if not parent:
+                self.error(404)
+                return
 
         # Add the comment now
         c = SnippetComment(userprefs=prefs, snippet=snippet, comment=comment)
         c.comment_md = markdown.markdown(comment).replace( \
                 "<a ", "<a target='_blank' rel='nofollow' ")
 
+        if parent:
+            c.parent_comment = parent
+
         # Check if comment is spam
-        is_spam = akismet_spamcheck(comment, self.request.remote_addr, \
+        if settings.IS_TESTENV:
+            is_spam = akismet_spamcheck(comment, self.request.remote_addr, \
                 self.request.headers["User-Agent"])
 
-        if is_spam:
+        if not settings.IS_TESTENV and is_spam:
             memcache.incr("ua_comment_spam", initial_value=1)
             logging.warning("= comment: Yup, that's spam alright.")
             c.flagged_as_spam = True
