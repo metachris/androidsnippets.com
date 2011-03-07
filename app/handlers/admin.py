@@ -195,10 +195,13 @@ class AdminCommentView(webapp.RequestHandler):
                 "<a ", "<a target='_blank' rel='nofollow' "))
             comment.put()
             logging.info("comment updated by admin")
+            self.redirect("/admin/comment/%s" % comment_key)
 
         elif delete:
+            redirect_to = "/%s" % comment.snippet.slug1
+
             comment.snippet.comment_count -= 1
             comment.snippet.put()
-
             comment.delete()
             logging.info("comment deleted by admin")
+            self.redirect(redirect_to)

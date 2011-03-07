@@ -149,11 +149,11 @@ class SnippetsNew(webapp.RequestHandler):
 
         # Prepare Tweet
         url = shorturl("http://www.androidsnippets.com/%s" % slug)
-        max_status_len = 140 - len(url) - 10  # 10 = 2 spaces and #android
+        max_status_len = 140 - len(url) - 11  # 10 = 2 spaces, : and #android
         status = s.title
         if len(status) > max_status_len:
             status = "%s..." % status[:max_status_len - 3]
-        status = "%s %s #android" % (status, url)
+        status = "%s: %s #android" % (status, url)
         logging.info("tweet: '%s' (%s)" % (status, len(status)))
         if not settings.IS_TESTENV:
             tweet(status)
