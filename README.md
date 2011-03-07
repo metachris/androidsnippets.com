@@ -2,6 +2,8 @@ Rewrite of androidsnippets.com which runs on appengine.
 
 Currently in prototyping, models are not yet finalized.
 
+http://bit.ly/gPE2pN 
+
 Important Improvements
 ----------------------
 
