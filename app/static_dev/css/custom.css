@@ -325,11 +325,11 @@ margin-top: 0px;
 /* Comments */
 #snippet_view #comments { 
     margin-top:50px;
+    width:500px;    
 }
 
 #snippet_view #comment_thread { 
     margin-top: 10px;
-    width:500px;
 }
 
 #snippet_view #comment_thread .comment {

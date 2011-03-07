@@ -10,7 +10,7 @@
     <div class="actions">
         <!--<a href="#">Like</a> · --><a href="javascript:comment_reply('{{ comment.key }}')">Reply</a>
         {% if prefs.level > 60 %} · <a href="/admin/comment/{{ comment.key }}">admin</a>{% endif %}
-         · <span style="color:#888;">{{ comment.date_submitted|date }}</span>
+         · <span style="color:#888;">{{ comment.date_submitted|timesince }} ago</span>
     </div>
     <div id="reply{{ comment.key }}"></div> <!-- Populated by javascript -->
 </td></tr></table>

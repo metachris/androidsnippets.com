@@ -184,7 +184,7 @@ class SnippetView(webapp.RequestHandler):
                     userprefs = :1 and snippet = :2", prefs, snippet)
             has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
 
-        comments_html = mc.cache.snippet_comments(snippet, True)
+        comments_html = mc.cache.snippet_comments(snippet)
 
         values = {"prefs": prefs, "snippet": snippet, "revisions": revisions, \
                 'voted': has_voted, 'accepted_revisions': accepted_revisions, \
@@ -475,6 +475,9 @@ class SnippetCommentView(webapp.RequestHandler):
         # if not spam, redirect user to see comment
         if not url_addon:
             url_addon = "#%s" % c.key()
+
+        # Recalculate and cache comments
+        mc.cache.snippet_comments(snippet, True)
 
         self.redirect("/%s%s" % (snippet_slug, url_addon))
 
