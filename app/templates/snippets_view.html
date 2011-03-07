@@ -68,6 +68,12 @@
 		clip.addEventListener('complete', function() { alert("The snippet is now in your clipboard."); });        
         clip.glue( 'd_clip_button', 'd_clip_container' );
         $("#ZeroClipboardMovie_1").focus();
+        
+        {% if prefs.level > 90 %}
+            $(".comment_admin").each(function(){
+                $(this).show();
+            });        
+        {% endif %}
     });
     
     var dialog_shown = false;
@@ -290,7 +296,7 @@
             <textarea id="wmd" name="comment" style="width:500px; border:1px solid lightgray;" rows="6"></textarea>
             <div style="text-align:right; padding-top:6px;">
                 <input type="hidden" name="parent_key" value="" id="comment_compose_parent_key" />
-                <input type="button" class="btn_small btn_cancel" value="Cancel" onclick="javascript:$('#comment_compose').hide()" />
+                {% if snippet.snippetcomment_set.count %}<input type="button" class="btn_small btn_cancel" value="Cancel" onclick="javascript:$('#comment_compose').hide()" />{% endif %}
                 <input type="submit" class="btn_small" value="Submit" />
             </div>
             </form>

@@ -60,6 +60,7 @@ def sitemap(force_update=False):
         })
     logging.info("urls: %s" % len(urls))
 
+    """
     _users = InternalUser.all()
     #_users.order("-date_lastactivity")
     for user in _users:
@@ -69,6 +70,7 @@ def sitemap(force_update=False):
             'priority': 0.4
         })
     logging.info("urls: %s" % len(urls))
+    """
 
     out = template.render(tdir + "sitemap.xml", {"urls": urls})
     memcache.set("sitemap", out)

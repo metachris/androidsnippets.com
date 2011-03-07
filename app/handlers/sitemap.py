@@ -27,4 +27,5 @@ tdir = os.path.join(os.path.dirname(__file__), '../templates/')
 
 class SitemapView(webapp.RequestHandler):
     def get(self):
-        self.response.out.write(mc.cache.sitemap())
+        force_update = decode(self.request.get('n'))
+        self.response.out.write(mc.cache.sitemap(force_update))
