@@ -97,7 +97,7 @@ def snippet_comment_recursive(comment, depth=0):
 def snippet_comments(snippet, force_update=False):
     html = memcache.get("comments_%s" % snippet.key())
     if html and not force_update:
-        logging.info("returning cached comments")
+        #logging.info("returning cached comments")
         return html
 
     # Recalculate comment tree. Start with parent comments only

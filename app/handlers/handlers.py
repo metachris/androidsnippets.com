@@ -448,10 +448,11 @@ class SnippetCommentView(webapp.RequestHandler):
         c.comment_md = markdown.markdown(comment).replace( \
                 "<a ", "<a target='_blank' rel='nofollow' ")
 
-        if parent:
+        if parent_key and parent:
             c.parent_comment = parent
 
         # Check if comment is spam
+        is_spam = False
         if settings.IS_TESTENV:
             is_spam = akismet_spamcheck(comment, self.request.remote_addr, \
                 self.request.headers["User-Agent"])
