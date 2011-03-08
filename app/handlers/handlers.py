@@ -467,11 +467,12 @@ class SnippetCommentView(webapp.RequestHandler):
             url_addon = ""
             snippet.comment_count += 1
             snippet.date_lastcomment = datetime.datetime.now()
-            snippet.save()
+            snippet.date_lastactivity = datetime.datetime.now()
+            snippet.put()
             url_addon = ""
 
         # Save comment now
-        c.save()
+        c.put()
 
         # if not spam, redirect user to see comment
         if not url_addon:
