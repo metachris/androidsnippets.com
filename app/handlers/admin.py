@@ -17,6 +17,7 @@ from tools import slugify, decode
 from django.utils import simplejson as json
 import markdown
 
+import mc
 from libs import tweepy
 from settings import *
 from tools import tweet
@@ -199,9 +200,12 @@ class AdminCommentView(webapp.RequestHandler):
 
         elif delete:
             redirect_to = "/%s" % comment.snippet.slug1
+            snippet = comment.snippet
+            snippet.comment_count -= 1
+            snippet.put()
 
-            comment.snippet.comment_count -= 1
-            comment.snippet.put()
             comment.delete()
+            mc.cache.snippet_comments(snippet, force_update=True)
+
             logging.info("comment deleted by admin")
             self.redirect(redirect_to)

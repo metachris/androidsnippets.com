@@ -74,8 +74,8 @@ class Main(webapp.RequestHandler):
             q.order("-upvote_count")
             title = "Popular Snippets"
         elif category == "/comments":
-            q.filter("comment_count >", 0)
-            q.order("-comment_count")
+            q.filter("date_lastcomment !=", None)
+            q.order("-date_lastcomment")
             title = "Recently Commented Snippets"
         elif category == "/edits":
             q.filter("proposal_count >", 0)
@@ -184,7 +184,8 @@ class SnippetView(webapp.RequestHandler):
                     userprefs = :1 and snippet = :2", prefs, snippet)
             has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
 
-        comments_html = mc.cache.snippet_comments(snippet)
+        comments_html = mc.cache.snippet_comments(snippet, \
+                decode(self.request.get('r')))
 
         values = {"prefs": prefs, "snippet": snippet, "revisions": revisions, \
                 'voted': has_voted, 'accepted_revisions': accepted_revisions, \
