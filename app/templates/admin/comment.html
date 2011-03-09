@@ -2,7 +2,7 @@
 
 {% block main %}
     <h2>Admin - Comment</h2>
-    <p>Author: <a href="https://appengine.google.com/datastore/explorer?submitted=1&app_id=android-snippets&viewby=gql&query=SELECT+*+FROM+InternalUser+WHERE+__key__+%3D+KEY('{{ user.key }}')&namespace=&options=Run+Query" target="_blank">{{ comment.userprefs.nickname }}</a></p>
+    <p>Author: <a href="https://appengine.google.com/datastore/explorer?submitted=1&app_id=android-snippets&viewby=gql&query=SELECT+*+FROM+InternalUser+WHERE+__key__+%3D+KEY('{{ comment.userprefs.key }}')&namespace=&options=Run+Query" target="_blank">{{ comment.userprefs.nickname }}</a></p>
     <p>Snippet: <a href="/{{ comment.snippet.slug1 }}">{{ comment.snippet.title }}</a></p>
     <form action="/admin/comment/{{ comment.key }}" method="post">
     Body:<br>
