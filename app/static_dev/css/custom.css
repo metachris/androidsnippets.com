@@ -262,9 +262,9 @@ margin-top: 0px;
 */
 
 #snippet_view #code { 
-    margin-left:-10px; /* fix for syntax highlighter spacing */
     margin-top:0px;
-    margin-bottom:100px;
+    margin-bottom:40px;
+    overflow:hidden;
 }
 
 #snippet_view #subtitle {
@@ -394,40 +394,17 @@ margin-top: 0px;
 }
 
 .envelope {
-/*
-border-bottom: 1px solid #BEDCE7;
-border-left: 1px solid #BEDCE7;
-border-right: 1px solid #BEDCE7;
-border-top: 1px solid #BEDCE7;
-padding: .7em .7em .2em .7em;
-background: #EAF2F5 url(/images/bg_gradient.gif) 0 100% repeat-x;
-background-color: #EAF2F5;
-background-repeat-x: repeat;
-background-repeat-y: no-repeat;
-background-attachment: initial;
-background-position-x: 0px;
-background-position-y: 100%;
-background-origin: initial;
-background-clip: initial;
-*/
 overflow: hidden;
-margin-bottom:20px;
+margin-bottom:10px;
 }
 
 /* Styles for the tools */
-.dp-highlighter .tools
-{
+#code #toolbar {
     float:right;
-	border-left: 0px solid #6CE26C;
-    border-bottom: 1px solid #CFCFCF;
-    padding-left:10px;
-    padding-bottom:2px;	
-    margin-bottom:4px;
-    width:120px;	
 
-	font: 9px Verdana, Geneva, Arial, Helvetica, sans-serif;
-	color: silver;
-	/*position:absolute;*/
+    padding:0px 10px 3px 10px;
+	font: 10px Verdana, Geneva, Arial, Helvetica, sans-serif;
+	color: #0073EA;
 }
 
 
