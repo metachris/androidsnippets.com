@@ -22,9 +22,7 @@ Libraries used
 * [tipTip tooltip plugin] [4] (MIT)
 * [Python-markdown] [5] (BSD)
 * * JS Alternatives: Openlibrary fork of [WMD and showdown.js] [6] (MIT), [Github flavored markdown] [7]
-* [JS Syntax Highlighter] [8] (GNU LGPL)
-* * switch to [new version] [9] (MIT and GPL)?
-* * copy to clipboard ([zeroclipboard] [10] (MIT)?)
+* [google-code-prettify] [8] (Apache 2.0)
 * [ZeroClipboard] [12] (MIT)
 * [Akismet python module] [11] (BSD)
 * [Tweepy] [13] (MIT)
@@ -36,9 +34,7 @@ Libraries used
    [5]: http://www.freewisdom.org/projects/python-markdown/
    [6]: https://github.com/abgrilo/wmd
    [7]: https://github.com/github/github-flavored-markdown/blob/gh-pages/scripts/showdown.js
-   [8]: http://code.google.com/p/syntaxhighlighter   
-   [9]: http://alexgorbatchev.com/SyntaxHighlighter
-   [10]: http://code.google.com/p/zeroclipboard
+   [8]: http://code.google.com/p/google-code-prettify   
    [11]: http://kemayo.wordpress.com/2005/12/02/akismet-py
    [12]: http://code.google.com/p/zeroclipboard
    [13]: https://github.com/joshthecoder/tweepy

@@ -70,10 +70,10 @@ class FeedView(webapp.RequestHandler):
             comments = q.fetch(30)
             for comment in comments:
                 items.append(PyRSS2Gen.RSSItem(
-                    title="%s" % comment.snippet.title,
+                    title="New comment on '%s'" % comment.snippet.title,
                     link="http://www.androidsnippets.com/%s" % \
                             comment.snippet.slug1,
-                    description=comment.snippet.description_md,
+                    description=comment.comment_md,
                     guid=PyRSS2Gen.Guid("http://www.androidsnippets.com/%s" \
                             % comment.snippet.slug1),
                     pubDate=datetime.datetime(2003, 9, 6, 21, 31)
