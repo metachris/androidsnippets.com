@@ -201,10 +201,20 @@ class AdminCommentView(webapp.RequestHandler):
         elif delete:
             redirect_to = "/%s" % comment.snippet.slug1
             snippet = comment.snippet
+            comment.delete()
+
+            # Update snippet's date_lastcomment
+            comments = snippet.snippetcomment_set.order("-date_submitted")
+            comment_last = comments.fetch(1)
+            if not comment_last:
+                snippet.date_lastcomment = None
+            else:
+                snippet.date_lastcomment = comment_last[0].date_submitted
+
+            # Update snippet's comment count
             snippet.comment_count -= 1
             snippet.put()
 
-            comment.delete()
             mc.cache.snippet_comments(snippet, force_update=True)
 
             logging.info("comment deleted by admin")
