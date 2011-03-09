@@ -72,10 +72,11 @@ td, th { padding:2px 5px; text-align:left; }
     background-image: url(/images/ui-icons_0073ea_256x240.png);
 }
 
-#main { padding-top:20px; padding-left:20px; min-height:500px;/* width:800px; margin:auto; */ }
+#main { padding-top:20px; padding-left:20px; min-height:400px;/* width:800px; margin:auto; */ }
 
 #footer {
-    padding:4px 20px 20px 20px;
+    margin-top:80px;
+    padding:20px 20px 20px 20px;
     color:white;
     background:#30587C;
     text-align:center;
