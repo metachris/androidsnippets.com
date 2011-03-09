@@ -1,4 +1,6 @@
-html, body, #container { height:100%; }
+html, body { height:100%; background:#30587C; overflow:auto; }
+#container { background:white; }
+
 body, select, input, textarea {
   /* #444 looks better than black: twitter.com/H_FJ/statuses/11800719859 */
   color: #333;
@@ -73,8 +75,15 @@ td, th { padding:2px 5px; text-align:left; }
 #main { padding-top:20px; padding-left:20px; min-height:500px;/* width:800px; margin:auto; */ }
 
 #footer {
-    padding-top:100px;
+    padding:4px 20px 20px 20px;
+    color:white;
+    background:#30587C;
+    text-align:center;
 }
+#footer a { color:white; }
+#footer td { padding:4px 30px; }
+#footer ul { margin-top:6px; }
+#footer li { margin-bottom:2px; }
 
 #header {
     background: #30587C;
