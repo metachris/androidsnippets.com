@@ -1,4 +1,4 @@
-html, body { height:100%; background:#30587C; overflow:auto; }
+html, body { height:100%; background-color:#30587C; overflow:auto; }
 #container { background:white; }
 
 body, select, input, textarea {
