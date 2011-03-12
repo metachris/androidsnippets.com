@@ -10,17 +10,19 @@
 {% block main %}
     <h2>{{ title }}</h2>
     
-    <div style="float:left;" id="snippetlist">
+    <div style="" id="snippetlist">
     {% include "snippet_list_items.html" %}
-    
-    <div style="margin-top:10px; text-align:right; padding-right:6px;">
+
+    <div style="clear:both;"></div>
+    <div style="margin-top:10px; padding-right:6px;">
     <small>
         {% for p in pages %}
             <a href="?p={{ p }}">{{ p }}</a> 
         {% endfor %}
         {{ page }}
+        ·
         <a href="?p={{ page|add:1 }}">next page</a>
-        </div>
     </small>
+    </div>
     </div>
 {% endblock %}

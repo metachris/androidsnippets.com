@@ -148,14 +148,14 @@ class SnippetsNew(webapp.RequestHandler):
         taskqueue.add(url='/services/update_sitemap')
 
         # Prepare Tweet
-        url = shorturl("http://www.androidsnippets.com/%s" % slug)
-        max_status_len = 140 - len(url) - 11  # 10 = 2 spaces, : and #android
-        status = s.title
-        if len(status) > max_status_len:
-            status = "%s..." % status[:max_status_len - 3]
-        status = "%s: %s #android" % (status, url)
-        logging.info("tweet: '%s' (%s)" % (status, len(status)))
         if not settings.IS_TESTENV:
+            url = shorturl("http://www.androidsnippets.com/%s" % slug)
+            max_status_len = 140 - len(url) - 11  # 10 = 2 spaces,:,#android
+            status = s.title
+            if len(status) > max_status_len:
+                status = "%s..." % status[:max_status_len - 3]
+            status = "%s: %s #android" % (status, url)
+            logging.info("tweet: '%s' (%s)" % (status, len(status)))
             tweet(status)
 
         # Redirect to snippet view

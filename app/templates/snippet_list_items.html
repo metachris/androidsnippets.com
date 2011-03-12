@@ -1,19 +1,18 @@
-<table class="snippetlist">
-        <tr>
-            <th></th>
-            <th style='text-align:center;width:34px;'><img src="/images/star.png" title="upvotes" /></th>
-            <th style='text-align:center;width:34px;'><img src="/images/comment.png" title="comments" /></th>
-            <th style='text-align:center;width:34px;'><img src="/images/lightbulb.png" title="improvement suggestions" /></th>
-            <th style="width:160px; padding-left:20px;">last activity</th>
-        </tr>    
-       {% for snippet in snippets %}
-        <tr class="{% cycle 'even' 'odd' %}">
-            <td><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></td>
-            <td style='text-align:center;'>{{ snippet.upvote_count }}</td>
-            <td style='text-align:center;'>{{ snippet.comment_count }}</td>
-            <td style='text-align:center;'>{% if snippet.proposal_count %}{{ snippet.proposal_count }}{% endif %}</td>
-            <td style='padding-left:20px;'>{{ snippet.date_lastactivity|timesince }} ago</td>
-            {% if prefs.level > 90 %}<td><a href="/admin/snippet/{{ snippet.key }}" target="_blank"><small><b>i</b></small></a></td>{% endif %}
-        </tr>
-    {% endfor %}
-</table>
+{% for snippet in snippets %}
+<div class="snippet{% if forloop.first %} first{% endif %}">
+    <div class="props">
+    <a class="a-votes" href="/{{ snippet.slug1 }}">
+        <div class="votes"><div class="count">{{ snippet.upvote_count }}</div><div>votes</div></div>
+    </a>
+    <a class="a-comments" href="/{{ snippet.slug1 }}#comments">
+        <div class="comments"><div class="count">{{ snippet.comment_count }}</div><div>comments</div></div>
+    </a>    
+    </div>
+    <div class="info">
+        <h2><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></h2>
+        <div class="activity">{{ snippet.date_lastactivity|timesince }} ago · <a href="/users/">{{ snippet.userprefs.nickname }}</a></div>
+        <div class="tags">{% for tag in snippet.snippettag_set %}{{ tag.tag.name }}, {% endfor %}</div>
+    </div> 
+    <div style="clear:both;"></div>
+</div>
+{% endfor %}
