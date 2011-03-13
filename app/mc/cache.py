@@ -112,3 +112,54 @@ def snippet_comments(snippet, force_update=False):
 
     memcache.set("comments_%s" % snippet.key(), html)
     return html
+
+
+def snippet_list(category, page=1, items=20, force_update=False, clear=False):
+    """Cache of the snippet objects for the listings"""
+    if clear:
+        if category:
+            cats = [category]
+        else:
+            cats = ["/new", "/active", "/popular", "/comments", "/edits"]
+        for cat in cats:
+            memcache.delete("snippets_p%s_%s" % (page, cat))
+            logging.info("delete snippets cache for %s" % cat)
+        return
+
+    snippets = memcache.get("snippets_p%s_%s" % (page, category))
+    if snippets and not force_update:
+        logging.info("returning cached snippets")
+        return snippets
+
+    logging.info("rebuilding cached snippets")
+
+    q = Snippet.all()
+    if category == "/new":
+        q.order("-date_submitted")
+    elif category == "/active":
+        q.order("-date_lastactivity")
+    elif category == "/popular":
+        q.order("-upvote_count")
+    elif category == "/comments":
+        q.filter("date_lastcomment !=", None)
+        q.order("-date_lastcomment")
+    elif category == "/edits":
+        q.filter("proposal_count >", 0)
+        q.order("proposal_count")
+
+    _snippets = q.fetch(items, items * (page - 1))
+
+    snippets = []
+    for s in _snippets:
+        snippets.append({
+            'title': s.title,
+            'slug1': s.slug1,
+            'upvote_count': s.upvote_count,
+            'comment_count': s.comment_count,
+            'date_lastactivity': s.date_lastactivity,
+            'nickname': s.userprefs.nickname,
+            'tags': [tag.tag.name for tag in s.snippettag_set]
+        })
+
+    memcache.set("snippets_p%s_%s" % (page, category), snippets)
+    return snippets

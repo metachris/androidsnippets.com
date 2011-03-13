@@ -142,6 +142,9 @@ class SnippetsNew(webapp.RequestHandler):
         prefs.date_lastactivity = datetime.datetime.now()
         prefs.put()
 
+        # Clear snippet list cache and have next user rebuild it
+        mc.cache.snippet_list(None, clear=True)
+
         # Trigger an most used tags update asynchronously
         taskqueue.add(url='/services/update_tags')
         # Trigger an sitemap update asynchronously

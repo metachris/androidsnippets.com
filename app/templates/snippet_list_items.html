@@ -10,9 +10,10 @@
     </div>
     <div class="info">
         <h2><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></h2>
-        <div class="activity">{{ snippet.date_lastactivity|timesince }} ago · <a href="/users/">{{ snippet.userprefs.nickname }}</a></div>
-        <div class="tags">{% for tag in snippet.snippettag_set %}{{ tag.tag.name }}, {% endfor %}</div>
+        <div class="activity">{{ snippet.date_lastactivity|timesince }} ago · <a href="/users/{{ snippet.nickname }}">{{ snippet.nickname }}</a></div>
+        <div class="tags">{% for tag in snippet.tags %}<a href="/tags/{{ tag }}">{{ tag }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
     </div> 
     <div style="clear:both;"></div>
 </div>
+<div style="clear:both;"></div>
 {% endfor %}

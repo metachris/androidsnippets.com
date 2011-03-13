@@ -61,32 +61,28 @@ class Main(webapp.RequestHandler):
 
         p = decode(self.request.get('p'))
         page = int(p) if p else 1
-        items_per_page = 20
 
-        q = Snippet.all()
+        # Get snippets list from cache
+        #mc.cache.snippet_list(None, clear=True)
+        snippets = mc.cache.snippet_list(category, page)
+
+        # Set title
         if category == "/new":
-            q.order("-date_submitted")
             title = "New Snippets"
         elif category == "/active":
-            q.order("-date_lastactivity")
             title = "Active Snippets"
         elif category == "/popular":
-            q.order("-upvote_count")
             title = "Popular Snippets"
         elif category == "/comments":
-            q.filter("date_lastcomment !=", None)
-            q.order("-date_lastcomment")
             title = "Recently Commented Snippets"
         elif category == "/edits":
-            q.filter("proposal_count >", 0)
-            q.order("proposal_count")
             title = "Snippets with Edits"
-        snippets = q.fetch(items_per_page, items_per_page * (page - 1))
+
+        # Build template
         values = {'prefs': prefs, 'snippets': snippets, 'title': title, \
                 'page': page, 'pages': range(1, page)}
         self.response.out.write(template.render(tdir + \
                 "snippet_list.html", values))
-        return
 
 
 class LegacySnippetView(webapp.RequestHandler):
@@ -242,6 +238,9 @@ class SnippetVote(webapp.RequestHandler):
             # Set last activity on voting user
             prefs.date_lastactivity = datetime.datetime.now()
             prefs.put()
+
+            # Clear snippet list cache and have next user rebuild it
+            mc.cache.snippet_list(None, clear=True)
 
         self.redirect("/%s" % snippet_slug)
 
@@ -454,11 +453,11 @@ class SnippetCommentView(webapp.RequestHandler):
 
         # Check if comment is spam
         is_spam = False
-        if settings.IS_TESTENV:
+        if not settings.IS_TESTENV:
             is_spam = akismet_spamcheck(comment, self.request.remote_addr, \
                 self.request.headers["User-Agent"])
 
-        if not settings.IS_TESTENV and is_spam:
+        if is_spam:
             memcache.incr("ua_comment_spam", initial_value=1)
             logging.warning("= comment: Yup, that's spam alright.")
             c.flagged_as_spam = True
@@ -471,6 +470,9 @@ class SnippetCommentView(webapp.RequestHandler):
             snippet.date_lastactivity = datetime.datetime.now()
             snippet.put()
             url_addon = ""
+
+            # Clear snippet list cache and have next user rebuild it
+            mc.cache.snippet_list(None, clear=True)
 
         # Save comment now
         c.put()

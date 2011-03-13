@@ -1,7 +1,7 @@
 # Replace 'ae-boilerplate' with your application name
 application: android-snippets
 #application: test-221
-version: 1 
+version: 2 
 runtime: python
 api_version: 1
 

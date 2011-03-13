@@ -224,10 +224,14 @@ margin-top: 0px;
 #snippetlist .info {
     float:left;
     padding:2px 5px 2px 10px;
+    width:500px;
 }
 #snippetlist .info .tags {
     padding:2px 5px 2px 0px;
     font-size:11px;
+}
+#snippetlist .info .tags a {
+    color:#666;
 }
 #snippetlist .info .activity {
     float:right;
