@@ -77,6 +77,8 @@
         clip.glue( 'd_clip_button', 'd_clip_container' );
         // $("#ZeroClipboardMovie_1").focus();
         
+        $("pre").each(function() { this.className += " prettyprint"; });
+
         {% if prefs.level > 90 %}
             $(".comment_admin").each(function(){
                 $(this).show();
