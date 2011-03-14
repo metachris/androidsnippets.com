@@ -231,6 +231,8 @@ margin: auto;
     text-align:center;
     padding:5px;
     border-radius:2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
 }
 #snippetlist .props .comments {
     float:left;
