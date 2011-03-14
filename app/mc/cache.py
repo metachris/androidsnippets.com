@@ -123,12 +123,10 @@ def snippet_list(category, page=1, items=20, force_update=False, clear=False):
             cats = ["/new", "/active", "/popular", "/comments", "/edits"]
         for cat in cats:
             memcache.delete("snippets_p%s_%s" % (page, cat))
-            logging.info("delete snippets cache for %s" % cat)
         return
 
     snippets = memcache.get("snippets_p%s_%s" % (page, category))
     if snippets and not force_update:
-        logging.info("returning cached snippets")
         return snippets
 
     logging.info("rebuilding cached snippets")

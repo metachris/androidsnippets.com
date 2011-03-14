@@ -196,6 +196,10 @@ class AdminCommentView(webapp.RequestHandler):
                 "<a ", "<a target='_blank' rel='nofollow' "))
             comment.put()
             logging.info("comment updated by admin")
+
+            # Update cached comments
+            mc.cache.snippet_comments(snippet, True)
+
             self.redirect("/admin/comment/%s" % comment_key)
 
         elif delete:
