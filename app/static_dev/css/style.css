@@ -87,8 +87,8 @@ body, select, input, textarea {
 h1, h2, h3, h4, h5, h6 { font-weight: bold; }
 
 /* Always force a scrollbar in non-IE: */
+html {background-color: #FFF;}
 html { overflow-y: scroll; }
-
 
 /* Accessible focus treatment: people.opera.com/patrickl/experiments/keyboard/test */
 a:hover, a:active { outline: none; }

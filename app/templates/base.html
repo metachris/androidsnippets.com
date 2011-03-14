@@ -1,6 +1,7 @@
 {% extends "_html5.html" %}
 
 {% block header %}
+<div id="header_container">
     <div id="header">
                 <div style="float:right; text-align:right;">
                     <div class='headinfos'>
@@ -38,9 +39,11 @@
                     <a href="/"><img src="/images/logo.png" border="0" height="56" width="243" /></a>
                 </div>
     </div>
+</div>
+
     <div id="subheader">
     <ul>
-        <li><a href="/new" title="New Snippets">New</a></li>
+        <li style="border-left:1px solid lightgray;"><a href="/new" title="New Snippets">New</a></li>
         <li><a href="/active" title="Recently Active Snippets">Active</a></li>
         <li><a href="/popular" title="Most Voted Snippets">Popular</a></li>
         <li><a href="/comments" title="Snippets with Recent Comments">Comments</a></li>
@@ -54,10 +57,11 @@
 {% endblock %}
 
 {% block footer %}
-<div id="footer">
-    {% include "footer.html"%}
+<div id="footer_container">
+    <div id="footer">
+        {% include "footer.html"%}
+    </div>
 </div>
-
 
 
 <div id="feedback-dialog" title="Share your Feedback" style="display:none;">

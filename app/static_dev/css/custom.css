@@ -72,26 +72,43 @@ td, th { padding:2px 5px; text-align:left; }
     background-image: url(/images/ui-icons_0073ea_256x240.png);
 }
 
-#main { padding-top:20px; padding-left:20px; min-height:400px;/* width:800px; margin:auto; */ }
+#main { 
+    padding-top:20px; 
+    padding-left:10px;     
+    padding-right:10px;     
+    min-height:400px;
+    max-width: 960px;
+    margin: auto;
+}
 
-#footer {
+#footer_container {
     margin-top:80px;
     padding:20px 20px 20px 20px;
     color:white;
     background:#30587C;
     text-align:center;
 }
+#footer {
+    width: 960px;
+    margin: auto;
+}
+
 #footer a { color:white; }
 #footer td { padding:4px 30px; }
 #footer ul { margin-top:6px; }
 #footer li { margin-bottom:2px; }
 
-#header {
+#header_container {
     background: #30587C;
-    padding:6px 20px 6px 20px;
+    padding:6px 0px 6px 0px;
     color:white;
 }
 
+#header {
+    min-width: 660px;
+    max-width: 960px;
+    margin: auto;
+}
 #header a {
     color:white;
     text-decoration:none;
@@ -136,11 +153,7 @@ td, th { padding:2px 5px; text-align:left; }
 
 #subheader ul {
     display:block;
-    float:left;
     font-size: 12px;
-font-style: normal;
-font-variant: normal;
-font-weight: normal;
 
 line-height: normal;
 list-style-image: none;
@@ -151,7 +164,10 @@ margin-left: 0px;
 margin-right: 10px;
 margin-top: 0px;
 
+width: 960px;
+margin: auto;
 }
+
 #subheader li {
     font-size:11px;
     float:left;
@@ -179,14 +195,12 @@ margin-top: 0px;
 
 
 #snippetlist {
-    margin:16px 40px 6px 0px;
+    margin:16px 0px 6px 0px;
     color:gray;
-    float:left;
 }
 #snippetlist .snippet {
     border-bottom:1px dotted #CCC;
     padding:12px 0px 12px 0px;
-    float:left;
 }
 #snippetlist .first {
     border-top:1px dotted #CCC;
@@ -205,7 +219,7 @@ margin-top: 0px;
     font-weight:bold;
 }
 #snippetlist .props .votes {
-    background:#75845C;
+    background:#30587C;
     color:white;
     float:left;
     width:40px;
@@ -219,12 +233,11 @@ margin-top: 0px;
     width:48px;
     height:38px;
     text-align:center;
-    padding:5px 5px 5px 10px;
+    padding:5px 15px 5px 10px;
 }
 #snippetlist .info {
-    float:left;
+
     padding:2px 5px 2px 10px;
-    width:500px;
 }
 #snippetlist .info .tags {
     padding:2px 5px 2px 0px;
@@ -248,7 +261,6 @@ margin-top: 0px;
 
 /* Adding New Snippets */
 #snippet_new {
-   margin-top:20px;
 }
 
 #snippet_new .border {
