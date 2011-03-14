@@ -280,7 +280,9 @@ class SnippetEdit(webapp.RequestHandler):
         r.comment = comment
         r.put()
 
-        if prefs.key() == snippet.userprefs.key() and not snippet.has_editors:
+        # and not snippet.has_editors:
+        if prefs.key() == snippet.userprefs.key() or \
+                prefs.level > 70:
             # Auto-merge new revision if edits only by author
             r.merge(merged_by=prefs)
         else:

@@ -8,10 +8,14 @@ body, select, input, textarea {
 
 pre {
   /* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */
-white-space: pre; 
-  padding: 10px 0px 10px 10px;
-  border:1px solid lightgray;  
+    white-space: pre; 
+    padding: 4px;
+    border:1px solid lightgray;
+    margin-bottom:8px;  
 }
+
+code { border:1px solid lightgray; }
+pre code { border:0px solid lightgray; }
 
 a { color: #0073EA; text-decoration:none; }
 a:hover { text-decoration:underline; }

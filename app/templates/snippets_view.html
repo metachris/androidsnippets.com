@@ -134,19 +134,29 @@
     }
     
     function comment_reply(key) {
+        $('#wmd').val("");
+        $("#comment_compose_parent_key").val("");    
         if (key == "0") {
-            {% if prefs %}$("#comment_compose").show();{% else %}show_dialog_signin("/{{ snippet.slug1 }}#comments");{% endif %}
+            {% if prefs %}
+                $("#comment_compose").appendTo("#comment_compose_base");
+                $("#comment_compose").show();
+            {% else %}show_dialog_signin("/{{ snippet.slug1 }}#comments");{% endif %}
         } else {
             {% if prefs %}
-                $("#reply" + key).html($("#comment_compose").html());
-                $("#reply" + key + " #comment_compose_parent_key").val(key);    
-                $("#reply" + key + " .btn_cancel").click(function(){ $("#reply" + key).html(""); });
+                $("#comment_compose").appendTo("#reply" + key);
+                $("#comment_compose").show();
+                $("#comment_compose_parent_key").val(key);    
+                // $("#reply" + key + " .btn_cancel").click(function(){ $("#reply" + key).html(""); });
             {% else %}
                 show_dialog_signin("/{{ snippet.slug1 }}#" + key);
             {% endif %}
         }        
     }
     
+    function comment_hide() {
+        $('#comment_compose').hide();
+    }
+
     function view_plain() {
         var wnd=window.open('','_blank','width=750, height=400, location=0, resizable=1, menubar=0, scrollbars=0');
         wnd.document.write('<textarea style="width:99%;height:99%">'+$("#input_code").html()+'\n// see http://www.androidsnippets.com/{{ snippet.slug1 }}</textarea>');
@@ -304,16 +314,18 @@
 		</div>        
     {% else %}
         {% if prefs %}
+        <div id="comment_compose_base">
         <div id="comment_compose"{% if snippet.comment_count %} style="display:none;"{% endif %}>
         <div style="width:500px; margin-top:20px; margin-bottom:20px;">
             <form action="/{{ snippet.slug1 }}/comment" method="post">
             <textarea id="wmd" name="comment" style="width:500px; border:1px solid lightgray;" rows="6"></textarea>
             <div style="text-align:right; padding-top:6px;">
                 <input type="hidden" name="parent_key" value="" id="comment_compose_parent_key" />
-                {% if snippet.comment_count %}<input type="button" class="btn_small btn_cancel" value="Cancel" onclick="javascript:$('#comment_compose').hide()" />{% endif %}
+                {% if snippet.comment_count %}<input type="button" class="btn_small btn_cancel" value="Cancel" onclick="javascript:comment_hide()" />{% endif %}
                 <input type="submit" class="btn_small" value="Submit" />
             </div>
             </form>
+        </div>
         </div>
         </div>
         {% else %}
