@@ -117,14 +117,17 @@
     }
     
     var upvotes = {{ snippet.upvote_count }};
-    function vote() {
-        $("#vote_count").html("<em>" + (upvotes+1) + "</em>");
-        $("#snippet_points .vote").html('<span class="teaser">voted</span>');
+    var upvoted = {{ voted }};
+    function upvote() {
+        if (upvoted == 1) return;
         $.ajax({
             url: "/{{ snippet.slug1 }}/vote",
             success: function(){
             }
         });
+        $("#upvote_count").html((upvotes+1));
+        $("#upvote").addClass("upvoted");
+        upvoted = true;
     }
 
     function toggle_ui_to_editor() {
@@ -170,91 +173,29 @@
 {% block main %}
 <div id="snippet_view">
 <form action="/{{ snippet.slug1 }}/edit" method="post">
-<div style="height:36px;">
-            <h1>
-                <div style="display:none;" id="edit_title"> <input  name="title" id="title" type="text" style="width:97%;" value="{{ snippet.title }}" /></div>
-                <a id="view_title" href="/{{ snippet.slug1 }}">{{ snippet.title }}</a>
-            </h1>
-
-
+<div id="votebox">
+    <a href="javascript:upvote()" id="upvote"{% if voted %} class="upvoted"{% endif %}></a>
+    <a href="javascript:downvote()" id="downvote"></a>
 </div>
 
-            <div class="sidebar">
-                <div style="text-align:center; float:right; padding-top:2px; margin-right:10px;">
-                    <!--<p style="display:none;"><a href="javascript:follow_snippet()" class="btn_small tip" title="<p>Receive emails on updates and/or comments</p>">Follow</a></p>-->
+<!-- show_dialog_signin('/{{ snippet.slug1 }}/vote')" title="Give this snippet a point!">vote</a> -->
+                        
 
-<div class="addthis_toolbox addthis_default_style" style="margin-bottom:12px; margin-top:4px; margin-left:4px;">
-    <a class="addthis_button_twitter" style="margin:0px 2px;"></a>
-    <a class="addthis_button_facebook" style="margin:0px 2px;"></a>
-    <a class="addthis_button_email" style="margin:0px 2px;"></a>
+<h1>
+    <div style="display:none;" id="edit_title"> <input  name="title" id="title" type="text" style="width:97%;" value="{{ snippet.title }}" /></div>
+    <a id="view_title" href="/{{ snippet.slug1 }}">{{ snippet.title }}</a>
+</h1>
+
+<div class="snippetinfos">
+    <span style="color:#777; font-weight:bold;" id="upvote_count">{{ snippet.upvote_count }}</span> vote{{ snippet.upvote_count|pluralize }} · {{ snippet.comment_count }} comment{{ snippet.comment_count|pluralize }}
 </div>
-                    
-                    <p><a href="javascript:toggle_ui_to_editor()" id="btn_edit" class="btn_small">Edit</a></p>
-                </div>            
-
-                <div id="snippet_points">
-                    <div class="votes" id="vote_count"><em>{{ snippet.upvote_count }}</em></div>
-                    <div class="vote">
-                        {% if voted %}
-                            <span class="teaser">voted</span>
-                        {% else %}
-                            {% if prefs %}
-                            <a class="teaser" href="javascript:vote()" title="Give this snippet a point!">vote</a>
-                            {% else %}                            
-                            <a class="teaser" href="javascript:show_dialog_signin('/{{ snippet.slug1 }}/vote')" title="Give this snippet a point!">vote</a>
-                            {% endif %}
-                        {% endif %}
-                        <!--<div class="teaser">
-                            <a href="" title="Give this snippet a point!"><img src="/images/thumb_up.gif" /></a>
-                            <a href="" title="Give this snippet a point!"><img src="/images/thumb_down.gif" /></a>
-                        </div>-->
-                    </div>
-                </div>
-
-                <div style="clear:both;"></div>
-
-            <div id="editbox" style="display:none;">
-            
-                <div style="text-align:right; padding-top:2px; margin-right:10px;">
-                    <p><a href="javascript:preview()" class="btn_small" title="">Preview</a></p>
-                    <p><input type="submit" id="btn_publish" class="btn_small" value="Submit" /></p>
-                </div>            
-                <div style="clear:both; margin-bottom:20px;"></div>
-                
-                <h3>Edit Comment</h3>
-                <textarea name="comment" rows="7"></textarea>
-            </div>
-            
-                <hr>            
 
 
-                {% if revisions.count %}
-                    <!-- <div style="font-weight:bold; padding-right:6px;">Last edit {{ snippet.date_lastupdate|date }}</div> --> 
-                        <div style="font-weight:bold; text-align:center;">
-                            <a href='javascript:toggle_revisions()'>{{ revisions.count }} edit suggestion{{ revisions.count|pluralize }}</a>
-                        </div>
-                <hr>            
-                {% endif %}                    
-
-                <p title="Compatible Android versions" >SDK: {{ snippet.android_minsdk|android_sdk_to_name }}</p>
-                
+            <div class="sidebar">                
                 <p>Tags: {% for tag in snippet.snippettag_set %}
                     <a href="/tags/{{ tag.tag.name }}" title="{{ tag.tag.snippettag_set.count }} snippets">{{ tag.tag.name }}</a>{% if not forloop.last %}, {% endif %}
                 {% endfor %}</p>
                 </p>
-                 
-                <hr>
-
-                <p><b>Edits</b></p>
-                <p>
-                    {% for rev in accepted_revisions %}
-                        <a href="/users/{{ rev.userprefs.nickname }}" title="{{ rev.userprefs.nickname }}"><img src="http://www.gravatar.com/avatar/{{ rev.userprefs.email_md5 }}?s=20" /></a>
-                    {% endfor %}
-                </p>
-                
-                <hr>
-                
-                <p><a href="#comments">{{ snippet.comment_count }} comment{{ snippet.comment_count|pluralize }}</a></p>
 
                 <hr>            
 
@@ -263,6 +204,7 @@
                     and has <b>{{ snippet.snippetfollow_set.count }}</b> followers.
 
                 <hr>
+
                 <p><b>Related Snippets</b></p>
 .<br>
 .<br>
@@ -275,7 +217,10 @@
                 </p>
             </div>
 
-<div>            
+
+<div id="main_container">            
+
+
             
             <div class="envelope">            
                 <div id="view_description">{{ snippet.description_md|safe }}</div>            

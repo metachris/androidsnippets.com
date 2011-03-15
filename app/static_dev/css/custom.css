@@ -349,6 +349,39 @@ margin: auto;
 }
 
 
+#snippet_view #votebox {
+    margin-left:-34px;
+    margin-top:2px;
+    float:left;
+}
+
+#snippet_view #votebox #upvote {
+    background:#DFEAF4 url(/images/upvote.gif) top left no-repeat;
+    display:block;
+    border-radius:3px;
+    width:20px;
+    height:19px;
+}
+#snippet_view #votebox #upvote.upvoted {
+    background:#30587C url(/images/upvote.gif) -16px left no-repeat;
+    cursor:default;
+}
+#snippet_view #votebox #upvote:hover {
+    background:#30587C url(/images/upvote.gif) -16px left no-repeat;
+}
+
+#snippet_view #votebox #downvote {
+    background:url(/images/downvote.gif) top left no-repeat;
+    display:none;
+    border-radius:3px;
+    width:20px;
+    height:16px;
+}
+#snippet_view #votebox #downvote:hover {
+    background:#DFEAF4 url(/images/downvote.gif) -33px left no-repeat;
+}
+
+
 #snippet_view .sidebar a.ui-button {
    width:80px;
 }
@@ -378,7 +411,13 @@ margin: auto;
           
 }
 
-#snippet_view .sidebar p {
+#snippet_view .sidebar #follow {
+    display:block;
+    width:135px;
+    height:27px;
+    background:url(/images/button_green.png) top left no-repeat;
+    color:#666;
+    font-size:20px;
 }
 
 #dialogtable td, #dialogtable th { text-align:left; padding:2px 6px;  font-size:12px; }
@@ -456,6 +495,19 @@ margin: auto;
 }
 
 #snippet_view #editbox a {
+}
+
+.snippetinfos {
+    padding: 0px 0px 5px 0px; 
+    font-size: 10px; 
+    overflow: hidden; 
+    color: #999;
+}
+
+#main_container {
+    padding-top:10px;
+    border-top:1px dotted lightgray;
+    overflow:hidden;
 }
 
 .envelope {
