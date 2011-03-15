@@ -135,14 +135,12 @@ class SnippetDownloadView(webapp.RequestHandler):
 class SnippetView(webapp.RequestHandler):
     def get(self, snippet_slug):
         memcache.incr("pv_snippet", initial_value=0)
+        memcache.incr("pv_snippet_%s" % snippet_slug, initial_value=0)
         user = users.get_current_user()
         prefs = InternalUser.from_user(user)
 
-        q = Snippet.all()
-        q.filter("slug1 =", snippet_slug)
-        snippet = q.get()
-
-        if not snippet:
+        _snippet = mc.cache.snippet(snippet_slug, force_update=False)
+        if not _snippet:
             memcache.incr("pv_snippet_404", initial_value=0)
             logging.info("404: %s" % snippet_slug)
             # Show snippet-not-found.html
@@ -151,43 +149,22 @@ class SnippetView(webapp.RequestHandler):
                 "snippets_notfound.html", values))
             return
 
-        # Todo: temporarily store in memcache, update with cron
-        snippet.views += 1
-        snippet.save()
-
-        # get all open revisions
-        revisions = SnippetRevision.all()
-        revisions.filter("snippet =", snippet)
-        revisions.filter("merged =", False)
-        revisions.filter("rejected =", False)
-        revisions.order("-date_submitted")
-
-        # but only include merged edits
-        accepted_revisions = SnippetRevision.all()
-        accepted_revisions.filter("snippet =", snippet)
-        accepted_revisions.filter("merged =", True)
-        accepted_revisions.order("date_submitted")
+        # get count for tags on this snippet
+        tags = mc.cache.tags_dict()
+        for tag in _snippet["_tags"]:
+            _snippet["tags"].append((tag, tags[tag]))
 
         # if commented and was marked as spam:
         commentspam = decode(self.request.get('c')) == "m"
 
-        has_voted = False
-        # see if user has voted
-        if user:
-            q1 = db.GqlQuery("SELECT * FROM SnippetUpvote WHERE \
-                    userprefs = :1 and snippet = :2", prefs, snippet)
-            q2 = db.GqlQuery("SELECT * FROM SnippetDownvote WHERE \
-                    userprefs = :1 and snippet = :2", prefs, snippet)
-            has_voted = q1.count() or -q2.count()  # 0 if not, 1, -1
+        # get cached comments
+        comments_html = mc.cache.snippet_comments(_snippet["key"])
 
-        comments_html = mc.cache.snippet_comments(snippet, \
-                decode(self.request.get('r')))
+        # get if this user has already voted
+        has_voted = mc.cache.has_upvoted(prefs, _snippet["key"], force_update=False)
 
-        values = {"prefs": prefs, "snippet": snippet, "revisions": revisions, \
-                'voted': has_voted, 'accepted_revisions': accepted_revisions, \
-                "openedit": self.request.get('edit'), \
-                "comments_html": comments_html, \
-                'commentspam': commentspam}
+        values = {"prefs": prefs, "snippet": _snippet, 'voted': has_voted,
+                "comments_html": comments_html, 'commentspam': commentspam}
 
         self.response.out.write(template.render(tdir + \
             "snippets_view.html", values))
@@ -484,7 +461,7 @@ class SnippetCommentView(webapp.RequestHandler):
             url_addon = "#%s" % c.key()
 
         # Recalculate and cache comments
-        mc.cache.snippet_comments(snippet, True)
+        mc.cache.snippet_comments(snippet.key(), True)
 
         self.redirect("/%s%s" % (snippet_slug, url_addon))
 

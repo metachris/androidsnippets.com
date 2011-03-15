@@ -192,16 +192,15 @@
 
 
             <div class="sidebar">                
-                <p>Tags: {% for tag in snippet.snippettag_set %}
-                    <a href="/tags/{{ tag.tag.name }}" title="{{ tag.tag.snippettag_set.count }} snippets">{{ tag.tag.name }}</a>{% if not forloop.last %}, {% endif %}
+                <p>Tags: {% for tag,cnt in snippet.tags %}
+                    <a href="/tags/{{ tag }}" title="{{ tag }} snippets">{{ tag }}</a>{% if not forloop.last %}, {% endif %}
                 {% endfor %}</p>
                 </p>
 
                 <hr>            
 
                 <p><b>Snippets Stats</b></p>
-                    <p>This snippet has been viewed <b>{{ snippet.views }}</b> times, it was edited <b>{{ snippet.update_count }}</b> times
-                    and has <b>{{ snippet.snippetfollow_set.count }}</b> followers.
+                    <p>This snippet has been viewed <b>{{ snippet.views }}</b> times.
 
                 <hr>
 

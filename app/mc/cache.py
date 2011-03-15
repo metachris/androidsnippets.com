@@ -11,8 +11,8 @@ from models import *
 tdir = os.path.join(os.path.dirname(__file__), '../templates/')
 
 
-def tags_mostused(force_update=False):
-    tags = memcache.get("tags_mostused")
+def tags_dict(force_update=False):
+    tags = memcache.get("tags_dict")
     if tags and not force_update:
         return tags
 
@@ -22,6 +22,17 @@ def tags_mostused(force_update=False):
     for tag in _tags:
         cnt = tag.snippettag_set.count()
         tags[tag.name] = cnt
+
+    memcache.set("tags_dict", tags)
+    return tags
+
+
+def tags_mostused(force_update=False):
+    sorted_tags = memcache.get("tags_mostused")
+    if sorted_tags and not force_update:
+        return sorted_tags
+
+    tags = tags_dict(force_update)
 
     # Now sort and take only top 50
     sorted_tags = sorted(tags.iteritems(), key=itemgetter(1), reverse=True)
@@ -94,11 +105,16 @@ def snippet_comment_recursive(comment, depth=0):
     return html
 
 
-def snippet_comments(snippet, force_update=False):
-    html = memcache.get("comments_%s" % snippet.key())
+def snippet_comments(snippet_key, force_update=False):
+    html = memcache.get("comments_%s" % snippet_key)
     if html and not force_update:
         #logging.info("returning cached comments")
         return html
+
+    # Get snippet from db
+    snippet = Snippet.get(snippet_key)
+    if not snippet:
+        return None
 
     # Recalculate comment tree. Start with parent comments only
     q = db.GqlQuery("SELECT * FROM SnippetComment WHERE snippet = :1 AND \
@@ -110,7 +126,7 @@ def snippet_comments(snippet, force_update=False):
     for comment in q:
         html += snippet_comment_recursive(comment)
 
-    memcache.set("comments_%s" % snippet.key(), html)
+    memcache.set("comments_%s" % snippet_key, html)
     return html
 
 
@@ -161,3 +177,68 @@ def snippet_list(category, page=1, items=20, force_update=False, clear=False):
 
     memcache.set("snippets_p%s_%s" % (page, category), snippets)
     return snippets
+
+
+def snippet(snippet_slug, force_update=False, clear=False):
+    if clear:
+        memcache.delete("snippet_%s" % snippet_slug)
+        return
+
+    _snippet = memcache.get("snippet_%s" % snippet_slug)
+    if _snippet and not force_update:
+        return _snippet
+
+    q = Snippet.all()
+    q.filter("slug1 =", snippet_slug)
+    snippet = q.get()
+    if not snippet:
+        return None
+
+    _snippet = {
+        'key': snippet.key(),
+        "userprefs": snippet.userprefs,
+        "slug1": snippet.slug1,
+        "views": snippet.views,
+        "date_lastactivity": snippet.date_lastactivity,
+        "comment_count": snippet.comment_count,
+        "upvote_count": snippet.upvote_count,
+        "title": snippet.title,
+        "description": snippet.description,
+        "description_md": snippet.description_md,
+        "code": snippet.code,
+        "_tags": [],
+        "tags": [],  # tuples with (tag, count) - completed in handler
+    }
+
+    for tag in snippet.snippettag_set:
+        _snippet["_tags"].append(tag.tag.name)
+
+    memcache.set("snippet_%s" % snippet_slug, _snippet)
+    return _snippet
+
+
+def has_upvoted(prefs, snippet_key, force_update=False, clear=False):
+    if not prefs:
+        return False
+
+    if clear:
+        memcache.delete("snippet_upvote_%s_%s" % (prefs.key(), snippet_key))
+        return
+
+    voted = memcache.get("snippet_upvote_%s_%s" % (prefs.key(), snippet_key))
+    if voted and not force_update:
+        # 'not voted' is memcached as -1
+        return True if voted > 0 else False
+
+    # Get snippet from db
+    snippet = Snippet.get(snippet_key)
+    if not snippet:
+        return None
+
+    # see if user has voted
+    q1 = db.GqlQuery("SELECT * FROM SnippetUpvote WHERE \
+            userprefs = :1 and snippet = :2", prefs, snippet)
+    voted = q1.count()
+
+    memcache.set("snippet_upvote_%s_%s" % (prefs.key(), snippet_key), voted or -1)
+    return voted
