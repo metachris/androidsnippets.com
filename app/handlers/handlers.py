@@ -139,7 +139,7 @@ class SnippetView(webapp.RequestHandler):
         user = users.get_current_user()
         prefs = InternalUser.from_user(user)
 
-        _snippet = mc.cache.snippet(snippet_slug, force_update=False)
+        _snippet = mc.cache.snippet(snippet_slug)
         if not _snippet:
             memcache.incr("pv_snippet_404", initial_value=0)
             logging.info("404: %s" % snippet_slug)
@@ -161,7 +161,7 @@ class SnippetView(webapp.RequestHandler):
         comments_html = mc.cache.snippet_comments(_snippet["key"])
 
         # get if this user has already voted
-        has_voted = mc.cache.has_upvoted(prefs, _snippet["key"], force_update=False)
+        has_voted = mc.cache.has_upvoted(prefs, _snippet["key"])
 
         values = {"prefs": prefs, "snippet": _snippet, 'voted': has_voted,
                 "comments_html": comments_html, 'commentspam': commentspam}
@@ -197,19 +197,24 @@ class SnippetVote(webapp.RequestHandler):
         if not vote:
             # Has not already voted, create the upvote now
             u = SnippetUpvote(userprefs=prefs, snippet=snippet)
-            u.save()
-            snippet.upvote()
-            snippet.save()
+            u.put()
 
-            # +1 rep point for author and all authors of merged edits
+            snippet.upvote()
+            snippet.put()
+
+            snippet.userprefs.points += 1
+            snippet.userprefs.put()
+
+            # +1 rep point all authors of merged edits
             for revision in snippet.snippetrevision_set:
                 if revision.merged:
                     # if the user which votes is an author of an edit,
                     # he doesn't get any rep points.
-                    if revision.userprefs.key() != prefs.key():
+                    if revision.userprefs.key() not in [prefs.key(), \
+                            snippet.userprefs.key()]:
                         logging.info("+1 rep for editor %s" % \
                                 revision.userprefs.nickname)
-                        revision.userprefs.points += 1
+                        revision.userprefs.points_edits += 1
                         revision.userprefs.put()
 
             # Set last activity on voting user
@@ -218,6 +223,8 @@ class SnippetVote(webapp.RequestHandler):
 
             # Clear snippet list cache and have next user rebuild it
             mc.cache.snippet_list(None, clear=True)
+            mc.cache.snippet(snippet.slug1, clear=True)
+            mc.cache.has_upvoted(prefs, snippet.key(), clear=True)
 
         self.redirect("/%s" % snippet_slug)
 

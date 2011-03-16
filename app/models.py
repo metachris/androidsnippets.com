@@ -47,6 +47,7 @@ class InternalUser(db.Model):
 
     # reputation
     points = db.IntegerProperty(default=1)
+    points_edits = db.IntegerProperty(default=0)
 
     # unused
     karma = db.IntegerProperty(default=1)

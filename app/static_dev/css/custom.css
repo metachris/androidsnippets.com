@@ -356,18 +356,18 @@ margin: auto;
 }
 
 #snippet_view #votebox #upvote {
-    background:#DFEAF4 url(/images/upvote.gif) top left no-repeat;
+    background:url(/images/upvote.gif) no-repeat scroll 0 0 #DFEAF4 ;
     display:block;
     border-radius:3px;
     width:20px;
     height:19px;
 }
 #snippet_view #votebox #upvote.upvoted {
-    background:#30587C url(/images/upvote.gif) -16px left no-repeat;
+    background:url(/images/upvote.gif) no-repeat scroll 0 -16px #30587C;
     cursor:default;
 }
 #snippet_view #votebox #upvote:hover {
-    background:#30587C url(/images/upvote.gif) -16px left no-repeat;
+    background:url(/images/upvote.gif) no-repeat scroll 0 -16px #30587C;
 }
 
 #snippet_view #votebox #downvote {
@@ -501,6 +501,9 @@ margin: auto;
     padding: 0px 0px 5px 0px; 
     font-size: 10px; 
     overflow: hidden; 
+    color: #999;
+}
+.snippetinfos a {
     color: #999;
 }
 

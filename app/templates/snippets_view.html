@@ -117,17 +117,23 @@
     }
     
     var upvotes = {{ snippet.upvote_count }};
-    var upvoted = {{ voted }};
+    var upvoted = false;
     function upvote() {
-        if (upvoted == 1) return;
-        $.ajax({
-            url: "/{{ snippet.slug1 }}/vote",
-            success: function(){
-            }
-        });
-        $("#upvote_count").html((upvotes+1));
-        $("#upvote").addClass("upvoted");
-        upvoted = true;
+    {% if prefs %}
+        {% if not voted %}
+            if (upvoted) return;
+            $.ajax({
+                url: "/{{ snippet.slug1 }}/vote",
+                success: function(){
+                }
+            });
+            $("#upvote_count").html((upvotes+1));
+            $("#upvote").addClass("upvoted");
+            upvoted = true;
+        {% endif %}
+    {% else %}
+        show_dialog_signin('/{{ snippet.slug1 }}/vote')
+    {% endif %}    
     }
 
     function toggle_ui_to_editor() {
@@ -174,7 +180,7 @@
 <div id="snippet_view">
 <form action="/{{ snippet.slug1 }}/edit" method="post">
 <div id="votebox">
-    <a href="javascript:upvote()" id="upvote"{% if voted %} class="upvoted"{% endif %}></a>
+    <a href="javascript:upvote()" id="upvote"{% if voted %} class="upvoted" title="You have upvoted this snippet"{% else %} title="Upvote this snippet"{% endif %}></a>
     <a href="javascript:downvote()" id="downvote"></a>
 </div>
 
@@ -187,7 +193,7 @@
 </h1>
 
 <div class="snippetinfos">
-    <span style="color:#777; font-weight:bold;" id="upvote_count">{{ snippet.upvote_count }}</span> vote{{ snippet.upvote_count|pluralize }} · {{ snippet.comment_count }} comment{{ snippet.comment_count|pluralize }}
+    <span style="color:#777; font-weight:bold;" id="upvote_count">{{ snippet.upvote_count }}</span> vote{{ snippet.upvote_count|pluralize }} · <a href="#comments">{{ snippet.comment_count }} comment{{ snippet.comment_count|pluralize }}</a>
 </div>
 
 
@@ -330,7 +336,10 @@
 
 	</form> 
 	<!-- /Simple OpenID Selector -->
+</div>
 {% endif %} 
+
+
 </div>
 
 {% endblock %}

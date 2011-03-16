@@ -145,7 +145,7 @@ def snippet_list(category, page=1, items=20, force_update=False, clear=False):
     if snippets and not force_update:
         return snippets
 
-    logging.info("rebuilding cached snippets")
+    logging.info("rebuilding cached snippet list [%s]" % category)
 
     q = Snippet.all()
     if category == "/new":
@@ -188,6 +188,8 @@ def snippet(snippet_slug, force_update=False, clear=False):
     if _snippet and not force_update:
         return _snippet
 
+    logging.info("recreate snippet")
+
     q = Snippet.all()
     q.filter("slug1 =", snippet_slug)
     snippet = q.get()
@@ -219,17 +221,23 @@ def snippet(snippet_slug, force_update=False, clear=False):
 
 def has_upvoted(prefs, snippet_key, force_update=False, clear=False):
     if not prefs:
+        #logging.info("x1")
         return False
 
     if clear:
         memcache.delete("snippet_upvote_%s_%s" % (prefs.key(), snippet_key))
+        #x = memcache.get("snippet_upvote_%s_%s" % (prefs.key(), snippet_key))
+        #logging.info("x2, %s" % prefs.key())
+        #logging.info("x2,:%s" % x)
         return
 
     voted = memcache.get("snippet_upvote_%s_%s" % (prefs.key(), snippet_key))
     if voted and not force_update:
         # 'not voted' is memcached as -1
+        #logging.info("x3, %s, %s" % (voted, prefs.key()))
         return True if voted > 0 else False
 
+    #logging.info("xx")
     # Get snippet from db
     snippet = Snippet.get(snippet_key)
     if not snippet:
@@ -239,6 +247,7 @@ def has_upvoted(prefs, snippet_key, force_update=False, clear=False):
     q1 = db.GqlQuery("SELECT * FROM SnippetUpvote WHERE \
             userprefs = :1 and snippet = :2", prefs, snippet)
     voted = q1.count()
-
-    memcache.set("snippet_upvote_%s_%s" % (prefs.key(), snippet_key), voted or -1)
+    #logging.info("x voted count: %s" % voted)
+    memcache.set("snippet_upvote_%s_%s" % (prefs.key(), snippet_key), \
+            voted or -1)
     return voted
