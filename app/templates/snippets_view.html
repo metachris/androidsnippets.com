@@ -33,8 +33,6 @@
 
       	openid.init('openid_identifier');
         
-        {% if openedit %}toggle_ui_to_editor();{% endif %}
-        
 	    $("#wmd").wmd({
 	        "preview": true,
 	        "helpLink": "http://stackoverflow.com/editing-help",
@@ -55,6 +53,9 @@
                 $(this).show();
             });        
         {% endif %}
+
+        {% if openedit %}toggle_ui_to_editor();{% endif %}
+        {% if compose_reply %}comment_reply("{{ compose_reply }}");{% endif %}
     });
     
     var dialog_shown = false;
@@ -122,7 +123,9 @@
             {% if prefs %}
                 $("#comment_compose").appendTo("#comment_compose_base");
                 $("#comment_compose").show();
-            {% else %}show_dialog_signin("/{{ snippet.slug1 }}#comments");{% endif %}
+            {% else %}
+                show_dialog_signin("/{{ snippet.slug1 }}?r=0#comments");
+            {% endif %}
         } else {
             {% if prefs %}
                 $("#comment_compose").appendTo("#reply" + key);
@@ -130,7 +133,7 @@
                 $("#comment_compose_parent_key").val(key);    
                 // $("#reply" + key + " .btn_cancel").click(function(){ $("#reply" + key).html(""); });
             {% else %}
-                show_dialog_signin("/{{ snippet.slug1 }}#" + key);
+                show_dialog_signin("/{{ snippet.slug1 }}?r=" + key + "#" + key);
             {% endif %}
         }        
     }
@@ -157,7 +160,7 @@
 
 <table style="width:100%">
 <tr>
-<td valign="top">
+<td valign="top" style="max-width:700px;">
     <h1>
         <div style="display:none;" id="edit_title"> <input  name="title" id="title" type="text" style="width:97%;" value="{{ snippet.title }}" /></div>
         <a id="view_title" href="/{{ snippet.slug1 }}">{{ snippet.title }}</a>
@@ -238,36 +241,38 @@
         <h2>{{ snippet.comment_count }} Comment{{ snippet.comment_count|pluralize }}</h2>
     {% else %}
         <h2>Be the first to comment</h2>
-    {% endif %}
-
-    {% if commentspam %}
-		<div class="ui-state-error ui-corner-all" style="padding: 8px 0px 0px .7em; margin:14px 0px 24px 10px; width:470px;">			 
-			<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
-			Your comment was flagged by akismet. It will be manually reviewed.
-			</p>
-		</div>        
-    {% else %}
-        {% if prefs %}
-        <div id="comment_compose_base">
-        <div id="comment_compose"{% if snippet.comment_count %} style="display:none;"{% endif %}>
-        <div style="width:500px; margin-top:20px; margin-bottom:20px;">
-            <form action="/{{ snippet.slug1 }}/comment" method="post">
-            <textarea id="wmd" name="comment" style="width:500px; border:1px solid lightgray;" rows="6"></textarea>
-            <div style="text-align:right; padding-top:6px;">
-                <input type="hidden" name="parent_key" value="" id="comment_compose_parent_key" />
-                {% if snippet.comment_count %}<input type="button" class="btn_small btn_cancel" value="Cancel" onclick="javascript:comment_hide()" />{% endif %}
-                <input type="submit" class="btn_small" value="Submit" />
-            </div>
-            </form>
-        </div>
-        </div>
-        </div>
-        {% else %}
-            <div style="margin:10px;">
-                <a href="javascript:show_dialog_signin('/{{ snippet.slug1 }}#comments')">Please sign in to comment</a>
+        {% if not prefs %}
+            <div style="margin:20px 30px;">
+                <a href="javascript:show_dialog_signin('/{{ snippet.slug1 }}#comments?r=0')">Sign in with OpenID</a>
             </div>
         {% endif %}
     {% endif %}
+
+    {% if prefs %}
+        {% if commentspam %}
+    		<div class="ui-state-error ui-corner-all" style="padding: 8px 0px 0px .7em; margin:14px 0px 24px 10px; width:470px;">			 
+    			<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span> 
+    			Your comment was flagged by akismet. It will be manually reviewed.
+    			</p>
+    		</div>        
+        {% else %}
+            <div id="comment_compose_base">
+            <div id="comment_compose"{% if snippet.comment_count %} style="display:none;"{% endif %}>
+            <div style="width:500px; margin-top:20px; margin-bottom:20px;">
+                <form action="/{{ snippet.slug1 }}/comment" method="post">
+                <textarea id="wmd" name="comment" style="width:500px; border:1px solid lightgray;" rows="6"></textarea>
+                <div style="text-align:right; padding-top:6px;">
+                    <input type="hidden" name="parent_key" value="" id="comment_compose_parent_key" />
+                    {% if snippet.comment_count %}<input type="button" class="btn_small btn_cancel" value="Cancel" onclick="javascript:comment_hide()" />{% endif %}
+                    <input type="submit" class="btn_small" value="Submit" />
+                </div>
+                </form>
+            </div>
+            </div>
+            </div>
+        {% endif %}
+    {% endif %}
+
     <div id="comment_thread">    
         {{ comments_html|safe }}
     </div>

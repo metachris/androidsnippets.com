@@ -14,6 +14,7 @@ tdir = os.path.join(os.path.dirname(__file__), '../templates/')
 def tags_dict(force_update=False):
     tags = memcache.get("tags_dict")
     if tags and not force_update:
+        # logging.info("return cached tags_dict")
         return tags
 
     # Get all tags, build dict with key=name, val=snippet-count
@@ -32,6 +33,8 @@ def tags_mostused(force_update=False):
     if sorted_tags and not force_update:
         return sorted_tags
 
+    logging.info("recreating tags")
+
     tags = tags_dict(force_update)
 
     # Now sort and take only top 50
@@ -45,7 +48,7 @@ def tags_mostused(force_update=False):
 def sitemap(force_update=False):
     sitemap = memcache.get("sitemap")
     if sitemap and not force_update:
-        logging.info("returning cached sitemap")
+        # logging.info("returning cached sitemap")
         return sitemap
 
     logging.info("recreating sitemap")
@@ -59,7 +62,7 @@ def sitemap(force_update=False):
             "lastmod": snippet.date_lastactivity,
             'priority': 0.9
         })
-    logging.info("urls: %s" % len(urls))
+    # logging.info("urls: %s" % len(urls))
 
     tags = Tag.all()
     tags.order("-date_added")
@@ -69,7 +72,7 @@ def sitemap(force_update=False):
             "lastmod": tag.date_added,
             'priority': 0.7
         })
-    logging.info("urls: %s" % len(urls))
+    # logging.info("urls: %s" % len(urls))
 
     """
     _users = InternalUser.all()
@@ -94,7 +97,7 @@ def snippet_comment_recursive(comment, depth=0):
     if not comment:
         return ""
 
-    logging.info("adding comment, depth %s" % depth)
+    # logging.info("adding comment, depth %s" % depth)
     html = template.render(tdir + "comment.html", {"comment": comment, \
             'depth': depth * 4})
 
@@ -108,13 +111,15 @@ def snippet_comment_recursive(comment, depth=0):
 def snippet_comments(snippet_key, force_update=False):
     html = memcache.get("comments_%s" % snippet_key)
     if html and not force_update:
-        #logging.info("returning cached comments")
-        return html
+        # logging.info("returning cached comments")
+        return html if html != 1 else ""
 
     # Get snippet from db
     snippet = Snippet.get(snippet_key)
     if not snippet:
         return None
+
+    logging.info("recreating comments [%s]" % snippet.slug1)
 
     # Recalculate comment tree. Start with parent comments only
     q = db.GqlQuery("SELECT * FROM SnippetComment WHERE snippet = :1 AND \
@@ -126,7 +131,7 @@ def snippet_comments(snippet_key, force_update=False):
     for comment in q:
         html += snippet_comment_recursive(comment)
 
-    memcache.set("comments_%s" % snippet_key, html)
+    memcache.set("comments_%s" % snippet_key, html if len(html) > 0 else 1)
     return html
 
 
@@ -186,6 +191,7 @@ def snippet(snippet_slug, force_update=False, clear=False):
 
     _snippet = memcache.get("snippet_%s" % snippet_slug)
     if _snippet and not force_update:
+        # logging.info("return cached snippet")
         return _snippet
 
     logging.info("recreate snippet")
@@ -237,7 +243,8 @@ def has_upvoted(prefs, snippet_key, force_update=False, clear=False):
         #logging.info("x3, %s, %s" % (voted, prefs.key()))
         return True if voted > 0 else False
 
-    #logging.info("xx")
+    logging.info("recreate has_upvoted")
+
     # Get snippet from db
     snippet = Snippet.get(snippet_key)
     if not snippet:
@@ -251,3 +258,8 @@ def has_upvoted(prefs, snippet_key, force_update=False, clear=False):
     memcache.set("snippet_upvote_%s_%s" % (prefs.key(), snippet_key), \
             voted or -1)
     return voted
+
+
+def snippets_related(cached_snippet, force_update=False, clear=False):
+    """ Return list of related snippets to this one """
+    tags = cached_snippet["_tags"]

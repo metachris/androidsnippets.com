@@ -156,6 +156,8 @@ class SnippetView(webapp.RequestHandler):
 
         # if commented and was marked as spam:
         commentspam = decode(self.request.get('c')) == "m"
+        compose_reply = decode(self.request.get('r'))
+        #logging.info("compose: %s" % compose_reply)
 
         # get cached comments
         comments_html = mc.cache.snippet_comments(_snippet["key"])
@@ -164,7 +166,8 @@ class SnippetView(webapp.RequestHandler):
         has_voted = mc.cache.has_upvoted(prefs, _snippet["key"])
 
         values = {"prefs": prefs, "snippet": _snippet, 'voted': has_voted,
-                "comments_html": comments_html, 'commentspam': commentspam}
+                "comments_html": comments_html, 'commentspam': commentspam, \
+                "compose_reply": compose_reply}
 
         self.response.out.write(template.render(tdir + \
             "snippets_view.html", values))

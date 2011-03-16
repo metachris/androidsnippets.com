@@ -199,6 +199,7 @@ class AdminCommentView(webapp.RequestHandler):
 
             # Update cached comments
             mc.cache.snippet_comments(comment.snippet.key(), True)
+            mc.cache.snippet(snippet.slug1, force_update=True)
 
             self.redirect("/admin/comment/%s" % comment_key)
 
@@ -220,6 +221,7 @@ class AdminCommentView(webapp.RequestHandler):
             snippet.put()
 
             mc.cache.snippet_comments(snippet.key(), force_update=True)
+            mc.cache.snippet(snippet.slug1, force_update=True)
 
             logging.info("comment deleted by admin")
             self.redirect(redirect_to)
