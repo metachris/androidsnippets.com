@@ -193,20 +193,22 @@
 </h1>
 
 <div class="snippetinfos">
-    <span style="color:#777; font-weight:bold;" id="upvote_count">{{ snippet.upvote_count }}</span> vote{{ snippet.upvote_count|pluralize }} · <a href="#comments">{{ snippet.comment_count }} comment{{ snippet.comment_count|pluralize }}</a>
+    <span style="color:#777; font-weight:bold;" id="upvote_count">{{ snippet.upvote_count }}</span> vote{{ snippet.upvote_count|pluralize }} · 
+    <a href="#comments">{{ snippet.comment_count }} comment{{ snippet.comment_count|pluralize }}</a>
+    {% if prefs.level > 40 %} · <a href="javascript:toggle_ui_to_editor()">edit</a>{% endif %}
 </div>
 
 
-            <div class="sidebar">                
-                <p>Tags: {% for tag,cnt in snippet.tags %}
-                    <a href="/tags/{{ tag }}" title="{{ tag }} snippets">{{ tag }}</a>{% if not forloop.last %}, {% endif %}
-                {% endfor %}</p>
-                </p>
-
-                <hr>            
-
-                <p><b>Snippets Stats</b></p>
-                    <p>This snippet has been viewed <b>{{ snippet.views }}</b> times.
+            <div class="sidebar">
+            <p><b>Tags</b></p>                
+                <div style="clear:both;"></div>
+                {% for tag,cnt in snippet.tags %}
+                <a href="/tags/{{ tag }}" title="{{ cnt }} snippets with tag '{{ tag }}'" class="tag">
+                <span class="cnt">{{ cnt }}</span>
+                {{ tag }}</a>
+                
+                <div style="clear:both;"></div>
+                {% endfor %}
 
                 <hr>
 

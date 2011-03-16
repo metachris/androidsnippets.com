@@ -24,7 +24,7 @@ i, em { font-style:italic; }
 blockquote { margin-left:28px; }
 
 b { font-weight:bold; }
-hr { border-color: #DFDFDF; margin:12px 00px; }
+hr { border-top: 1px dotted lightgray; margin:12px 00px; }
 h1 {
     font-size:20px;
     margin-bottom:2px;   
@@ -351,7 +351,7 @@ margin: auto;
 
 #snippet_view #votebox {
     margin-left:-34px;
-    margin-top:2px;
+    margin-top:5px;
     float:left;
 }
 
@@ -359,15 +359,15 @@ margin: auto;
     background:url(/images/upvote.gif) no-repeat scroll 0 0 #DFEAF4 ;
     display:block;
     border-radius:3px;
-    width:20px;
-    height:19px;
+    width:18px;
+    height:18px;
 }
 #snippet_view #votebox #upvote.upvoted {
-    background:url(/images/upvote.gif) no-repeat scroll 0 -16px #30587C;
+    background:url(/images/upvote.gif) no-repeat scroll -1px -17px #30587C;
     cursor:default;
 }
 #snippet_view #votebox #upvote:hover {
-    background:url(/images/upvote.gif) no-repeat scroll 0 -16px #30587C;
+    background:url(/images/upvote.gif) no-repeat scroll -1px -17px #30587C;
 }
 
 #snippet_view #votebox #downvote {
@@ -381,6 +381,29 @@ margin: auto;
     background:#DFEAF4 url(/images/downvote.gif) -33px left no-repeat;
 }
 
+
+#snippet_view .sidebar .tag {
+    border:1px solid lightgray;
+    width:60px;
+    display:block;
+    float:left;
+    padding:1px 6px;
+    margin:0px 0px 5px 12px;
+    text-decoration:none;
+    color:#0073EA;
+    font-size:11px;
+}
+
+#snippet_view .sidebar .tag:hover {
+    border:1px solid #AAA;    
+}
+
+#snippet_view .sidebar .cnt {
+    float:right;
+    font-size:9px;
+    color:#AAA;
+    padding-top:1px;
+}
 
 #snippet_view .sidebar a.ui-button {
    width:80px;
