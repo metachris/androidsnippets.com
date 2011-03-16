@@ -79,7 +79,6 @@ td, th { padding:2px 5px; text-align:left; }
 #main { 
     padding-top:20px; 
     padding-left:10px;     
-    padding-right:10px;     
     min-height:400px;
     max-width: 960px;
     margin: auto;
@@ -351,7 +350,7 @@ margin: auto;
 
 #snippet_view #votebox {
     margin-left:-34px;
-    margin-top:5px;
+    margin-top:6px;
     float:left;
 }
 
@@ -416,17 +415,10 @@ margin: auto;
 }
 
 #snippet_view .sidebar {
-    float:right; 
     width:170px; 
-    margin-left:30px; 
-    margin-right:20px; 
-/*
-    border-left:1px solid #DFDFDF;
-    border-top:1px solid #DFDFDF;
-    border-bottom:1px solid #DFDFDF;
-    padding-top:12px;
-    padding-bottom:4px;
-*/    
+    min-width:170px; 
+    padding-left:20px; 
+    margin-left:10px; 
     border-top-left-radius:4px;     
     border-bottom-left-radius:4px;
     -moz-border-radius-topleft:4px;
@@ -531,6 +523,7 @@ margin: auto;
 }
 
 #main_container {
+    min-width:520px;
     padding-top:10px;
     border-top:1px dotted lightgray;
     overflow:hidden;

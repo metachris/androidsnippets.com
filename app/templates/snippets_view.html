@@ -1,12 +1,8 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <!--<link href="/css/prettify.css" type="text/css" rel="stylesheet" />-->
-    <!--<link rel="stylesheet" href="/css/highlight.css?v=2">-->
     <link rel="stylesheet" href="/css/tipTip.css?v=2">    
     <link type="text/css" rel="stylesheet" href="/css/openid.css" /> 
-    <!--<link rel="stylesheet" href="/css/datatable.css?v=2">-->    
-    <!--<link href="/css/sh_style.css" type="text/css" rel="stylesheet" />-->
     <link rel="stylesheet" type="text/css" href="/css/wmd.css" />     
 
     <link href="/css/prettify.css?v=2" type="text/css" rel="stylesheet" />
@@ -20,12 +16,6 @@
     <script type="text/javascript" src="/js/libs/openid-en.js"></script>
     <script type="text/javascript" src="/js/libs/prettify.js"></script>
 
-<!--
-    <script src="/js/libs/shCore.js"></script>
-    <script src="/js/libs/shBrushJava.js"></script>
--->
-    <!--<script src="/js/libs/jquery.dataTables.min.js"></script>-->
-
     <script src="/js/libs/showdown.js"></script>
     <script src="/js/libs/wmd.js"></script>
     <script src="/js/libs/jquery-wmd-plugin.js"></script>
@@ -37,28 +27,10 @@
     
     <script>
     $(document).ready(function() {
-        //prettyPrint(); 
-        /*
-        dp.SyntaxHighlighter.ClipboardSwf = '/swf/clipboard.swf';
-        dp.SyntaxHighlighter.HighlightAll('code');
-        */
         prettyPrint();
         
-        // http://shjs.sourceforge.net/
-        // sh_highlightDocument();
-		
         $(".tip").tipTip({defaultPosition:"bottom", maxWidth:"140px"});
 
-        //$("#editbox").animate({marginLeft: parseInt($("#editbox").css('marginLeft'),10) == 0 ? $("#editbox").outerWidth() : 0});                    
-        //$("#dialogtable").dataTable();
-        
-        // showdown
-        /*
-        var converter = new Attacklab.showdown.converter();
-        var html = converter.makeHtml($("#view_description").html().replace("&gt;", ">"));
-        //alert(html);
-        $("#view_description_md").html(html);
-        */
       	openid.init('openid_identifier');
         
         {% if openedit %}toggle_ui_to_editor();{% endif %}
@@ -75,7 +47,6 @@
         clip.setHandCursor( true );
 		clip.addEventListener('complete', function() { alert("The snippet is now in your clipboard."); });        
         clip.glue( 'd_clip_button', 'd_clip_container' );
-        // $("#ZeroClipboardMovie_1").focus();
         
         $("pre").each(function() { this.className += " prettyprint"; });
 
@@ -184,71 +155,80 @@
     <a href="javascript:downvote()" id="downvote"></a>
 </div>
 
-<!-- show_dialog_signin('/{{ snippet.slug1 }}/vote')" title="Give this snippet a point!">vote</a> -->
-                        
+<table style="width:100%">
+<tr>
+<td valign="top">
+    <h1>
+        <div style="display:none;" id="edit_title"> <input  name="title" id="title" type="text" style="width:97%;" value="{{ snippet.title }}" /></div>
+        <a id="view_title" href="/{{ snippet.slug1 }}">{{ snippet.title }}</a>
+    </h1>
+    
+    <div class="snippetinfos">
+        <span style="color:#777; font-weight:bold;" id="upvote_count">{{ snippet.upvote_count }}</span> vote{{ snippet.upvote_count|pluralize }} · 
+        <a href="#comments">{{ snippet.comment_count }} comment{{ snippet.comment_count|pluralize }}</a>
+        {% if prefs.level > 40 %} · <a href="javascript:toggle_ui_to_editor()">edit</a>{% endif %}
+    </div>
+    
+    <div id="main_container">                       
+        <div class="envelope">            
+            <div id="view_description">{{ snippet.description_md|safe }}</div>            
+            <div style=" display:none;" id="edit_description">
+                <div><textarea style="width:98%;" rows="14" id="desc" name="description">{{ snippet.description }}</textarea></div>
+                <div style="padding-left:4px; margin-bottom:4px; color:gray;"></div>
+            </div>            
+        </div>
 
-<h1>
-    <div style="display:none;" id="edit_title"> <input  name="title" id="title" type="text" style="width:97%;" value="{{ snippet.title }}" /></div>
-    <a id="view_title" href="/{{ snippet.slug1 }}">{{ snippet.title }}</a>
-</h1>
-
-<div class="snippetinfos">
-    <span style="color:#777; font-weight:bold;" id="upvote_count">{{ snippet.upvote_count }}</span> vote{{ snippet.upvote_count|pluralize }} · 
-    <a href="#comments">{{ snippet.comment_count }} comment{{ snippet.comment_count|pluralize }}</a>
-    {% if prefs.level > 40 %} · <a href="javascript:toggle_ui_to_editor()">edit</a>{% endif %}
-</div>
-
-
-            <div class="sidebar">
-            <p><b>Tags</b></p>                
-                <div style="clear:both;"></div>
-                {% for tag,cnt in snippet.tags %}
-                <a href="/tags/{{ tag }}" title="{{ cnt }} snippets with tag '{{ tag }}'" class="tag">
-                <span class="cnt">{{ cnt }}</span>
-                {{ tag }}</a>
-                
-                <div style="clear:both;"></div>
-                {% endfor %}
-
-                <hr>
-
-                <p><b>Related Snippets</b></p>
-.<br>
-.<br>
-.<br>
-.<br>
-.<br>
-.<br>
-.<br>
-.<br>
-                </p>
-            </div>
-
-
-<div id="main_container">            
-
-
-            
-            <div class="envelope">            
-                <div id="view_description">{{ snippet.description_md|safe }}</div>            
-                <div style=" display:none;" id="edit_description">
-                    <div><textarea style="width:98%;" rows="14" id="desc" name="description">{{ snippet.description }}</textarea></div>
-                    <div style="padding-left:4px; margin-bottom:4px; color:gray;"></div>
-                </div>            
-            </div>
-
-            <div id="code">
-                <pre name="code" id="code_pre" class="prettyprint"><div id="toolbar" class="nocode"><div style="float:left;"><a href="javascript:view_plain()">raw</a> · </div><div id="d_clip_container" style="position:relative;display:inline; float:left; "><div id="d_clip_button">copy</div></div> · <a href="/{{ snippet.slug1 }}/download">download</a></div>{{ snippet.code|escape }}</pre>
-            </div>
-            <div style="overflow:hidden; display:none;" id="edit_code">
-                <div><textarea style="width:98%; padding:4px;" rows="28" id="input_code" name="code">{{ snippet.code }}</textarea></div>
-                <div style="margin-top:20px;">
-                    <p><a href="javascript:preview()" class="btn_small" title="">Preview</a>
-                    <input type="submit" class="btn_small" value="Submit" /></p>
-                </div>                
+        <div id="code">
+            <pre name="code" id="code_pre" class="prettyprint"><div id="toolbar" class="nocode"><div style="float:left;"><a href="javascript:view_plain()">raw</a> · </div><div id="d_clip_container" style="position:relative;display:inline; float:left; "><div id="d_clip_button">copy</div></div> · <a href="/{{ snippet.slug1 }}/download">download</a></div>{{ snippet.code|escape }}</pre>
+        </div>
+        
+        <div style="overflow:hidden; display:none;" id="edit_code">
+            <div><textarea style="width:98%; padding:4px;" rows="28" id="input_code" name="code">{{ snippet.code }}</textarea></div>
+            <div style="margin-top:20px;">
+                <p><a href="javascript:preview()" class="btn_small" title="">Preview</a>
+                <input type="submit" class="btn_small" value="Submit" /></p>
             </div>                
- 
+        </div>     
+    </div>
+
+</td>
+<td valign="top" style="width:170px;">
+<div class="sidebar">
+    <p>Editors</p>
+    <div style="margin-left:12px;">
+        <a href="/users/{{ snippet.userprefs.nickname }}" title="{{ snippet.userprefs.nickname }}"><img src="http://www.gravatar.com/avatar/{{ snippet.userprefs.email_md5 }}?s=20" /></a>
+    </div>
+    <hr>
+    
+    <p>Tags</p>                
+    <div style="clear:both;"></div>
+    {% for tag,cnt in snippet.tags %}
+    <a href="/tags/{{ tag }}" title="{{ cnt }} snippets with tag '{{ tag }}'" class="tag">
+    <span class="cnt">{{ cnt }}</span>
+    {{ tag }}</a>
+    
+    <div style="clear:both;"></div>
+    {% endfor %}
+
+    <hr>
+    
+    <p>Related Snippets</p>
+    <div style="margin-left:12px;">
+        .<br>
+        .<br>
+        .<br>
+        .<br>
+        .<br>
+        .<br>
+        .<br>
+        .<br>
+    </div>
+
 </div>
+</td>
+</tr>
+</table>
+
 </form>
 
 <div id="comments">
