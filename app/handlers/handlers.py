@@ -462,6 +462,7 @@ class SnippetCommentView(webapp.RequestHandler):
 
             # Clear snippet list cache and have next user rebuild it
             mc.cache.snippet_list(None, clear=True)
+            mc.cache.snippet(snippet.slug1, clear=True)
 
         # Save comment now
         c.put()
