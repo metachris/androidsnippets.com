@@ -202,10 +202,15 @@ margin: auto;
 }
 #snippetlist .snippet {
     border-bottom:1px dotted #CCC;
-    padding:12px 0px 12px 0px;
+    padding:8px 0px 4px 4px;
+    margin-left:4px;
 }
 #snippetlist .first {
     border-top:1px dotted #CCC;
+}
+
+#snippetlist .snippet:hover {
+    background:#fafade; 
 }
 
 #snippetlist .props {
@@ -221,13 +226,12 @@ margin: auto;
     font-weight:bold;
 }
 #snippetlist .props .votes {
-    background:#30587C;
+    background:#3676AF;
     color:white;
     float:left;
-    width:40px;
-    height:38px;
+    width:29px;
     text-align:center;
-    padding:5px;
+    padding:3px 5px 4px 5px;
     border-radius:2px;
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
@@ -382,7 +386,7 @@ margin: auto;
 
 #snippet_view .sidebar .tag {
     border:1px solid lightgray;
-    width:60px;
+    width:80px;
     display:block;
     float:left;
     padding:1px 6px;
