@@ -16,10 +16,22 @@
 		$( ".btn" ).button();
 		$( ".btn_small" ).button();
 
+        tags = [{% for tag,cnt in tags_mostused %}["{{ tag }}", {{ cnt }}]{% if not forloop.last %},{% endif %}{% endfor %}];
 		$("input#autocomplete").autocomplete({
-            source: [{% for tag in tags_mostused %}"{{ tag|first }}"{% if not forloop.last %},{% endif %}{% endfor %}],
-            select: function(event, ui) { _add_tag(ui.item.value); this.value=""; }
-        });
+            source: tags,
+			select: function( event, ui ) {
+    			console.log("select: " + ui.item.value);
+			    _add_tag(ui.item[0]);
+			    $("input#autocomplete").val("");
+				return false;
+			}            
+        })
+		.data( "autocomplete" )._renderItem = function( ul, item ) {
+			return $( "<li></li>" )
+				.data( "item.autocomplete", item )
+				.append( "<div style='float:right; padding:6px 8px 0px 0px; font-size:11px; color:#AAA;'>" + item[1] + " x</div><a>" + item[0] + "</a>" )
+				.appendTo( ul );
+		};
         
         //$(".tip").tipTip({defaultPosition:"right"});
 
@@ -76,7 +88,7 @@
 
 {% block main %}			
 <div id="snippet_new" style="">
-<h1>Add a new snippet</h1> 
+<h1>New Snippet</h1> 
 
 <form action="/add" method="post" id="new_snippet_form" style="margin-top:20px;">
 <table><tr>
