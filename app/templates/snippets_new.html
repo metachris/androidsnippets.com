@@ -130,6 +130,7 @@
                     <span class="tagcnt">{{ cnt }}</span>
                     {{ tag }}
                 </a>
+    <div style="clear:both;"></div>
                 {% endif %}
             {% endfor %}
         
@@ -150,14 +151,15 @@
         <b class="inputinfo">Tags</b><br>
         <input type="text" name="tags" id="autocomplete" class="input" /> 
         <a href="javascript:add_tag()" class="btn_small">Add</a>
-    </div>
-    
-    <div style="margin-top:20px;"><ul id="taglist">
+
+    <div id="taglist" style="margin-top:20px; width: 375px;">
         {% for tag in tags %}
-            <li id="tag{{ forloop.counter0 }}">{{ tag }} <small><a href='javascript:del_tag({{ forloop.counter0 }})'>rm</a></small></li>
+            <a id="tag{{ forloop.counter0 }}" href="javascript:del_tag('{{ tag }}', {{ forloop.counter0 }})" class="tagbtn" title="remove"><span class="tagcnt">x</span>{{ tag }}</a>
             <input type="hidden" name="tag{{ forloop.counter0 }}" id="input_tag{{ forloop.counter0 }}" value="{{ tag }}" />
         {% endfor %}
-    </ul></div>
+    </div>
+    </div>
+    
 
 </td><td class="c2">
 
