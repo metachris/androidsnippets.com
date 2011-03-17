@@ -71,17 +71,20 @@
         hiddenField.style.display = "none";
         document.getElementById("new_snippet_form").appendChild(hiddenField);
 
-        var li = document.createElement("li");
-        li.setAttribute("id", "tag" + tag_cnt);
-        $(li).html(tag + " <small><a href='javascript:del_tag(" + tag_cnt + ")'>rm</a></small>");
-        document.getElementById("taglist").appendChild(li);
-        
+        $("#taglist").html($("#taglist").html() + "<a id=\"tag" + tag_cnt + "\" href=\"javascript:del_tag('" + tag + "', " + tag_cnt + ")\" class=\"tagbtn\" title=\"remove\"><span class=\"tagcnt\">x</span>" + tag + "</a>");
+
         tag_cnt++;
     }
 
-    function del_tag(id) {
+    function del_tag(tag, id) {
         $("#input_tag" + id).val("0");
         $("#tag" + id).remove();
+        //console.log(_tags);
+        idx = _tags.indexOf(tag);
+        //console.log(idx);
+        if (idx > -1)
+            _tags.splice(idx, 1);
+        //console.log(_tags);
     }
     </script>
 {% endblock %}
@@ -120,16 +123,15 @@
     <hr>
     
     <div id="tags_mostused" style="float:right; border-left:1px solid #DDD; padding-left:10px; padding-bottom:10px;">
-        <b class="inputinfo">Often used tags</b><br>
-        <ul style="margin-top:6px;">
+        <p class="inputinfo">Often used tags</p>
             {% for tag,cnt in tags_mostused %}
                 {% if cnt > 2 %}
-                <li><a href="javascript:_add_tag('{{ tag }}')">{{ tag }}</a>
-                <small>({{ cnt }})</small>
-                </li>
+                <a href="javascript:_add_tag('{{ tag }}')" class="tagbtn" title="{{ cnt }} snippets with tag '{{ tag }}'">
+                    <span class="tagcnt">{{ cnt }}</span>
+                    {{ tag }}
+                </a>
                 {% endif %}
             {% endfor %}
-        </ul>
         
     </div>
     

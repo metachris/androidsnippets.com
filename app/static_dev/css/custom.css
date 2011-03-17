@@ -384,10 +384,11 @@ margin: auto;
 }
 
 
-#snippet_view .sidebar .tag {
+#snippet_view .sidebar .tag, .tagbtn {
     border:1px solid lightgray;
     width:80px;
     display:block;
+    clear:both;
     float:left;
     padding:1px 6px;
     margin:0px 0px 5px 12px;
@@ -396,11 +397,12 @@ margin: auto;
     font-size:11px;
 }
 
-#snippet_view .sidebar .tag:hover {
+#snippet_view .sidebar .tag:hover, .tagbtn:hover {
     border:1px solid #AAA;    
+    text-decoration:none;
 }
 
-#snippet_view .sidebar .cnt {
+#snippet_view .sidebar .cnt, .tagcnt {
     float:right;
     font-size:9px;
     color:#AAA;
