@@ -15,15 +15,27 @@
 
 <h1>Tag: <i>{{ tag.name }}</i></h1>
 
-<table class="snippetlist">
-       <tr><th>snippet</th><th><big style="color:green;">+</big></th><th>edits</th><th>last activity</th></tr>    
+<div id="snippetlist">
        {% for tag in tags %}
-        <tr class="{% cycle 'even' 'odd' %}">
-            <td><a href="/{{ tag.snippet.slug1 }}">{{ tag.snippet.title }}</a></td>
-            <td>{{ tag.snippet.upvote_count }}</td>
-            <td>{% if snippet.proposal_count %}{{ snippet.proposal_count }}{% endif %}</td>
-            <td>{{ tag.snippet.date_lastactivity|timesince }} ago</td>
-        </tr>
+<!-- copy from snippet_list_items.html. replace snippet.* with tag.snippet.* --> 
+<div class="snippet{% if forloop.first %} first{% endif %}">
+    <div class="props">
+        <a class="a-votes" href="/{{ tag.snippet.slug1 }}">
+            <div class="votes"><div class="count">{{ tag.snippet.upvote_count }}</div><div>votes</div></div>
+        </a>
+        <a class="a-comments" href="/{{ tag.snippet.slug1 }}#comments">
+            <div class="comments"><div class="count">{{ tag.snippet.comment_count }}</div><div>comments</div></div>
+        </a>    
+    </div>
+    <div class="info">
+        <h2><a href="/{{ tag.snippet.slug1 }}">{{ tag.snippet.title }}</a></h2>
+        <div class="activity">{{ tag.snippet.date_lastactivity|timesince }} ago · <a href="/users/{{ tag.snippet.userprefs.nickname }}">{{ tag.snippet.userprefs.nickname }}</a></div>
+        <div class="tags">{% for tag in tag.snippet.snippettag_set %}<a href="/tags/{{ tag.tag.name }}">{{ tag.tag.name }}</a>{% if not forloop.last %}, {% endif %}{% endfor %}</div>
+    </div> 
+    <div style="clear:both;"></div>
+</div>
+<div style="clear:both;"></div>
+
     {% endfor %}
-</table>
+</div>
 {% endblock %}
