@@ -1,6 +1,7 @@
 from google.appengine.ext import db
 
 from google.appengine.api import users
+from google.appengine.api import memcache
 
 import logging
 import datetime
@@ -66,11 +67,42 @@ class InternalUser(db.Model):
     legacy_email = db.StringProperty()
     legacy_federated_identity = db.StringProperty()
 
+    def clear_cache(self):
+        logging.info("clear cached prefs")
+        if self.federated_identity and self.federated_provider:
+            key = "prefs_f_%s%s" % (self.federated_identity, \
+                    self.federated_provider)
+        elif self.google_user_id:
+            key = "prefs_g_%s" % self.google_user_id
+        memcache.delete(key)
+
     @staticmethod
-    def from_user(user):
+    def mcfrom_user(user):
+        """Return InternalUser object -- from memcache if possible"""
         if not user:
             return None
 
+        if user.federated_identity() and user.federated_provider():
+            key = "prefs_f_%s%s" % (user.federated_identity(), \
+                    user.federated_provider())
+        elif user.user_id():
+            key = "prefs_g_%s" % user.user_id()
+
+        #logging.info("k: %s" % key)
+
+        prefs = memcache.get(key)
+        if prefs:
+            #logging.info("return cached prefs k: %s" % key)
+            return prefs
+
+        #logging.info("rebuild k: %s" % key)
+        # cache prefs now
+        userprefs = InternalUser._from_user(user)
+        memcache.set(key, userprefs)
+        return userprefs
+
+    @staticmethod
+    def from_user(user):
         if not user.federated_identity():
             logging.warning("_ user has no fed id [%s]" % user)
             #return

@@ -129,7 +129,7 @@ class ProfileView(webapp.RequestHandler):
             about = decode(self.request.get('about'))
 
             url_addon = ""
-            if nickname and nickname != prefs.nickname and len(nickname) > 3:
+            if nickname and nickname != prefs.nickname and len(nickname) > 2:
                 # check if nick is still available, if so then update
                 q = InternalUser.all()
                 q.filter("nickname =", nickname)
@@ -200,6 +200,7 @@ class ProfileView(webapp.RequestHandler):
 
             if url_addon:
                 prefs.put()
+                prefs.clear_cache()
                 url_addon = "%s%s" % ("?x=1", url_addon)
 
             self.redirect("/profile%s" % url_addon)
