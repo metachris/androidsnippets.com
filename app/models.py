@@ -103,6 +103,9 @@ class InternalUser(db.Model):
 
     @staticmethod
     def from_user(user):
+        if not user:
+            return None
+
         if not user.federated_identity():
             logging.warning("_ user has no fed id [%s]" % user)
             #return
