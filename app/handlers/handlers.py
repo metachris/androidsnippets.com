@@ -152,6 +152,8 @@ class SnippetView(webapp.RequestHandler):
         # get count for tags on this snippet
         tags = mc.cache.tags_dict()
         for tag in _snippet["_tags"]:
+            if not tag in tags:
+                tags[tag] = 1
             _snippet["tags"].append((tag, tags[tag]))
 
         # if commented and was marked as spam:
