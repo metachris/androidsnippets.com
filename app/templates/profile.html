@@ -1,17 +1,10 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="/css/jquery-ui-flick.css?v=2">    
-    <link rel="stylesheet" type="text/css" href="/css/wmd.css" />
     <title>My Profile - Android Snippets</title>
 {% endblock %}
 
 {% block scripts %}
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
-    <script src="/js/libs/wmd.js"></script>
-    <script src="/js/libs/jquery-wmd-plugin.js"></script>
-    <script src="/js/libs/showdown.js"></script>    
-
     <script>
     $(function() {
         $("#tabs").tabs({% if tab2 %}{ selected:1 }{% endif %});
