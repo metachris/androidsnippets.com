@@ -1,0 +1,63 @@
+<div id="footer_container">
+    <div id="footer">
+
+
+<table style=''><tr>
+    <td style="padding:4px 30px;">
+        <b>Snippets</b>
+        <ul>
+            <li><a href="/comments">Recently Commented</a></li>
+            <li><a href="/new">Recently Added</a></li>
+            <li><a href="/active">Active Snippets</a></li>
+            <li><a href="/tags">Tag Cloud</a></li>
+        </ul>
+    </td>
+
+    <td style="padding:4px 30px;">
+        <b>About</b>
+        <ul>
+            <li><a href="javascript:feedback()">Feedback</a></li>
+            <li><a href="/about">About this website</a></li>
+            <li><a href="http://twitter.com/#!/androidsnippets">Follow us on twitter</a></li>
+            <li><a href="http://feeds.feedburner.com/AndroidSnippetsLatest">Feed of New Snippets</a></li>
+        </ul>
+    </td>
+    <td style="padding:13px 75px 0px 40px;">
+    <a href="http://twitter.com/androidsnippets" target="_blank">
+        <img src="/images/twitter_us.png" />
+    </a>
+        <!-- <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://www.androidsnippets.com/" data-text="Android Snippets, a community driven website to share code snippets for the Android platform" data-count="vertical" data-via="androidsnippets">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script> -->
+    </td>
+    <td style="padding: 18px 0px 0px 0px;">
+        <div id="fb-root">
+            <script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:like href="http://www.androidsnippets.com/" layout="box_count" show_faces="true" width="150" font=""></fb:like>
+        </div>
+    </td>
+</tr></table>
+
+<div id="feedback-dialog" title="Share your Feedback" style="display:none;">
+	<div id='feedback-dialog-content'>
+		<span class="ui-icon ui-icon-comment" style="float:left; margin:0 7px 240px 0;"></span>
+            <textarea name="msg" rows="10" cols="50" name="feedback_text" id="feedback_text"></textarea>
+        </p>
+        <p>
+        {% if not prefs %}Your Email:<br>
+        <input type="text" name="feedback_email" id='feedback_email' />
+        {% endif %}
+        </p>
+        <p style='margin-top:14px;'><input type="button" class='btn' value='submit' onclick='feedback_submit()' />
+        </p>
+	</div>
+    <div style='padding:40px 0px 40px 90px;' id='feedback-dialog-content-wait'>
+        <img src='/images/ajax-loader.gif' />
+    </div>
+	<div style='padding:40px 0px 40px 30px; display:none;' id='feedback-dialog-content-postsubmit'>
+	   <span class='ui-icon ui-icon-star' style='float:left; margin:0 7px 20px 0;'></span>
+	   Thank you for sharing!
+	   <p style='margin-top:30px; padding-left:30px;'><input type='button' class='btn' value='close' onclick="$('#feedback-dialog').dialog('close');"/></p>
+   </div>
+</div>
+
+
+    </div>
+</div>
