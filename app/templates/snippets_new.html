@@ -5,9 +5,6 @@
 {% endblock %}
 
 {% block scripts %}    
-    <script src="/js/libs/wmd.js"></script>
-    <script src="/js/libs/jquery-wmd-plugin.js"></script>
-    <script src="/js/libs/showdown.js"></script>    
     <script>
     var _tags = Array({% for tag in tags %}"{{ tag }}"{% if not forloop.last %},{% endif %}{% endfor %});
     $(document).ready(function() {
