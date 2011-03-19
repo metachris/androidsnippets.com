@@ -1,5 +1,5 @@
 *.pyc
 app/settings.py
-app/templates/_footer.html
-app/html5-boilerplate/publish/*
-app/html5-boilerplate/build/config/buildinfo.properties
+app/templates/_footer_scripts.html
+app/static_dev/publish/*
+app/static_dev/build/config/buildinfo.properties
