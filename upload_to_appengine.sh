@@ -35,12 +35,24 @@ function build {
   cd "$DIR"
 }
 
+# Check if everything has been committed to git
+X=$( git status --untracked-files=no | grep "Changed but not updated" )
+if [ -n "$X" ]; then
+  read -p "There are uncommitted changes. Proceed? [yN]" yn
+    case $yn in
+      [Yy]* ) ;;
+      [Nn]* ) exit 0;;
+  esac
+fi
+
+
 read -p "Build the project with 'ant minify' now? [yN]" yn
   case $yn in
     [Yy]* ) build;;
     [Nn]* ) break;;
 esac
 
+# Update /static to prod env
 static_toprod
 
 read -p "You can now test the latest build. Do you wish to upload this version? [yN]" yn
@@ -49,6 +61,7 @@ read -p "You can now test the latest build. Do you wish to upload this version? 
     [Nn]* ) break;;
 esac
 
+# Revert /static to dev env
 static_revert
 
-
+ 
