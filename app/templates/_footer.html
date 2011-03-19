@@ -38,7 +38,7 @@
     </div>
 </div>
 
-<div id="feedback-dialog" title="Share your Feedback" style="display:none;">
+<div id="feedback-dialog" title="Feedback" style="display:none;">
 	<div id='feedback-dialog-content'>
 		<span class="ui-icon ui-icon-comment" style="float:left; margin:0 7px 240px 0;"></span>
             <textarea name="msg" rows="10" cols="50" name="feedback_text" id="feedback_text"></textarea>
@@ -67,7 +67,7 @@
 
 
 {% if not prefs %}
-<div id="dialog_signin" title="Sign In" style="display:none; padding:20px;">
+<div id="dialog_signin" title="Sign In" style="padding:20px;">
 	<!-- Simple OpenID Selector --> 
 	<form action="/login" method="get" id="openid_form"> 
 		<input type="hidden" name="action" value="verify" />

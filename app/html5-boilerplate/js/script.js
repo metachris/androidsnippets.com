@@ -6,11 +6,19 @@ function init() {
 
     $("#dialog_signin").dialog({
         width:600, 
-        position:"center",
         beforeClose: function(event, ui) { dialog_siginin_shown = false; },
-        autoOpen: false  
+        autoOpen: false,
+        modal: true,
+        resizable:false,
+        title: "Please sign in to comment"
     });
-	$( "#dialog_signin:ui-dialog" ).dialog( "destroy" );
+
+	$("#feedback-dialog").dialog({
+		modal: true,
+        autoOpen: false,
+        width:500, 
+        resizable:false
+	});
 }
 
 function show_dialog_signin(continue_to) {
@@ -116,18 +124,11 @@ function _follow() {
 
 
 function feedback() {
-	// a workaround for a flaw in the demo system (http://dev.jqueryui.com/ticket/4375), ignore!
-	$( "#dialog:ui-dialog" ).dialog( "destroy" );
-
     $("#feedback-dialog-content").show();
     $("#feedback-dialog-content-wait").hide();
     $("#feedback-dialog-content-postsubmit").hide();        
 
-	$( "#feedback-dialog" ).dialog({
-		modal: true,
-        position:["center", 160], 
-        width:500, 
-	});
+	$("#feedback-dialog").dialog("open");
 }
 
 function feedback_submit() {

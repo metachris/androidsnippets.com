@@ -6,7 +6,7 @@ body, select, input, textarea {
 }
 
 html, body { 
-    height:100%; 
+
     background-color:#30587C; 
     overflow:auto; 
 }
