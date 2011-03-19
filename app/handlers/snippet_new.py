@@ -144,6 +144,7 @@ class SnippetsNew(webapp.RequestHandler):
 
         # Clear snippet list cache and have next user rebuild it
         mc.cache.snippet_list(None, clear=True)
+        mc.cache.tags_mostused(force_update=True)
 
         # Trigger an most used tags update asynchronously
         taskqueue.add(url='/services/update_tags')
