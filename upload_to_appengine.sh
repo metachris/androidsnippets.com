@@ -5,10 +5,10 @@ DIR=$( pwd )
 function static_revert {
   # Set /static back to dev environment
   set -e
-  echo "Setting /static back to /html5-boilerplate"
+  echo "Setting /static back to /static_dev"
   cd app
   rm static
-  ln -s html5-boilerplate static
+  ln -s static_dev static
   cd "$DIR"
   set +e
 }
@@ -16,10 +16,10 @@ function static_revert {
 function static_toprod {
   # Set build script results as /static
   set -e
-  echo "Setting /static to /html5-boilerplate/publish"
+  echo "Setting /static to /static_dev/publish"
   cd app
   rm static
-  ln -s html5-boilerplate/publish static
+  ln -s static_dev/publish static
   cd "$DIR"
   set +e
 }
