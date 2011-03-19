@@ -504,9 +504,9 @@ class AboutView(webapp.RequestHandler):
                 sender = decode(self.request.get('email'))
             logging.info("feedback '%s' from %s" % (msg, sender))
             message = mail.EmailMessage()
-            message.sender = "Android Snippets <chris@androidsnippets.com>"
-            message.to = "chris@metachris.org"
-            message.subject = "Android snippets feedback form"
+            message.sender = "Android Snippets <hello@androidsnippets.com>"
+            message.to = "chris@androidsnippets.com"
+            message.subject = "Android snippets feedback"
             message.body = "Feedback from: %s:\n\n%s" % (sender, msg)
             message.send()
 
