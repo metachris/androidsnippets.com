@@ -48,16 +48,6 @@
             dialog_shown = true;
         }
     }
-
-    function show_dialog_signin(continue_to) {
-        $("#continue_to").val(continue_to);
-        $("#dialog_signin").dialog({
-            position:["center", 160], 
-            width:600, 
-            beforeClose: function(event, ui) { dialog_siginin_shown = false; },
-      
-        });
-    }
         
     var editWindow;
     function show_edit(id) {        
@@ -275,38 +265,6 @@
 	   </table>
 	</p>
 </div>
-
-{% if not prefs %}
-<div id="dialog_signin" title="Sign In" style="display:none; padding:20px;">
-	<!-- Simple OpenID Selector --> 
-	<form action="/login" method="get" id="openid_form"> 
-		<input type="hidden" name="action" value="verify" />
-		<input type="hidden" name="continue" id="continue_to" value="/{{ snippet.slug1 }}/vote" />
-		<fieldset> 
-			<div id="openid_choice"> 
-				<p>If you have an account on any of these sites, click to log in with it:</p> 
-				<div id="openid_btns"></div> 
-			</div> 
-			<div id="openid_input_area"> 
-				<input id="openid_identifier" name="openid_identifier" type="text" value="http://" /> 
-				<input id="openid_submit" type="submit" value="Sign-In"/> 
-			</div> 
-			<noscript> 
-				<p>OpenID is service that allows you to log-on to many different websites using a single indentity.
-				Find out <a href="http://openid.net/what/">more about OpenID</a> and <a href="http://openid.net/get/">how to get an OpenID enabled account</a>.</p>
-			</noscript> 
-		</fieldset>
-		<div style="padding:10px 0px 0px 0px;">If you don’t already have an account on any of the above: </div> 
-		<div style="padding:12px 0px 0px 20px; font-size:14px;"><a href="https://www.myopenid.com/signup?affiliate_id=67003&openid.sreg.optional=email,nickname">Click here to sign up with myOpenID</a></div> 
-        
-		<div style="padding:20px 0px 0px 0px;">If you've forgotten or lost your login information: </div> 
-		<div style="padding:12px 0px 10px 20px; font-size:14px;"><a href="/account-recovery">Click here to recover your account</a></div> 
-
-	</form> 
-	<!-- /Simple OpenID Selector -->
-</div>
-{% endif %} 
-
 
 </div>
 

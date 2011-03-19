@@ -3,7 +3,22 @@ function init() {
 
 	$(".btn").button();
 	$(".btn_small").button();
+
+    $("#dialog_signin").dialog({
+        width:600, 
+        position:"center",
+        beforeClose: function(event, ui) { dialog_siginin_shown = false; },
+        autoOpen: false  
+    });
+	$( "#dialog_signin:ui-dialog" ).dialog( "destroy" );
 }
+
+function show_dialog_signin(continue_to) {
+    $("#continue_to").val(continue_to);
+    $("#dialog_signin").dialog("open");
+}
+
+
 
 var is_editor = false; // toggled true <-> false
 var is_wmd = false;    // set to true only once
