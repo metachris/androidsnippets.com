@@ -1,18 +1,13 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <link href="/css/prettify.css?v=2" type="text/css" rel="stylesheet" />    
 {% endblock %}
 
 {% block scripts %}
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="/js/libs/prettify.js"></script>
-
     <script>
-    $(document).ready(function() {
-        prettyPrint(); 
-    });
-
+        $(document).ready(function() {
+            prettyPrint(); 
+        });
     </script>
 {% endblock %}
 
