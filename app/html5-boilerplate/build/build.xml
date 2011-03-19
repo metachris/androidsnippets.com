@@ -581,6 +581,11 @@
         <replaceregexp match="&lt;!-- scripts concatenated [\d\w\s\W]*?!-- end ((scripts)|(concatenated and minified scripts))--&gt;" replace="&lt;script src='/${dir.js}/scripts-${build.number}.min.js\'&gt;&lt;/script&gt;" flags="m">
             <fileset dir="./${dir.publish}" includes="${page-files}"/>
         </replaceregexp>
+
+        <replaceregexp match="&lt;!-- styles for development[\d\w\s\W]*?!-- end styles for development --&gt;" replace="" flags="m">
+            <fileset dir="./${dir.publish}" includes="${page-files}"/>
+        </replaceregexp>
+
         <!--[! use comments like this one to avoid having them get minified -->
     </target>
     

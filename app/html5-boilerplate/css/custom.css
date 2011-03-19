@@ -1,10 +1,17 @@
-html, body { height:100%; background-color:#30587C; overflow:auto; }
-#container { background:white; }
-
 body, select, input, textarea {
   /* #444 looks better than black: twitter.com/H_FJ/statuses/11800719859 */
   color: #333;
+  /*font-family: Georgia, serif;*/
+  font-family: 'Helvetica Neue', Helvetica, Arial, default;
 }
+
+html, body { 
+    height:100%; 
+    background-color:#30587C; 
+    overflow:auto; 
+}
+
+#container { background:white; }
 
 pre {
   /* www.pathf.com/blogs/2008/05/formatting-quoted-code-in-blog-posts-css21-white-space-pre-wrap/ */

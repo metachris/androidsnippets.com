@@ -148,22 +148,5 @@ button {  width: auto; overflow: visible; }
  * You might tweak these..
  */
 
-body, select, input, textarea {
-  /* #444 looks better than black: twitter.com/H_FJ/statuses/11800719859 */
-  color: #444;
-  /* Set your base font here, to apply evenly */
-  /* font-family: Georgia, serif;  */
-}
-
 /* Headers (h1, h2, etc) have no default font-size or margin; define those yourself */
 h1, h2, h3, h4, h5, h6 { font-weight: bold; }
-
-a, a:active { color: #607890; }
-a:visited { color: #0060BF; }
-a:hover { color: #036; }
-
-
-/**
- * Primary styles
- *
- */
