@@ -294,14 +294,18 @@ def _find_snippets_with_related_tags(item, _snippets):
 
 def snippets_build_relations(memcache_snippets=True):
     """ Creates the relations for all snippet, and optionally memcaches
-        snippets themselves """
+        snippets themselves. updated via:
+
+        - /admin/rels
+        - new snippet submission
+    """
     RELATED_COUNT = 6
 
     # 1. build a dict of all snippets
     items = []
+    cnt = 0
     for snippet in Snippet.all():
         item = _snippet_build(snippet)
-        cnt = 0
         if memcache_snippets:
             memcache.set("snippet_%s" % item['slug1'], item)
             cnt += 1

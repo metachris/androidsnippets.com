@@ -146,10 +146,10 @@ class SnippetsNew(webapp.RequestHandler):
         mc.cache.snippet_list(None, clear=True)
         mc.cache.tags_mostused(force_update=True)
 
-        # Trigger an most used tags update asynchronously
+        # Trigger background tasks
         taskqueue.add(url='/services/update_tags')
-        # Trigger an sitemap update asynchronously
         taskqueue.add(url='/services/update_sitemap')
+        taskqueue.add(url='/services/update_relations')
 
         # Prepare Tweet
         if not settings.IS_TESTENV:

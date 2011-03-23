@@ -188,6 +188,9 @@
     
     <p>Related Snippets</p>
     <div style="margin-left:12px;">
+    {% if not related_snippets %}
+        <span style="color:gray;">Currently being generated...</span>
+    {% endif %}
     {% for cnt, s in related_snippets %}
         <p><a href="/{{ s.slug1 }}">{{ s.title }}</a></p>
     {% endfor %}
