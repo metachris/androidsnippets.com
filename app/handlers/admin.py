@@ -225,3 +225,8 @@ class AdminCommentView(webapp.RequestHandler):
 
             logging.info("comment deleted by admin")
             self.redirect(redirect_to)
+
+
+class AdminRebuildRelations(webapp.RequestHandler):
+    def get(self):
+        mc.cache.snippets_build_relations()

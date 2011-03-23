@@ -188,14 +188,9 @@
     
     <p>Related Snippets</p>
     <div style="margin-left:12px;">
-        .<br>
-        .<br>
-        .<br>
-        .<br>
-        .<br>
-        .<br>
-        .<br>
-        .<br>
+    {% for cnt, s in related_snippets %}
+        <p><a href="/{{ s.slug1 }}">{{ s.title }}</a></p>
+    {% endfor %}
     </div>
 
 </div>

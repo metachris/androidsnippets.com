@@ -167,9 +167,12 @@ class SnippetView(webapp.RequestHandler):
         # get if this user has already voted
         has_voted = mc.cache.has_upvoted(prefs, _snippet["key"])
 
+        # related snippets
+        related = mc.cache.snippets_related(snippet_slug)
+
         values = {"prefs": prefs, "snippet": _snippet, 'voted': has_voted,
                 "comments_html": comments_html, 'commentspam': commentspam, \
-                "compose_reply": compose_reply}
+                "compose_reply": compose_reply, 'related_snippets': related}
 
         self.response.out.write(template.render(tdir + \
             "snippets_view.html", values))

@@ -199,6 +199,13 @@ def snippet(snippet_slug, force_update=False, clear=False):
     q = Snippet.all()
     q.filter("slug1 =", snippet_slug)
     snippet = q.get()
+
+    _snippet = _snippet_build(snippet)
+    memcache.set("snippet_%s" % snippet_slug, _snippet)
+    return _snippet
+
+
+def _snippet_build(snippet):
     if not snippet:
         return None
 
@@ -221,7 +228,6 @@ def snippet(snippet_slug, force_update=False, clear=False):
     for tag in snippet.snippettag_set:
         _snippet["_tags"].append(tag.tag.name)
 
-    memcache.set("snippet_%s" % snippet_slug, _snippet)
     return _snippet
 
 
@@ -243,7 +249,7 @@ def has_upvoted(prefs, snippet_key, force_update=False, clear=False):
         #logging.info("x3, %s, %s" % (voted, prefs.key()))
         return True if voted > 0 else False
 
-    logging.info("recreate has_upvoted")
+    #logging.info("recreate has_upvoted")
 
     # Get snippet from db
     snippet = Snippet.get(snippet_key)
@@ -260,6 +266,57 @@ def has_upvoted(prefs, snippet_key, force_update=False, clear=False):
     return voted
 
 
-def snippets_related(cached_snippet, force_update=False, clear=False):
-    """ Return list of related snippets to this one """
-    tags = cached_snippet["_tags"]
+def snippets_related(snippet_slug):
+    """ Return list of related snippets to this one. Updated via /admin/rel """
+    #logging.info("try to get related snippets for %s" % snippet_slug)
+    c = memcache.get("_related_snippets_%s" % snippet_slug)
+    #logging.info("- %s" % c)
+    return c
+
+
+def _find_snippets_with_related_tags(item, _snippets):
+    """ Static dict representation of the snippets """
+    out = []  # ordered list of tuples (sim_cnt, _snippet)
+    for comp_item in _snippets:
+        if item == comp_item:
+            continue
+
+        score = 0  # number of common tags
+        for tag in item['_tags']:
+            if tag in comp_item['_tags']:
+                score += 1
+
+        out.append((score, comp_item))
+
+    out.sort(reverse=True)
+    return out
+
+
+def snippets_build_relations(memcache_snippets=True):
+    """ Creates the relations for all snippet, and optionally memcaches
+        snippets themselves """
+    RELATED_COUNT = 6
+
+    # 1. build a dict of all snippets
+    items = []
+    for snippet in Snippet.all():
+        item = _snippet_build(snippet)
+        cnt = 0
+        if memcache_snippets:
+            memcache.set("snippet_%s" % item['slug1'], item)
+            cnt += 1
+        items.append(item)
+
+    logging.info("admin-build-rel: memcached %s snippets" % cnt)
+    logging.info("%s snippets in list for searching relations" % len(items))
+
+    # 2. for each snippet, find the snippets with most similar tags
+    for snippet in items:
+        related = _find_snippets_with_related_tags(snippet, items)
+        #logging.info("test: %s" % snippet["_tags"])
+        #for r in related:
+        #    logging.info("- cnt: %s, tags: %s" % (r[0], r[1]['_tags']))
+        memcache.set("_related_snippets_%s" % snippet['slug1'], \
+                related[:RELATED_COUNT])
+
+    logging.info("set relations for %s snippets" % len(items))
