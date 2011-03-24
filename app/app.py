@@ -41,6 +41,7 @@ urls = [
     (r'/admin/rels', AdminRebuildRelations),
     (r'/admin/snippet/([-\w]+)', AdminSnippetView),
     (r'/admin/comment/([-\w]+)', AdminCommentView),
+    (r'/admin/mapsnippets_post', AdminMapSnippets),
     (r'/admin(.*)', AdminView),
 
     (r'/feeds/(.*)', FeedView),

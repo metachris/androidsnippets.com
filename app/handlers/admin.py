@@ -231,3 +231,66 @@ class AdminCommentView(webapp.RequestHandler):
 class AdminRebuildRelations(webapp.RequestHandler):
     def get(self):
         mc.cache.snippets_build_relations()
+
+
+class AdminMapSnippets(webapp.RequestHandler):
+    def get(self):
+        self.response.out.write("""<h2>Admin - Map Snippets</h2>
+            <form action="/admin/mapsnippets_post" method="post">
+                <p>From Username: <input type="text" name="n1" /></p>
+                <p>To Username: <input type="text" name="n2" /></p>
+            <input type='submit' name='update' value='check users' />
+            </form>
+        """)
+
+    def post(self):
+        n1 = decode(self.request.get('n1'))
+        n2 = decode(self.request.get('n2'))
+        if not n1 or not n2:
+            self.response.out.write("""username not found""")
+            return
+
+        u1 = InternalUser.all().filter("nickname =", n1).get()
+        u2 = InternalUser.all().filter("nickname =", n2).get()
+
+        action = decode(self.request.get('action'))
+        if action == "do":
+            # move snippets
+            cnt1 = 0
+            for snippet in u1.snippet_set:
+                snippet.userprefs = u2
+                snippet.put()
+                cnt1 += 1
+
+            cnt1_2 = 0
+            for rev in u1.snippetrevision_set:
+                rev.userprefs = u2
+                rev.put()
+                cnt1_2 += 1
+
+            # move comments
+            cnt2 = 0
+            for comment in u1.snippetcomment_set:
+                comment.userprefs = u2
+                comment.put()
+                cnt2 += 1
+
+            if u1.points:
+                u2.points += u1.points
+                u2.put()
+
+            self.response.out.write("""Moved %s snippets, %s revisions, %s
+                comments and %s points from '%s' to '%s'""" % (cnt1, \
+                cnt1_2, cnt2, u1.points, u1.nickname, u2.nickname))
+            return
+
+        self.response.out.write("""<form action="/admin/mapsnippets_post" method="post">
+            <input type="hidden" name="n1" value="%s" />
+            <input type="hidden" name="n2" value="%s" />
+            <input type="hidden" name="action" value="do" />
+            <table border="0"><tr><td>From User:</td><td>%s</td></tr>
+            <tr><td>To User:</td><td>%s</td></tr></table>
+            <br>
+            <input type="submit" value="move comments, snippets to new user" />
+            </form>
+        """ % (n1, n2, u1.nickname, u2.nickname))
