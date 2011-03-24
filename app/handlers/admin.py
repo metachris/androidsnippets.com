@@ -200,7 +200,7 @@ class AdminCommentView(webapp.RequestHandler):
 
             # Update cached comments
             mc.cache.snippet_comments(comment.snippet.key(), True)
-            mc.cache.snippet(snippet.slug1, force_update=True)
+            mc.cache.snippet(comment.snippet.slug1, force_update=True)
 
             self.redirect("/admin/comment/%s" % comment_key)
 
