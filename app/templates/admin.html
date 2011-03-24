@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" type="text/css" href="/css/admin.css" />     
 {% endblock %}
 
 {% block scripts %}
@@ -12,12 +11,17 @@
 {% endblock %}
 
 {% block main %}
+    <style type="text/css">
+        ol { margin:20px 20px; }
+        li { padding: 1px 4px; }
+    </style>
 
 <h1><a href="/admin">Admin Interface</a></h1>
 
-<ul>
+<ol>
     <li><a href="/admin/stats">stats</a></li>
     <li><a href="/admin/revision">revisions</a></li>
+    <li><a href="/admin/mapsnippets_post">map entities from a user to another user</a></li>
     <li><a href="/admin/rels">rebuild relations</a></li>
-</ul>
+</ol>
 {% endblock %}
