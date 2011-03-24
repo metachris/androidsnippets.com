@@ -170,18 +170,15 @@
 <div class="sidebar">
     <p>Editors</p>
     <div style="margin-left:12px;">
-        <a href="/users/{{ snippet.userprefs.nickname }}" title="{{ snippet.userprefs.nickname }}"><img src="http://www.gravatar.com/avatar/{{ snippet.userprefs.email_md5 }}?s=20" /></a>
+        <a href="/users/{{ snippet.userprefs.nickname }}" title="{{ snippet.userprefs.nickname }}"><img src="http://www.gravatar.com/avatar/{{ snippet.userprefs.email_md5 }}?s=20" width="20" height="20" alt="{{ snippet.userprefs.nickname }}" /></a>
     </div>
     <hr>
     
     <p>Tags</p>                
     <div style="clear:both;"></div>
     {% for tag,cnt in snippet.tags %}
-    <a href="/tags/{{ tag }}" title="{{ cnt }} snippets with tag '{{ tag }}'" class="tag">
-    <span class="cnt">{{ cnt }}</span>
-    {{ tag }}</a>
-    
-    <div style="clear:both;"></div>
+        <a href="/tags/{{ tag }}" title="{{ cnt }} snippets with tag '{{ tag }}'" class="tag"><span class="cnt">{{ cnt }}</span>{{ tag }}</a>
+        <div style="clear:both;"></div>
     {% endfor %}
 
     <hr>
@@ -192,7 +189,9 @@
         <span style="color:gray;">Currently being<br> regenerated  ..</span>
     {% endif %}
     {% for cnt, s in related_snippets %}
-        <p><a href="/{{ s.slug1 }}">{{ s.title }}</a></p>
+        {% if cnt > 0 %}
+            <p><a href="/{{ s.slug1 }}">{{ s.title }}</a></p>
+        {% endif %}
     {% endfor %}
     </div>
 
