@@ -4,6 +4,8 @@ import logging
 from operator import itemgetter
 
 from google.appengine.api import memcache
+from google.appengine.api import taskqueue
+
 from google.appengine.ext.webapp import template
 
 from models import *
@@ -270,6 +272,10 @@ def snippets_related(snippet_slug):
     """ Return list of related snippets to this one. Updated via /admin/rel """
     #logging.info("try to get related snippets for %s" % snippet_slug)
     c = memcache.get("_related_snippets_%s" % snippet_slug)
+    if not c:
+        # start rebuilding them asynchronously
+        taskqueue.add(url='/services/update_relations')
+
     #logging.info("- %s" % c)
     return c
 
