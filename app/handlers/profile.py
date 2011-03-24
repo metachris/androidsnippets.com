@@ -49,7 +49,7 @@ class UserProfileView(webapp.RequestHandler):
             return
 
         values = {'prefs': prefs, 'profile': profile, 'snippets': \
-                prefs.snippet_set}
+                profile.snippet_set}
         self.response.out.write(template.render(tdir + "user_profile.html", \
                 values))
 

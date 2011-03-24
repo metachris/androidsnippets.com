@@ -41,6 +41,7 @@
     <div id="tabs" style="margin:20px 10px;">
     	<ul>
     		<li><a href="#tabs-1">Snippets</a></li>
+    		<li><a href="#tabs-5">Comments</a></li>
     		<!--<li><a href="#tabs-2">Notifications</a></li>-->
     		<!--<li><a href="#tabs-3">Edits</a></li>-->
     		<li><a href="#tabs-4">About</a></li>
@@ -49,6 +50,13 @@
             <div style="" id="snippetlist">
                 {% include "snippet_list_items.html" %}
             </div>            
+    	</div>
+    	<div id="tabs-5">
+            <p><ul>
+    	       {% for comment in prefs.snippetcomment_set %}
+    	           <li><a href="/{{ comment.snippet.slug1 }}#{{ comment.key }}">{{ comment.snippet.title }}</a></li>
+	           {% endfor %}
+    	   </ul></p>
     	</div>
     	<div id="tabs-4">
             <p>     
@@ -75,7 +83,7 @@
                     {% endif %}     
                 </td></tr>
                 <!--<tr><td>Twitter</td><td><input type="text" name="twitter" value="{{ prefs.twitter }}"/></td></tr>-->
-                <tr><td>About me</td><td><textarea name="about" id="about" rows="12" cols="65">{{ prefs.about }}</textarea></td></tr>
+                <tr><td>About</td><td><textarea name="about" id="about" rows="12" cols="65">{{ prefs.about }}</textarea></td></tr>
                 <tr><td></td><td><input type="submit" value="Apply" class="btn_small" /></td></tr>
             </table>    
             </form>
