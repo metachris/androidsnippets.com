@@ -7,7 +7,7 @@
 {% block scripts %}
     <script>
     $(document).ready(function() {
-        $("#tabs").tabs();
+        $("#tabs").show().tabs();
     });
     </script>
 {% endblock %}
@@ -18,23 +18,20 @@
     </div>
     
     <div style="padding:20px 10px;">
-    <div id="tabs" style="margin-right:20px;">
+    <div id="tabs" style="margin-right:20px; display:none;">
     	<ul>
-    		<li><a href="#tabs-0">About</a></li>
-    		<li><a href="#tabs-1">Submissions</a></li>
-    		<li><a href="#tabs-2">Edits</a></li>
+    		<li><a href="#tabs-1">Snippets</a></li>
     		<li><a href="#tabs-3">Comments</a></li>
+    		<li><a href="#tabs-0">About</a></li>
+    		<!--<li><a href="#tabs-2">Edits</a></li>-->
     	</ul>
     	<div id="tabs-0">
             <p>{{ profile.about_md|safe }}</p>
     	</div>
     	<div id="tabs-1">
-            <p>
-            <ul>
-    	       {% for snippet in profile.snippet_set %}
-    	           <li><a href="/{{ snippet.slug1 }}">{{ snippet.title }}</a></li>
-	           {% endfor %}
-    	   </ul></p>
+            <div style="" id="snippetlist">
+                {% include "snippet_list_items.html" %}
+            </div>            
     	</div>
     	<div id="tabs-2">
             <p><ul>
