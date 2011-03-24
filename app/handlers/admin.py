@@ -53,7 +53,7 @@ class AdminView(webapp.RequestHandler):
         "pv_snippet_legacy", "ua_vote_snippet", "ua_edit_snippet", \
         "pv_snippet_edit", "pv_tag", "ua_comment", "ua_comment_spam", \
         "ua_comment_ham", "pv_otherprofile", "pv_search", "pv_userlist", \
-        "pv_snippet_404"]
+        "pv_snippet_404", "_last_reset"]
         mc_items.sort()
 
         if not category:
@@ -69,6 +69,7 @@ class AdminView(webapp.RequestHandler):
         if category == "/stats/reset":
             for item in mc_items:
                 memcache.set(item, 0)
+            memcache.set("_last_reset", datetime.datetime.now())
             self.redirect("/admin/stats")
 
         if category == "/revision":
